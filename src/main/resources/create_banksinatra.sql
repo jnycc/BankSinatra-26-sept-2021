@@ -19,7 +19,7 @@ USE `banksinatra` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Gebruiker` (
   `gebruikersnaam` VARCHAR(25) NOT NULL,
-  `wachtwoord` VARCHAR(100) NOT NULL,
+  `wachtwoord` VARCHAR(200) NOT NULL,
   `isBeheerder` TINYINT NOT NULL,
   `salt` VARCHAR(25) NOT NULL,
   `isGeblokkeerd` TINYINT NOT NULL,

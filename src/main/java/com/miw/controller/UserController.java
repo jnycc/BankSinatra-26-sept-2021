@@ -1,5 +1,6 @@
 package com.miw.controller;
 
+import com.miw.authentication.HashService;
 import com.miw.database.domain.User;
 import com.miw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +15,21 @@ import org.slf4j.LoggerFactory;
 public class UserController {
 
     private UserService userService;
+    private HashService hashService;
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, HashService hashService){
         super();
         this.userService = userService;
+        this.hashService = hashService;
         logger.info("New UserController");
     }
 
     @PutMapping("/register") //TODO: evt. deze URL aanpassen en RequestParam wellicht ook
     public User registerUser(@RequestParam String username, @RequestParam String password){
-        User user = userService.register(username, password);
+        User user = userService.register(username, hashService.hash(password));
         return user;
     }
 }

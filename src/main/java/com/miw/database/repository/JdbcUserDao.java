@@ -30,6 +30,7 @@ public class JdbcUserDao implements UserDao {
     logger.info("New JdbcMemberDao");
   }
 
+  //TODO: Zorgen dat hij de salt doorgeeft aan de database
   private PreparedStatement insertMemberStatement(User user, Connection connection) throws SQLException {
     PreparedStatement ps = connection.prepareStatement(
         "insert into Gebruiker (gebruikersnaam, wachtwoord, isBeheerder, salt, isGeblokkeerd) values (?, ?, 0, 'test', 0)",
