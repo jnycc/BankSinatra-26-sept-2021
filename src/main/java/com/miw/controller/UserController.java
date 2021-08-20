@@ -25,8 +25,8 @@ public class UserController {
     }
 
     @PutMapping("/register") //TODO: evt. deze URL aanpassen en RequestParam wellicht ook
-    public User registerUser(@RequestParam String username){
-        User user = userService.register(username);
+    public User registerUser(@RequestParam String username, @RequestParam String password){
+        User user = userService.register(username, password);
         return user;
     }
 }

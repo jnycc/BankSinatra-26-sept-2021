@@ -25,15 +25,10 @@ public class UserService {
   }
 
   //TODO: parameters aanpassen voor onze app - hoe registreert een nieuwe gebruiker zich?
-  public User register(String username) {
-    String password = generatePassword();
+  public User register(String username, String password) {
     User user = new User(username, password);
     rootRepository.saveUser(user);
     return user;
-  }
-
-  public String generatePassword() {
-    return "welkom123";
   }
 
   public RootRepository getRootRepository() {
