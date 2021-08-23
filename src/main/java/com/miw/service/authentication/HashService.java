@@ -1,4 +1,4 @@
-package com.miw.authentication;
+package com.miw.service.authentication;
 
 import com.miw.service.UserService;
 import org.slf4j.Logger;

@@ -3,8 +3,8 @@
 
 package com.miw.service;
 
-import com.miw.database.domain.User;
-import com.miw.database.repository.RootRepository;
+import com.miw.model.User;
+import com.miw.database.RootRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

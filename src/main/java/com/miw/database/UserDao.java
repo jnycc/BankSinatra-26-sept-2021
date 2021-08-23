@@ -1,6 +1,6 @@
-package com.miw.database.repository;
+package com.miw.database;
 
-import com.miw.database.domain.User;
+import com.miw.model.User;
 
 public interface UserDao {
 

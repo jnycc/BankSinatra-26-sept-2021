@@ -1,9 +1,9 @@
 // Created by huub
 // Creation date 2021-07-08
 
-package com.miw.database.repository;
+package com.miw.database;
 
-import com.miw.database.domain.User;
+import com.miw.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

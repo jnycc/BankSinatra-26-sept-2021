@@ -1,7 +1,7 @@
 package com.miw.controller;
 
-import com.miw.authentication.HashService;
-import com.miw.database.domain.User;
+import com.miw.service.authentication.HashService;
+import com.miw.model.User;
 import com.miw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;

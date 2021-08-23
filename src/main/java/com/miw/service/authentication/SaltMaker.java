@@ -1,4 +1,4 @@
-package com.miw.authentication;
+package com.miw.service.authentication;
 
 import java.security.SecureRandom;
 import org.springframework.beans.factory.annotation.Autowired;

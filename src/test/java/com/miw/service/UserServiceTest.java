@@ -1,7 +1,7 @@
 package com.miw.service;
 
-import com.miw.database.domain.User;
-import com.miw.database.repository.RootRepository;
+import com.miw.model.User;
+import com.miw.database.RootRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
