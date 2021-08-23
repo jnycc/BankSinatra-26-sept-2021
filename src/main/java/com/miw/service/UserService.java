@@ -25,8 +25,9 @@ public class UserService {
   }
 
   //TODO: parameters aanpassen voor onze app - hoe registreert een nieuwe gebruiker zich?
-  public User register(String username, String password) {
-    User user = new User(username, password);
+  //TODO: LW-If User becomes abstract it cannot be instantiated. new User arg becomes invalid.
+  public User register(String emailaddress, String password) {
+    User user = new User(emailaddress, password);
     rootRepository.saveUser(user);
     return user;
   }

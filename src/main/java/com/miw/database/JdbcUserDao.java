@@ -31,12 +31,13 @@ public class JdbcUserDao implements UserDao {
   }
 
   //TODO: Zorgen dat hij de salt doorgeeft aan de database
+  //TODO: LW-SQL statement aanpassen aan nieuwe User entiteit
   private PreparedStatement insertMemberStatement(User user, Connection connection) throws SQLException {
     PreparedStatement ps = connection.prepareStatement(
         "insert into Gebruiker (gebruikersnaam, wachtwoord, isBeheerder, salt, isGeblokkeerd) values (?, ?, 0, 'test', 0)",
         Statement.RETURN_GENERATED_KEYS
     );
-    ps.setString(1, user.getUsername());
+    ps.setString(1, user.getEmailaddress());
     ps.setString(2, user.getPassword());
     return ps;
   }

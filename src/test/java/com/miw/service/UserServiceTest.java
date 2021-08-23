@@ -38,7 +38,7 @@ class UserServiceTest {
         String username = "test";
         String password = "ookTest";
         User testUser = userService.register(username, password);
-        assertThat(testUser.getUsername()).isEqualTo("test");
+        assertThat(testUser.getEmailaddress()).isEqualTo("test");
 
     }
 
