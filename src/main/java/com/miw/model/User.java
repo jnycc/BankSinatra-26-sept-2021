@@ -4,50 +4,61 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // TODO Make abstract, create extension classes Client and Administrator
-public class User {
+public abstract class User {
 
     private final Logger logger = LoggerFactory.getLogger(User.class);
 
-    // willen we user ids?
-
-    private String emailaddress;
+    private int userId;
+    private String email;
     private String password;
-    private String name;
-    private String prefix;
-    private String surname;
-    // hoort de salt in de user model?
     private String salt;
+    private String firstName;
+    private String prefix;
+    private String lastName;
     private boolean isBlocked;
 
 
-    public User(String emailaddress, String password, String name, String prefix, String surname, String salt, boolean isBlocked) {
-        this.emailaddress = emailaddress;
+    public User(String email, String password, String salt, String firstName, String prefix, String lastName, boolean isBlocked) {
+        this.userId = generateUserid();
+        this.email = email;
         this.password = password;
-        this.name = name;
+        this.firstName = firstName;
         this.prefix = prefix;
-        this.surname = surname;
-        this.salt = salt;
+        this.lastName = lastName;
+        this.salt = salt;           //
         this.isBlocked = isBlocked;
-        logger.info("new user");
+        logger.info("new User created");
     }
 
-    public User(String emailaddress, String password) {
+
+    public User(String email, String password) {
         super();
-        this.emailaddress = emailaddress;
+        this.email = email;
         this.password = password;
-        logger.info("new user");
+        logger.info("new User created");
     }
 
     public User() {
         this(null, null, null, null, null, null, false);
     }
 
-    public String getName() {
-        return name;
+    public User(String email, String password, String firstName, String prefix, String lastName) {
+        this(email, password, firstName, prefix, lastName, null, false);
+    }
+
+
+    private int generateUserid() {
+        // TODO genereer userId
+        return 0;
+    }
+
+
+    public String getFirstName() {
+        return firstName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.firstName = name;
     }
 
     public String getPrefix() {
@@ -58,12 +69,12 @@ public class User {
         this.prefix = prefix;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getSalt() {
@@ -82,8 +93,8 @@ public class User {
         isBlocked = blocked;
     }
 
-    public String getEmailaddress() {
-        return emailaddress;
+    public String getEmail() {
+        return email;
     }
 
     public String getPassword() {

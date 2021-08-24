@@ -3,6 +3,8 @@
 
 package com.miw.service;
 
+import com.miw.model.Administrator;
+import com.miw.model.Client;
 import com.miw.model.User;
 import com.miw.database.RootRepository;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
   private RootRepository rootRepository;
+  private User user;
 
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -26,10 +29,10 @@ public class UserService {
 
   //TODO: parameters aanpassen voor onze app - hoe registreert een nieuwe gebruiker zich?
   //TODO: LW-If User becomes abstract it cannot be instantiated. new User arg becomes invalid.
-  public User register(String emailaddress, String password) {
-    User user = new User(emailaddress, password);
-    rootRepository.saveUser(user);
-    return user;
+  public Client register(String emailaddress, String password) {
+    Client client = new Client(emailaddress, password);       //  TODO: alle attributen toevoegen.
+    rootRepository.saveUser(client);
+    return client;
   }
 
   public RootRepository getRootRepository() {

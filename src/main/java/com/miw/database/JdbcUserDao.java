@@ -34,11 +34,12 @@ public class JdbcUserDao implements UserDao {
   //TODO: LW-SQL statement aanpassen aan nieuwe User entiteit
   private PreparedStatement insertMemberStatement(User user, Connection connection) throws SQLException {
     PreparedStatement ps = connection.prepareStatement(
-        "insert into Gebruiker (gebruikersnaam, wachtwoord, isBeheerder, salt, isGeblokkeerd) values (?, ?, 0, 'test', 0)",
+        "insert into User (email, password, isAdmin, salt, isBlocked) values (?, ?, 0, 'test', 0)",
         Statement.RETURN_GENERATED_KEYS
     );
-    ps.setString(1, user.getEmailaddress());
+    ps.setString(1, user.getEmail());
     ps.setString(2, user.getPassword());
+    //ps.setString()
     return ps;
   }
 
@@ -50,7 +51,7 @@ public class JdbcUserDao implements UserDao {
   }
 
   @Override
-  public User findByUsername(String username) {
+  public User findByEmail(String email) {
     return null;
   }
 

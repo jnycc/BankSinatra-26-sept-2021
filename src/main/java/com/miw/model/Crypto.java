@@ -1,23 +1,21 @@
 package com.miw.model;
 
-public class Cryptocoin {
+public class Crypto {
 
     // ATTRIBUTES
     private String name;
-    private String initials;
+    private String symbol;
     private String description;
-    private double value;
+    private double exchangeRate;
 
 
     // CONSTRUCTORS
-    public Cryptocoin(String name, String initials, String description) {
+    public Crypto(String name, String symbol, String description) {
         this.name = name;
-        this.initials = initials;
+        this.symbol = symbol;
         this.description = description;
-        this.value = retrieveValue();
+        this.exchangeRate = retrieveValue();
     }
-
-
 
     // METHODS
     private double retrieveValue() {
@@ -26,5 +24,7 @@ public class Cryptocoin {
     }
 
     // GETTERS & SETTERS
-
+    public double getValue() {
+        return exchangeRate;
+    }
 }

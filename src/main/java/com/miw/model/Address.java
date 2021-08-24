@@ -1,21 +1,21 @@
 package com.miw.model;
 
-public class Addres {
+public class Address {
 
     private String city;
     private String zipCode;
     private String street;
     private int houseNumber;
-    private String houseNumberAdd;
+    private String houseNumberExtension;
 
 
-
-    public Addres(String city, String zipCode, String street, int houseNumber, String houseNumberAdd) {
+    public Address(String city, String zipCode, String street, int houseNumber, String houseNumberExtension) {
         this.city = city;
         this.zipCode = zipCode;
         this.street = street;
         this.houseNumber = houseNumber;
-        this.houseNumberAdd = houseNumberAdd;
+        this.houseNumberExtension = houseNumberExtension;
 
     }
 }
+

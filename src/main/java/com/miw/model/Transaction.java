@@ -10,7 +10,7 @@ public class Transaction {
     private LocalDateTime transactionDate;
     private Client buyer;
     private Client seller;
-    private Cryptocoin cryptocoin;
+    private Crypto crypto;
     private double units;
     private double price;
     private double bankCosts;
@@ -19,22 +19,22 @@ public class Transaction {
     // CONSTRUCTORS
 
     // price based on units
-    public Transaction(Client buyer, Client seller, Cryptocoin cryptocoin, double units) {
+    public Transaction(Client buyer, Client seller, Crypto crypto, double units) {
         this.buyer = buyer;
         this.seller = seller;
-        this.cryptocoin = cryptocoin;
+        this.crypto = crypto;
         this.units = units;
-        this.price = calculatePrice(units);
+        this.price = calculatePrice();
         this.transactionDate = LocalDateTime.now();
         this.transactionNumber = generateTransactionNumber();
     }
 
 
     // units based on price
-    public Transaction(Client buyer, Client seller, Cryptocoin cryptocoin, double price, double bankCosts) {
+    public Transaction(Client buyer, Client seller, Crypto crypto, double price, double bankCosts) {
         this.buyer = buyer;
         this.seller = seller;
-        this.cryptocoin = cryptocoin;
+        this.crypto = crypto;
         this.price = price;
         this.bankCosts = bankCosts;
         this.units = calculateUnits(price);
@@ -44,18 +44,19 @@ public class Transaction {
 
 
     // METHODS
-    private double calculatePrice(double units) {
+    private double calculatePrice() {
         //TODO: calculate price based on unit and course value of cryptocoin
-        return 0.0;
+        return units * crypto.getValue();
     }
 
     private double calculateUnits(double price) {
         //TODO: calculate price based on unit and course value of cryptocoin
-        return 0.0;
+        return price * crypto.getValue();
     }
 
     private int generateTransactionNumber() {
         //TODO: generate unique transactionNumber
+
         return 0;
     }
 

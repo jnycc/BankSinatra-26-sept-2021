@@ -12,23 +12,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
-public class UserController {
+public class RegisterController {
 
     private UserService userService;
     private HashService hashService;
 
-    private final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
     @Autowired
-    public UserController(UserService userService, HashService hashService){
+    public RegisterController(UserService userService, HashService hashService){
         super();
         this.userService = userService;
         this.hashService = hashService;
-        logger.info("New UserController");
+        logger.info("New RegisterController created");
     }
 
     @PutMapping("/register") //TODO: evt. deze URL aanpassen en RequestParam wellicht ook
-    public User registerUser(@RequestParam String username, @RequestParam String password){
+    public User registerUser(@RequestParam String username,
+                             @RequestParam String password){
         User user = userService.register(username, hashService.hash(password));
         return user;
     }
