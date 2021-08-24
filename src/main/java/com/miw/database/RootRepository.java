@@ -26,4 +26,8 @@ public class RootRepository {
   public User saveUser(User user) {
     return userDao.save(user);
   }
+
+    public User findByEmail(String email) {
+      return userDao.findByEmail(email);
+    }
 }

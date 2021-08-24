@@ -2,19 +2,19 @@
 // Creation date 2021-07-08
 
 package com.miw.database;
+import com.miw.model.Client;
 import com.miw.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.List;
 
 @Repository
 public class JdbcUserDao implements UserDao {
@@ -51,8 +51,33 @@ public class JdbcUserDao implements UserDao {
   }
 
   @Override
-  public User findByEmail(String email) {
-    return null;
+  public Client findByEmail(String email) {
+    //TODO: DAO schrijven
+    String sql = "SELECT * FROM User WHERE email = ?";
+    Client client = jdbcTemplate.queryForObject(sql, new UserRowMapper(), email);
+    return client;
   }
 
+
+  private static class UserRowMapper implements RowMapper<Client> {
+
+    @Override
+    public Client mapRow(ResultSet resultSet, int i) throws SQLException {
+      int id = resultSet.getInt("userID");
+      String email = resultSet.getString("email");
+      String firstName = resultSet.getString("firstName");
+      String prefix = resultSet.getString("prefix");
+      String lastName = resultSet.getString("lastName");
+//      String street = resultSet.getString("street");
+//      int houseNumber = resultSet.getInt("houseNumber");
+//      String houseNrExtension = resultSet.getString("houseNumberExtension");
+//      String zipCode = resultSet.getString("zipCode");
+//      String city = resultSet.getString("city");
+//      int bsn = resultSet.getInt("bsn");
+      Date dateOfBirth = resultSet.getDate("dateOfBirth");
+      Client client = new Client(email, firstName, prefix, lastName);//TODO: uitbreiden met meer sql-columns
+      client.setUserId(id);
+      return client;
+    }
+  }
 }

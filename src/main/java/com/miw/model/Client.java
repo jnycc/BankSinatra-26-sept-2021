@@ -13,8 +13,8 @@ public class Client extends User{
     private Account account;
 
 
-    public Client(String username, String password, Date dateOfBirth, Address address, int bsn) {
-        super(username, password);
+    public Client(String email, String password, Date dateOfBirth, Address address, int bsn) {
+        super(email, password);
         this.dateOfBirth = dateOfBirth;
         this.address = address;
         this.bsn = bsn;
@@ -26,5 +26,14 @@ public class Client extends User{
         super(email, password);
     }
 
+    public Client(String email, String password, String firstName, String prefix, String lastName, Date dateOfBirth, int bsn, Address address) {
+        super(email, password, firstName, prefix, lastName);
+        this.dateOfBirth = dateOfBirth;
+        this.bsn = bsn;
+        this.address = address;
+    }
 
+    public Client(String email, String firstName, String prefix, String lastName) {
+        super(email, firstName, prefix, lastName);
+    }
 }
