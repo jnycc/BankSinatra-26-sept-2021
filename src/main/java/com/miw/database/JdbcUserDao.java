@@ -7,14 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.List;
 
 @Repository
 public class JdbcUserDao implements UserDao {
@@ -51,7 +50,31 @@ public class JdbcUserDao implements UserDao {
 
   @Override
   public User findByUsername(String username) {
-    return null;
+    //TODO: DAO schrijven
+    String sql = "SELECT * FROM User WHERE username = ?";
+    User user = jdbcTemplate.queryForObject(sql, new UserRowMapper)
+    return user;
+
+
+    //jdbcTemplate.query returnt een lijst, daarom List van Messages, ookal haal je maar 1 message eruit.
+    //List<Message> messages = jdbcTemplate.query("SELECT * FROM message_table WHERE id = ?", new MessageRowMapper(), id);
+    //if (messages.size() == 1) return messages.get(0);
+    //return null;
   }
 
+
+  private static class UserRowMapper implements RowMapper<User> {
+
+    @Override
+    public User mapRow(ResultSet resultSet, int i) throws SQLException {
+      String id = resultSet.getString("userID");
+      String email = resultSet.getString("username");
+      String firstName = resultSet.getString("firstName");
+      String prefix = resultSet.getString("prefix");
+      String lastName = resultSet.getString("lastName");
+      User user = new User();
+      user.setId(id);
+      return user;
+    }
+  }
 }

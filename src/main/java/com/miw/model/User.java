@@ -42,6 +42,10 @@ public class User {
         this(null, null, null, null, null, null, false);
     }
 
+    public User(String emailaddress, String password, String name, String prefix, String surname) {
+        this(emailaddress, password, name, prefix, surname, null, false);
+    }
+
     public String getName() {
         return name;
     }
