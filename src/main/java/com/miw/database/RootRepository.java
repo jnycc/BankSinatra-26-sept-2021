@@ -1,5 +1,3 @@
-// Created by huub
-// Creation date 2021-07-08
 
 package com.miw.database;
 
