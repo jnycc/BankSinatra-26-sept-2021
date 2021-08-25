@@ -33,7 +33,6 @@ public class JdbcUserDao implements UserDao {
             "insert into User (email, password, salt, role, isBlocked, firstName, prefix, lastName, street, " +
                     "houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth) values (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
-                "houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth) values (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     );
     ps.setString(1, client.getEmail());
     ps.setString(2, client.getPassword());
