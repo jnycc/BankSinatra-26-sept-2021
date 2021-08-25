@@ -1,9 +1,15 @@
 package com.miw.service.authentication;
+import com.miw.database.JdbcTokenDao;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import java.util.UUID;
 
-// instantie maken van de TokenDao
+//TODO: constructor en autowire @service etc.
 
 public class TokenService {
+
+    private JdbcTemplate jdbcTemplate;
+    private final JdbcTokenDao jdbcTokenDao = new JdbcTokenDao(jdbcTemplate);
 
     // bij authenticatie wordt token aangemaakt en in combinatie met email opgeslagen in aparte tabel in de database
     // bij het doorgaan naar een nieuwe pagina wordt token vanuit de gerbuiker kant doorgegeven (via HTML)
@@ -15,12 +21,12 @@ public class TokenService {
     }
 
     public boolean validateToken(String token) {
-        return checkToken(token) != null;
+        return jdbcTokenDao.retrieveToken(token) != null;
     }
 
-    public void expireToken(String token) {
+/*    public void expireToken(String token) {
         deleteToken(token);
-    }
+    }*/
 
 
 
