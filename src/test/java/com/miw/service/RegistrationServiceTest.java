@@ -8,24 +8,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 
-import static org.assertj.core.api.Assertions.*;
-
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserServiceTest {
+class RegistrationServiceTest {
 
     private RootRepository mockRepo;
-    private UserService userService;
+    private RegistrationService registrationService;
 
     @BeforeEach
     public void setup(){
         mockRepo = Mockito.mock(RootRepository.class);
-        userService = new UserService(mockRepo);
+        registrationService = new RegistrationService(mockRepo);
     }
 
     @AfterAll
     public void tearDown(){
         mockRepo = null;
-        userService = null;
+        registrationService = null;
     }
 
     @Test
@@ -37,7 +35,7 @@ class UserServiceTest {
 
         String username = "test";
         String password = "ookTest";
-        User testUser = userService.register(username, password);
+//        User testUser = registrationService.register(username, password);
 //        assertThat(testUser.getEmailaddress()).isEqualTo("test");
 
     }

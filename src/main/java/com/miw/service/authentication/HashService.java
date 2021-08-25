@@ -1,6 +1,7 @@
 package com.miw.service.authentication;
 
-import com.miw.service.UserService;
+import com.miw.model.Client;
+import com.miw.service.RegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ public class HashService {
     private final SaltMaker saltMaker;
     private int rounds;
 
-    private final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private final Logger logger = LoggerFactory.getLogger(RegistrationService.class);
 
     @Autowired
     public HashService(PepperService pepperService, SaltMaker saltMaker) {
@@ -28,10 +29,12 @@ public class HashService {
         // eventueel controleren op te grote waarden (< 6)
     }
 
-    public String hash(String value) {
-        String hash = HashHelper.hash(value, saltMaker.generateSalt(), pepperService.getPepper()); // hacks! gebruik pepper in plaats van salt
-        // pas eventueel een key stretch toe: x ronden uitvoeren
-        return processRounds(hash, numberOfRounds(rounds));
+    public Client hash(Client client) {
+        String salt = saltMaker.generateSalt();
+        client.setSalt(salt);
+        String hash = HashHelper.hash(client.getPassword(), salt, pepperService.getPepper());
+        client.setPassword(processRounds(hash, numberOfRounds(rounds)));
+        return client;
     }
 
     private String processRounds(String hash, long r) {

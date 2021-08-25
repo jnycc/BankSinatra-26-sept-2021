@@ -3,6 +3,7 @@
 
 package com.miw.database;
 
+import com.miw.model.Client;
 import com.miw.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,11 @@ public class RootRepository {
     logger.info("New RootRepository");
   }
 
-  public User saveUser(User user) {
-    return userDao.save(user);
+  public Client saveUser(Client client) {
+    return userDao.save(client);
   }
+
+    public User findByEmail(String email) {
+      return userDao.findByEmail(email);
+    }
 }

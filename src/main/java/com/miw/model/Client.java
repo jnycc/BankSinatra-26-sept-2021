@@ -13,8 +13,8 @@ public class Client extends User{
     private Account account;
 
 
-    public Client(String username, String password, Date dateOfBirth, Address address, int bsn) {
-        super(username, password);
+    public Client(String email, String password, Date dateOfBirth, Address address, int bsn) {
+        super(email, password);
         this.dateOfBirth = dateOfBirth;
         this.address = address;
         this.bsn = bsn;
@@ -26,5 +26,69 @@ public class Client extends User{
         super(email, password);
     }
 
+    public Client(String email, String password, String firstName, String prefix, String lastName, Date dateOfBirth, int bsn, Address address) {
+        super(email, password, firstName, prefix, lastName);
+        this.dateOfBirth = dateOfBirth;
+        this.bsn = bsn;
+        this.address = address;
+    }
 
+    public Client(String email, String password, String firstName, String prefix, String lastName, int bsn, Address address) {
+        super(email, password, firstName, prefix, lastName);
+        this.bsn = bsn;
+        this.address = address;
+    }
+
+    public Client(String email, String firstName, String prefix, String lastName, Address address) {
+        super(email, firstName, prefix, lastName);
+        this.address = address;
+    }
+
+    public Client(String email, String firstName, String prefix, String lastName) {
+        super(email, firstName, prefix, lastName);
+    }
+
+    public Client() {
+    }
+
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public int getBsn() {
+        return bsn;
+    }
+
+    public void setBsn(int bsn) {
+        this.bsn = bsn;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Map<Crypto, Double> getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(Map<Crypto, Double> portfolio) {
+        this.portfolio = portfolio;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 }

@@ -30,7 +30,6 @@ public abstract class User {
         logger.info("new User created");
     }
 
-
     public User(String email, String password) {
         super();
         this.email = email;
@@ -46,6 +45,12 @@ public abstract class User {
         this(email, password, firstName, prefix, lastName, null, false);
     }
 
+    public User(String email, String firstName, String prefix, String lastName) {
+        this.email = email;
+        this.firstName = firstName;
+        this.prefix = prefix;
+        this.lastName = lastName;
+    }
 
     private int generateUserid() {
         // TODO genereer userId
@@ -100,4 +105,18 @@ public abstract class User {
     public String getPassword() {
         return password;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+
 }
