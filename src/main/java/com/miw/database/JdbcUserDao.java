@@ -7,6 +7,7 @@ import com.miw.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -66,9 +67,14 @@ public class JdbcUserDao implements UserDao {
   @Override
   public Client findByEmail(String email) {
     //TODO: DAO schrijven
-    String sql = "SELECT * FROM User WHERE email = ?";
-    Client client = jdbcTemplate.queryForObject(sql, new UserRowMapper(), email);
-    return client;
+    try {
+      String sql = "SELECT * FROM User WHERE email = ?";
+      Client client = jdbcTemplate.queryForObject(sql, new UserRowMapper(), email);
+      return client;
+    } catch (EmptyResultDataAccessException e) {
+      logger.info("User bestaat niet");
+    }
+    return null;
   }
 
 
@@ -81,6 +87,8 @@ public class JdbcUserDao implements UserDao {
       String firstName = resultSet.getString("firstName");
       String prefix = resultSet.getString("prefix");
       String lastName = resultSet.getString("lastName");
+      String salt = resultSet.getString("salt");
+      String hash = resultSet.getString("password");
 //      String street = resultSet.getString("street");
 //      int houseNumber = resultSet.getInt("houseNumber");
 //      String houseNrExtension = resultSet.getString("houseNumberExtension");
@@ -90,6 +98,8 @@ public class JdbcUserDao implements UserDao {
 //      Date dateOfBirth = resultSet.getDate("dateOfBirth");
       Client client = new Client(email, firstName, prefix, lastName);//TODO: uitbreiden met meer sql-columns
       client.setUserId(id);
+      client.setSalt(salt);
+      client.setPassword(hash);
       return client;
     }
   }

@@ -1,5 +1,6 @@
 package com.miw.controller;
 
+import com.miw.model.Credentials;
 import com.miw.model.User;
 import com.miw.service.authentication.AuthenticationService;
 import com.miw.service.authentication.HashService;
@@ -29,9 +30,12 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestParam String username, @RequestParam String password) {
-        // check validity input
-        return new ResponseEntity<>("logged in", HttpStatus.CREATED);
+    public ResponseEntity<?> loginUser(@RequestBody Credentials credentials) {
+        //TODO: check validity input
+        if (authenticationService.authenticate(credentials.getUsername(), credentials.getPassword())) {
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
 }

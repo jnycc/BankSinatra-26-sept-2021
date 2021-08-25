@@ -37,6 +37,10 @@ public class HashService {
         return client;
     }
 
+    public String hashForAuthenticate (String password, String salt) {
+        return HashHelper.hash(password, salt, pepperService.getPepper());
+    }
+
     private String processRounds(String hash, long r) {
         for (long i = 0; i < r; i++) {
             // niet zo efficient om dit met String te doen en HashHelper hash maakt ook steeds nieuwe objecten aan
