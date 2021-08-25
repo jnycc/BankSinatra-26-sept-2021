@@ -30,9 +30,10 @@ public class JdbcUserDao implements UserDao {
   //TODO: LW-SQL statement aanpassen aan nieuwe User entiteit
   private PreparedStatement insertMemberStatement(Client client, Connection connection) throws SQLException {
     PreparedStatement ps = connection.prepareStatement(
-        "insert into User (email, password, salt, role, isBlocked, firstName, prefix, lastName, street, " +
+            "insert into User (email, password, salt, role, isBlocked, firstName, prefix, lastName, street, " +
+                    "houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth) values (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            Statement.RETURN_GENERATED_KEYS
                 "houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth) values (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        Statement.RETURN_GENERATED_KEYS
     );
     ps.setString(1, client.getEmail());
     ps.setString(2, client.getPassword());
@@ -64,12 +65,11 @@ public class JdbcUserDao implements UserDao {
     String sql = "SELECT * FROM User WHERE email = ?";
     try {
       return jdbcTemplate.queryForObject(sql, new UserRowMapper(), email);
-    } catch (EmptyResultDataAccessException fout) {
-      System.out.println("User already exists.");
+    } catch (EmptyResultDataAccessException e) {
+      logger.info("User bestaat niet");
       return null;
     }
   }
-
 
   private static class UserRowMapper implements RowMapper<Client> {
 
@@ -80,6 +80,8 @@ public class JdbcUserDao implements UserDao {
       String firstName = resultSet.getString("firstName");
       String prefix = resultSet.getString("prefix");
       String lastName = resultSet.getString("lastName");
+      String salt = resultSet.getString("salt");
+      String hash = resultSet.getString("password");
 //      String street = resultSet.getString("street");
 //      int houseNumber = resultSet.getInt("houseNumber");
 //      String houseNrExtension = resultSet.getString("houseNumberExtension");
@@ -89,6 +91,8 @@ public class JdbcUserDao implements UserDao {
 //      Date dateOfBirth = resultSet.getDate("dateOfBirth");
       Client client = new Client(email, firstName, prefix, lastName);//TODO: uitbreiden met meer sql-columns
       client.setUserId(id);
+      client.setSalt(salt);
+      client.setPassword(hash);
       return client;
     }
   }
