@@ -28,7 +28,7 @@ public class JdbcUserDao implements UserDao {
 
   //TODO: Zorgen dat hij de salt doorgeeft aan de database
   //TODO: LW-SQL statement aanpassen aan nieuwe User entiteit
-  private PreparedStatement insertMemberStatement(Client client, Connection connection) throws SQLException {
+  private PreparedStatement insertClientStatement(Client client, Connection connection) throws SQLException {
     PreparedStatement ps = connection.prepareStatement(
         "insert into User (email, password, salt, role, isBlocked, firstName, prefix, lastName, street, " +
                 "houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth) values (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -53,7 +53,7 @@ public class JdbcUserDao implements UserDao {
   @Override
   public Client save(Client client) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
-    jdbcTemplate.update(connection -> insertMemberStatement(client, connection), keyHolder);
+    jdbcTemplate.update(connection -> insertClientStatement(client, connection), keyHolder);
     int userId = keyHolder.getKey().intValue();
     client.setUserId(userId);
     return client;
@@ -69,7 +69,6 @@ public class JdbcUserDao implements UserDao {
       return null;
     }
   }
-
 
   private static class UserRowMapper implements RowMapper<Client> {
 

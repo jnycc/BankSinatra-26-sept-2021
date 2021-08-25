@@ -3,18 +3,33 @@ package com.miw.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.*;
+
 // TODO Make abstract, create extension classes Client and Administrator
 public abstract class User {
 
     private final Logger logger = LoggerFactory.getLogger(User.class);
 
     private int userId;
+
+    @NotEmpty
+    @Email
     private String email;
+
+    @NotEmpty
+    @Size (min = 8, max = 64)
     private String password;
+
     private String salt;
+
+    @NotEmpty
     private String firstName;
+
     private String prefix;
+
+    @NotEmpty
     private String lastName;
+
     private boolean isBlocked;
 
 

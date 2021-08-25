@@ -9,14 +9,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.Valid;
 import java.sql.SQLException;
 
 @RestController
+@RequestMapping("/register")
 public class RegisterController {
 
     private RegistrationService registrationService;
@@ -35,8 +38,8 @@ public class RegisterController {
     }
 
 
-    @PutMapping("/register") //TODO: RequestParam in RequestBody veranderen
-    public ResponseEntity<?> registerUser(@RequestBody Client client){
+    @PutMapping
+    public ResponseEntity<?> registerUser(@Valid @RequestBody Client client){
         //Check volledigheid en juiste format vereiste gegevens (ValidationService)
 //        errors.append(validationService.validateInput());
 

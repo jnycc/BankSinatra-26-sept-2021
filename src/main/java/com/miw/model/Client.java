@@ -1,13 +1,23 @@
 package com.miw.model;
 
-import java.util.Date;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Client extends User{
 
+    @NotEmpty
+    //TODO: dus wel een Date van maken :) Dan kunnen we @Past oid doen yay
     private String dateOfBirth;
+
+    @Range(min = 10000000, max = 999999999)
+    //TODO: 11 proef als check toevoegen
     private int bsn;
+
     private Address address;
     private Map<Crypto, Double> portfolio;
     private Account account;
