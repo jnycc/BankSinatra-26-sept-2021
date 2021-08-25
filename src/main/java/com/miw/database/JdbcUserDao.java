@@ -1,9 +1,5 @@
-// Created by huub
-// Creation date 2021-07-08
-
 package com.miw.database;
 import com.miw.model.Client;
-import com.miw.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +10,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.List;
 
 @Repository
 public class JdbcUserDao implements UserDao {
@@ -35,7 +30,7 @@ public class JdbcUserDao implements UserDao {
   private PreparedStatement insertMemberStatement(Client client, Connection connection) throws SQLException {
     PreparedStatement ps = connection.prepareStatement(
         "insert into User (email, password, salt, role, isBlocked, firstName, prefix, lastName, street, " +
-                "houseNumber, houseNumberExtension, zipCode, city, bsn) values (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth) values (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         Statement.RETURN_GENERATED_KEYS
     );
     ps.setString(1, client.getEmail());
@@ -50,7 +45,7 @@ public class JdbcUserDao implements UserDao {
     ps.setString(10, client.getAddress().getZipCode());
     ps.setString(11, client.getAddress().getCity());
     ps.setInt(12, client.getBsn());
-//    ps.setDate(13, (Date) client.getDateOfBirth());
+    ps.setDate(13, java.sql.Date.valueOf(client.getDateOfBirth()));
     return ps;
   }
 

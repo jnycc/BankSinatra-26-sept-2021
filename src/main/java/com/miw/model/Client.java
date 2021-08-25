@@ -6,14 +6,14 @@ import java.util.Map;
 
 public class Client extends User{
 
-    private Date dateOfBirth;
+    private String dateOfBirth;
     private int bsn;
     private Address address;
     private Map<Crypto, Double> portfolio;
     private Account account;
 
 
-    public Client(String email, String password, Date dateOfBirth, Address address, int bsn) {
+    public Client(String email, String password, String dateOfBirth, Address address, int bsn) {
         super(email, password);
         this.dateOfBirth = dateOfBirth;
         this.address = address;
@@ -26,7 +26,7 @@ public class Client extends User{
         super(email, password);
     }
 
-    public Client(String email, String password, String firstName, String prefix, String lastName, Date dateOfBirth, int bsn, Address address) {
+    public Client(String email, String password, String firstName, String prefix, String lastName, String dateOfBirth, int bsn, Address address) {
         super(email, password, firstName, prefix, lastName);
         this.dateOfBirth = dateOfBirth;
         this.bsn = bsn;
@@ -52,11 +52,11 @@ public class Client extends User{
     }
 
 
-    public Date getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

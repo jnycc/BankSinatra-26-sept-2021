@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
+
 @RestController
 public class RegisterController {
 
@@ -48,8 +50,12 @@ public class RegisterController {
             return ResponseEntity.badRequest().body("Registration failed. Incomplete or incorrect fields: " + invalidFields);
         }*/
         //Check if existing user (ValidationService of UserService)
-        if (validationService.checkExistingAccount(client.getEmail())) {
-            return ResponseEntity.badRequest().body("Registration failed. Account already exists.");
+        try{
+            if (validationService.checkExistingAccount(client.getEmail())) {
+                return ResponseEntity.badRequest().body("Registration failed. Account already exists.");
+            }
+        } catch (Exception e){
+            System.out.println("User doesn't exist in database");
         }
         // Gebruiker opslaan in database en beginkapitaal toewijzen. Succesmelding geven.
         client = hashService.hash(client);
