@@ -1,11 +1,21 @@
 package com.miw.model;
 
+import javax.validation.constraints.NotEmpty;
+
 public class Address {
 
+    @NotEmpty
     private String city;
+
+    @NotEmpty
     private String zipCode;
+
+    @NotEmpty
     private String street;
+
+    @NotEmpty
     private int houseNumber;
+
     private String houseNumberExtension;
 
 
