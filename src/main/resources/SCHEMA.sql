@@ -19,7 +19,7 @@ USE `banksinatra` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`BankingFee` (
   `percentage` DECIMAL(15,0) NOT NULL,
-  PRIMARY KEY (`percentage`))
+  PRIMARY KEY (`percentage`));
 
 
 
@@ -32,17 +32,17 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Crypto` (
   `exchangeRate` DECIMAL(25) NOT NULL,
   `description` VARCHAR(150) NOT NULL,
   `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`cryptoID`))
+  PRIMARY KEY (`cryptoID`));
 
 
 -- -----------------------------------------------------
 -- Table `banksinatra`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`User` (
-  `userID` INT NOT NULL,
+  `userID` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(100) NOT NULL,
   `password` VARCHAR(100) NOT NULL,
-  `salt` VARCHAR(25) NOT NULL,
+  `salt` VARCHAR(100) NOT NULL,
   `role` VARCHAR(45) NOT NULL,
   `isBlocked` TINYINT NOT NULL,
   `firstName` VARCHAR(45) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`User` (
   `city` VARCHAR(45) NULL,
   `bsn` INT NULL,
   `dateOfBirth` DATE NULL,
-  PRIMARY KEY (`userID`))
+  PRIMARY KEY (`userID`));
 
 
 -- -----------------------------------------------------
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Account` (
     FOREIGN KEY (`User_userID`)
     REFERENCES `banksinatra`.`User` (`userID`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Transaction` (
     FOREIGN KEY (`Crypto_cryptoID`)
     REFERENCES `banksinatra`.`Crypto` (`cryptoID`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Asset` (
     FOREIGN KEY (`Crypto_cryptoID`)
     REFERENCES `banksinatra`.`Crypto` (`cryptoID`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE NO ACTION);
 
 -- Gebruiker definiëren en toegang verlenen
 CREATE USER 'cursist'@'localhost' IDENTIFIED BY 'cohort';

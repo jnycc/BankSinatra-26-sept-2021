@@ -72,23 +72,4 @@ public class Client extends User{
         return address;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public Map<Crypto, Double> getPortfolio() {
-        return portfolio;
-    }
-
-    public void setPortfolio(Map<Crypto, Double> portfolio) {
-        this.portfolio = portfolio;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 }

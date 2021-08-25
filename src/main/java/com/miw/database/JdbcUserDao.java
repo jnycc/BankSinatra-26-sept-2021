@@ -35,7 +35,7 @@ public class JdbcUserDao implements UserDao {
   private PreparedStatement insertMemberStatement(Client client, Connection connection) throws SQLException {
     PreparedStatement ps = connection.prepareStatement(
         "insert into User (email, password, salt, role, isBlocked, firstName, prefix, lastName, street, " +
-                "houseNumber, houseNumberExtension, zipCode, city, bsn, dateofBirth) values (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "houseNumber, houseNumberExtension, zipCode, city, bsn) values (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         Statement.RETURN_GENERATED_KEYS
     );
     ps.setString(1, client.getEmail());
@@ -65,7 +65,6 @@ public class JdbcUserDao implements UserDao {
 
   @Override
   public Client findByEmail(String email) {
-    //TODO: DAO schrijven
     String sql = "SELECT * FROM User WHERE email = ?";
     Client client = jdbcTemplate.queryForObject(sql, new UserRowMapper(), email);
     return client;
