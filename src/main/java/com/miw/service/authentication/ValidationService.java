@@ -22,7 +22,6 @@ public class ValidationService {
     public String validateInput (User potentialUser) {
         StringBuilder invalidFields = new StringBuilder();
         //TODO: validatiechecks schrijven
-
         return invalidFields.toString();
     }
 

@@ -106,6 +106,10 @@ public abstract class User {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public int getUserId() {
         return userId;
     }
@@ -113,4 +117,6 @@ public abstract class User {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
+
 }

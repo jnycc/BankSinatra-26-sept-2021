@@ -32,22 +32,35 @@ public class JdbcUserDao implements UserDao {
 
   //TODO: Zorgen dat hij de salt doorgeeft aan de database
   //TODO: LW-SQL statement aanpassen aan nieuwe User entiteit
-  private PreparedStatement insertMemberStatement(User user, Connection connection) throws SQLException {
+  private PreparedStatement insertMemberStatement(Client client, Connection connection) throws SQLException {
     PreparedStatement ps = connection.prepareStatement(
-        "insert into User (email, password, isAdmin, salt, isBlocked) values (?, ?, 0, 'test', 0)",
+        "insert into User (email, password, salt, role, isBlocked, firstName, prefix, lastName, street, " +
+                "houseNumber, houseNumberExtension, zipCode, city, bsn, dateofBirth) values (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         Statement.RETURN_GENERATED_KEYS
     );
-    ps.setString(1, user.getEmail());
-    ps.setString(2, user.getPassword());
-    //ps.setString()
+    ps.setString(1, client.getEmail());
+    ps.setString(2, client.getPassword());
+    ps.setString(3, client.getSalt());
+    ps.setString(4, client.getFirstName());
+    ps.setString(5, client.getPrefix());
+    ps.setString(6, client.getLastName());
+    ps.setString(7, client.getAddress().getStreet());
+    ps.setInt(8, client.getAddress().getHouseNumber());
+    ps.setString(9, client.getAddress().getHouseNumberExtension());
+    ps.setString(10, client.getAddress().getZipCode());
+    ps.setString(11, client.getAddress().getCity());
+    ps.setInt(12, client.getBsn());
+//    ps.setDate(13, (Date) client.getDateOfBirth());
     return ps;
   }
 
   @Override
-  public User save(User user) {
+  public Client save(Client client) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
-    jdbcTemplate.update(connection -> insertMemberStatement(user, connection), keyHolder);
-    return user;
+    jdbcTemplate.update(connection -> insertMemberStatement(client, connection), keyHolder);
+    int userId = keyHolder.getKey().intValue();
+    client.setUserId(userId);
+    return client;
   }
 
   @Override
@@ -74,7 +87,7 @@ public class JdbcUserDao implements UserDao {
 //      String zipCode = resultSet.getString("zipCode");
 //      String city = resultSet.getString("city");
 //      int bsn = resultSet.getInt("bsn");
-      Date dateOfBirth = resultSet.getDate("dateOfBirth");
+//      Date dateOfBirth = resultSet.getDate("dateOfBirth");
       Client client = new Client(email, firstName, prefix, lastName);//TODO: uitbreiden met meer sql-columns
       client.setUserId(id);
       return client;
