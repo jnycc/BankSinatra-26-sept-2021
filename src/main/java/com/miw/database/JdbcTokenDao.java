@@ -29,7 +29,7 @@ public class JdbcTokenDao {
 
     private PreparedStatement insertTokenStatement(String token, String dateTime, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
-                "insert into Token (token, dateTime) values (?, ?, ?)",
+                "insert into Token (token, dateTime) values (?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         );
         ps.setString(1, token);
