@@ -36,6 +36,10 @@ public class Client extends User{
         this.portfolio = new HashMap<>();       // TODO: besluiten wat voor soort Map we gaan gebruiken
     }
 
+    public Client(String email, String password) {
+        super(email, password);
+    }
+
     public Client() {
     }
 

@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -26,19 +27,18 @@ public class JdbcTokenDao {
         logger.info("New JdbcTokenDao");
     }
 
-    private PreparedStatement insertTokenStatement(String email, String token, Connection connection) throws SQLException {
+    private PreparedStatement insertTokenStatement(String token, String dateTime, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
-                "insert into Token (email, token) values (?, ?)",
+                "insert into Token (token, dateTime) values (?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         );
-        ps.setString(1, email);
-        ps.setString(2, token);
-        // TODO: toevoegen datum bij insertion token; moet date idd als String (zoals nu in deze klasse) of als DateTime?
+        ps.setString(1, token);
+        ps.setString(2, dateTime);
         return ps;
     }
 
-    public void saveToken(String email, String token) {
-        jdbcTemplate.update(connection -> insertTokenStatement(email, token, connection));
+    public void saveToken(String token) {
+        jdbcTemplate.update(connection -> insertTokenStatement(token, LocalDateTime.now().toString(), connection));
     }
 
     public TreeMap<String, String> retrieveToken(String token) {
@@ -57,7 +57,7 @@ public class JdbcTokenDao {
         @Override
         public TreeMap<String, String> mapRow(ResultSet resultSet, int i) throws SQLException {
             String token = resultSet.getString("token");
-            String date = resultSet.getString("date");
+            String date = resultSet.getString("dateTime");
             TreeMap<String, String> result = new TreeMap<>();
             result.put(token, date);
             return result;
