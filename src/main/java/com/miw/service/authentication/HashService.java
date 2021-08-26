@@ -37,8 +37,10 @@ public class HashService {
         return client;
     }
 
-    public String hashForAuthenticate (String password, String salt) {
-        return HashHelper.hash(password, salt, pepperService.getPepper());
+    public Client hashForAuthenticate (Client client) {
+        String hash = HashHelper.hash(client.getPassword(), client.getSalt(), pepperService.getPepper());
+        client.setPassword(processRounds(hash, numberOfRounds(rounds)));
+        return client;
     }
 
     private String processRounds(String hash, long r) {

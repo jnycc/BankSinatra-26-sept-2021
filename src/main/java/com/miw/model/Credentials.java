@@ -12,16 +12,16 @@ public class Credentials {
 
     public Credentials() {}
 
-    public String getUsername() {
-        return email;
+    public String getEmail() {
+        return this.email;
     }
 
-    public void setUsername(String username) {
+    public void setEmail(String username) {
         this.email = username;
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {

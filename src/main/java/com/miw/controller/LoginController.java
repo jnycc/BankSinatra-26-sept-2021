@@ -29,11 +29,13 @@ public class LoginController {
         this.hashService = hashService;
     }
 
+    // TODO User logt uit ? -> expire token
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody Credentials credentials) {
         //TODO: check validity input
-        if (authenticationService.authenticate(credentials.getUsername(), credentials.getPassword())) {
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        String token = authenticationService.authenticate(credentials);
+        if (!token.isEmpty()) {
+            return new ResponseEntity<>(token, HttpStatus.ACCEPTED);
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
