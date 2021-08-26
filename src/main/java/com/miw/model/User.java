@@ -13,27 +13,27 @@ public abstract class User {
 
     private final Logger logger = LoggerFactory.getLogger(User.class);
 
-    private int userId;
+    protected int userId;
 
     @NotEmpty
     @Email
-    private String email;
+    protected String email;
 
     @NotEmpty
-    @Size (min = 8, max = 64)
-    private String password;
+    @Size(min = 8, max = 64)
+    protected String password;
 
-    private String salt;
-
-    @NotEmpty
-    private String firstName;
-
-    private String prefix;
+    protected String salt;
 
     @NotEmpty
-    private String lastName;
+    protected String firstName;
 
-    private boolean isBlocked;
+    protected String prefix;
+
+    @NotEmpty
+    protected String lastName;
+
+    protected boolean isBlocked;
 
 
     public User(String email, String password, String salt, String firstName, String prefix, String lastName, boolean isBlocked) {
@@ -75,13 +75,48 @@ public abstract class User {
         return 0;
     }
 
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setName(String name) {
-        this.firstName = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getPrefix() {
@@ -100,14 +135,6 @@ public abstract class User {
         this.lastName = lastName;
     }
 
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-
     public boolean isBlocked() {
         return isBlocked;
     }
@@ -115,36 +142,6 @@ public abstract class User {
     public void setBlocked(boolean blocked) {
         isBlocked = blocked;
     }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
 }
+
+

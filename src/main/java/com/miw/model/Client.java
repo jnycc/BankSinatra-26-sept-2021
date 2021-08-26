@@ -37,13 +37,11 @@ public class Client extends User{
     public Client() {
     }
 
-<<<<<<< Updated upstream
     public Date getDateOfBirth() {
         return dateOfBirth;
-=======
+
     public Client(){
         super(email, password);
->>>>>>> Stashed changes
     }
 
     public void setDateOfBirth(Date dateOfBirth) {
