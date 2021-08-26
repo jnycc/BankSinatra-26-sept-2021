@@ -44,7 +44,7 @@ public class JdbcTokenDao {
     public TreeMap<String, String> retrieveToken(String token) {
         String sql = "select * from Token where token = ?";
         List<TreeMap<String, String>> result = jdbcTemplate.query(sql, new TokenRowMapper(), token);
-        return result.get(0);
+        return result.size() == 0 ? null : result.get(0);
     }
 
     public void deleteToken(String token) {

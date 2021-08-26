@@ -2,7 +2,6 @@ package com.miw.service.authentication;
 
 import com.miw.database.JdbcTokenDao;
 import com.miw.database.JdbcClientDao;
-import com.miw.database.RootRepository;
 import com.miw.model.Client;
 import com.miw.model.Credentials;
 import com.miw.service.RegistrationService;
@@ -43,7 +42,6 @@ public class AuthenticationService {
             if (clientDatabase.getPassword().equals(hash)) {
                 String token = tokenService.generateToken();
                 jdbcTokenDao.saveToken(token);
-                logger.info(token);
                 return token;
             }
         }
