@@ -56,6 +56,7 @@ public class JdbcClientDao implements ClientDao {
     jdbcTemplate.update(connection -> insertClientStatement(client, connection), keyHolder);
     int userId = keyHolder.getKey().intValue();
     client.setUserId(userId);
+    logger.info("New client has been saved to the database.");
     return client;
   }
 

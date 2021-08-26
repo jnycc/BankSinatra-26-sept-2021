@@ -17,6 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/register")
@@ -48,7 +51,9 @@ public class RegisterController {
         // Gebruiker opslaan in database en beginkapitaal toewijzen. Succesmelding geven.
         client = hashService.hash(client);
         registrationService.register(client);
-        //TODO: zorgen dat de message en client-object samen als JSON gereturned wordt.
-        return new ResponseEntity<>("User successfully registered.", HttpStatus.CREATED);
+        Map<String, Object> responseBody = new LinkedHashMap<>();
+        responseBody.put("Message", "User successfully registered. Welcome to Bank Sinatra!");
+        responseBody.put("Accountdetails (currently visible only for demo-purposes)", client);
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 }
