@@ -129,6 +129,11 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Asset` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
+CREATE TABLE IF NOT EXISTS `banksinatra`.`Token` (
+    `token` VARCHAR(60) NOT NULL,
+    `dateTime` VARCHAR(45) NOT NULL,
+    PRIMARY KEY (`token`));
+
 -- Gebruiker definiëren en toegang verlenen
 CREATE USER 'cursist'@'localhost' IDENTIFIED BY 'cohort';
 GRANT ALL PRIVILEGES ON `banksinatra` . * TO 'cursist'@'localhost';
