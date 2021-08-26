@@ -34,23 +34,21 @@ public class RegisterController {
         this.registrationService = registrationService;
         this.validationService = validationService;
         this.hashService = hashService;
-        logger.info("New RegisterController created");
+        logger.info("New RegisterController-object created");
     }
 
 
     @PutMapping
     public ResponseEntity<?> registerUser(@Valid @RequestBody Client client){
-        //Check volledigheid en juiste format vereiste gegevens (ValidationService)
-//        errors.append(validationService.validateInput());
-
-        //Check if existing user (ValidationService of UserService)
+        //Validatie volledigheid en juiste format van input zijn in de domeinklassen zelf gebouwd.
+        //Check of klant al bestaat in de database.
         if (validationService.checkExistingAccount(client.getEmail())) {
             return ResponseEntity.badRequest().body("Registration failed. Account already exists.");
         }
         // Gebruiker opslaan in database en beginkapitaal toewijzen. Succesmelding geven.
         client = hashService.hash(client);
         registrationService.register(client);
-        //return new ResponseEntity<>("User successfully registered." + user, HttpStatus.CREATED);
+        //TODO: zorgen dat de message en client-object samen als JSON gereturned wordt.
         return new ResponseEntity<>("User successfully registered.", HttpStatus.CREATED);
     }
 }

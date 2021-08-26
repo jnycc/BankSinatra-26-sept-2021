@@ -19,11 +19,11 @@ public class ValidationService {
         logger.info("New ValidationService created");
     }
 
-    public String validateInput (User potentialUser) {
+/*    public String validateInput (User potentialUser) {
         StringBuilder invalidFields = new StringBuilder();
-        //TODO: validatiechecks schrijven
+        //TODO: validatiechecks schrijven, evt middels custom validator.
         return invalidFields.toString();
-    }
+    }*/
 
     public boolean checkExistingAccount (String email) {
         return rootRepository.findByEmail(email) != null;

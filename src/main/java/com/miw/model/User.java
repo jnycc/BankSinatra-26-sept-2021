@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.*;
 
-// TODO Make abstract, create extension classes Client and Administrator
 public abstract class User {
 
     private final Logger logger = LoggerFactory.getLogger(User.class);
@@ -49,7 +48,7 @@ public abstract class User {
         super();
         this.email = email;
         this.password = password;
-        logger.info("new User created");
+        logger.info("new User-object created");
     }
 
     public User() {
@@ -68,7 +67,7 @@ public abstract class User {
     }
 
     private int generateUserid() {
-        // TODO genereer userId
+        // TODO genereer userId?
         return 0;
     }
 
