@@ -21,7 +21,6 @@ public class Client extends User{
 
     @Valid
     private Address address;
-
     private Map<Crypto, Double> portfolio;
     private Account account;
 
@@ -39,9 +38,6 @@ public class Client extends User{
 
     public Date getDateOfBirth() {
         return dateOfBirth;
-
-    public Client(){
-        super(email, password);
     }
 
     public void setDateOfBirth(Date dateOfBirth) {

@@ -13,20 +13,20 @@ public class RootRepository {
 
   private final Logger logger = LoggerFactory.getLogger(RootRepository.class);
 
-  private UserDao userDao;
+  private ClientDao clientDAO;
 
   @Autowired
-  public RootRepository(UserDao userDao) {
+  public RootRepository(ClientDao clientDAO) {
     super();
-    this.userDao = userDao;
+    this.clientDAO = clientDAO;
     logger.info("New RootRepository");
   }
 
   public Client saveUser(Client client) {
-    return userDao.save(client);
+    return clientDAO.save(client);
   }
 
   public User findByEmail(String email) {
-      return userDao.findByEmail(email);
+      return clientDAO.findByEmail(email);
     }
 }

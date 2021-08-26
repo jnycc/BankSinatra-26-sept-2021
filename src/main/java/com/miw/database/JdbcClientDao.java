@@ -14,14 +14,14 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 
 @Repository
-public class JdbcUserDao implements UserDao {
+public class JdbcClientDao implements ClientDao {
 
-  private final Logger logger = LoggerFactory.getLogger(JdbcUserDao.class);
+  private final Logger logger = LoggerFactory.getLogger(JdbcClientDao.class);
 
   private JdbcTemplate jdbcTemplate;
 
   @Autowired
-  public JdbcUserDao(JdbcTemplate jdbcTemplate) {
+  public JdbcClientDao(JdbcTemplate jdbcTemplate) {
     super();
     this.jdbcTemplate = jdbcTemplate;
     logger.info("New JdbcMemberDao");
@@ -63,14 +63,14 @@ public class JdbcUserDao implements UserDao {
   public Client findByEmail(String email) {
     String sql = "SELECT * FROM User WHERE email = ?";
     try {
-      return jdbcTemplate.queryForObject(sql, new UserRowMapper(), email);
+      return jdbcTemplate.queryForObject(sql, new ClientRowMapper(), email);
     } catch (EmptyResultDataAccessException e) {
       logger.info("User does not exist in the database");
       return null;
     }
   }
 
-  private static class UserRowMapper implements RowMapper<Client> {
+  private static class ClientRowMapper implements RowMapper<Client> {
 
     @Override
     public Client mapRow(ResultSet resultSet, int i) throws SQLException {

@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.*;
 
-
-// TODO Make abstract, create extension classes Client and Administrator
 // TODO access modifiers aanpassen naar protected
 
 public abstract class User {
@@ -71,12 +69,8 @@ public abstract class User {
     }
 
     private int generateUserid() {
-        // TODO genereer userId?
+        // TODO: genereer userId?
         return 0;
-    }
-
-    public Logger getLogger() {
-        return logger;
     }
 
     public int getUserId() {

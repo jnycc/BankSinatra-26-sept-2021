@@ -1,10 +1,8 @@
 package com.miw.service.authentication;
 
-import com.miw.database.JdbcUserDao;
+import com.miw.database.JdbcClientDao;
 import com.miw.database.RootRepository;
-import com.miw.database.UserDao;
 import com.miw.model.Client;
-import com.miw.model.User;
 import com.miw.service.RegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,16 +14,16 @@ public class AuthenticationService {
 
     private RootRepository rootRepository;
     private HashService hashService;
-    private JdbcUserDao userDao;
+    private JdbcClientDao userDao;
 
     private final Logger logger = LoggerFactory.getLogger(RegistrationService.class);
 
     @Autowired
-    public AuthenticationService(RootRepository rootRepository, HashService hs, JdbcUserDao userDao) {
+    public AuthenticationService(RootRepository rootRepository, HashService hs, JdbcClientDao clientDao) {
         super();
         this.rootRepository = rootRepository;
         this.hashService = hs;
-        this.userDao = userDao;
+        this.userDao = clientDao;
         logger.info("New AuthenticationService created");
     }
 

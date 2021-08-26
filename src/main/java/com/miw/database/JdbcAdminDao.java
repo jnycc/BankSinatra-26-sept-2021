@@ -1,3 +1,4 @@
+/*
 package com.miw.database;
 
 import com.miw.model.Client;
@@ -10,9 +11,9 @@ import java.util.List;
 
 // TODO A whole damn lot
 
-public class JdbcClientDAO implements DAO<Client> {
+public class JdbcAdminDao implements Dao<Client> {
 
-    private final Logger logger = LoggerFactory.getLogger(JdbcClientDAO.class);
+    private final Logger logger = LoggerFactory.getLogger(JdbcAdminDao.class);
     private JdbcTemplate jdbcTemplate;
 
     // TODO afmaken: snap de foutmelding niet...
@@ -23,7 +24,7 @@ public class JdbcClientDAO implements DAO<Client> {
             return client;
 });
 
-    public JdbcClientDAO(JdbcTemplate jdbcTemplate) {
+    public JdbcAdminDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -44,6 +45,8 @@ public class JdbcClientDAO implements DAO<Client> {
         return Optional.empty();
     }
 
+
+
     @Override
     public void update(Client client, int id) {
 
@@ -54,3 +57,4 @@ public class JdbcClientDAO implements DAO<Client> {
 
     }
 }
+*/

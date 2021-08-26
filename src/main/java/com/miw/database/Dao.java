@@ -6,7 +6,7 @@ import java.util.Optional;
 /*@author Laura Wagenaar
 * Deze interface schrijft de CRUD functionaliteit voor t.b.v. de JDBC DAO klassen*/
 
-public interface DAO <T> {
+public interface Dao<T> {
 
     List<T> list();
 
