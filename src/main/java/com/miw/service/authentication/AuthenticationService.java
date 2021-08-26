@@ -3,10 +3,8 @@ package com.miw.service.authentication;
 import com.miw.database.JdbcTokenDao;
 import com.miw.database.JdbcUserDao;
 import com.miw.database.RootRepository;
-import com.miw.database.UserDao;
 import com.miw.model.Client;
 import com.miw.model.Credentials;
-import com.miw.model.User;
 import com.miw.service.RegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService {
 
-    private RootRepository rootRepository;
     private HashService hashService;
     private JdbcUserDao userDao;
     private TokenService tokenService;
@@ -25,9 +22,8 @@ public class AuthenticationService {
     private final Logger logger = LoggerFactory.getLogger(RegistrationService.class);
 
     @Autowired
-    public AuthenticationService(RootRepository rootRepository, HashService hs, JdbcUserDao userDao, TokenService tokenService, JdbcTokenDao jdbcTokenDao) {
+    public AuthenticationService(HashService hs, JdbcUserDao userDao, TokenService tokenService, JdbcTokenDao jdbcTokenDao) {
         super();
-        this.rootRepository = rootRepository;
         this.hashService = hs;
         this.userDao = userDao;
         this.tokenService = tokenService;
@@ -42,10 +38,7 @@ public class AuthenticationService {
 
         if (clientDatabase != null) {
             clientLogIn.setSalt(clientDatabase.getSalt());
-
             hash = hashService.hashForAuthenticate(clientLogIn).getPassword();
-
-            logger.info(hash);
 
             if (clientDatabase.getPassword().equals(hash)) {
                 String token = tokenService.generateToken();
