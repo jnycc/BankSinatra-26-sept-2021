@@ -22,6 +22,10 @@ public class Account {
         return "generatedIban";
     }
 
+    public int getAccountId() {
+        return accountId;
+    }
+
     public void setAccountId(int accountId) {
         this.accountId = accountId;
     }

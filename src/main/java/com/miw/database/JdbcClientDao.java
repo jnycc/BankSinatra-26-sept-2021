@@ -29,10 +29,9 @@ public class JdbcClientDao implements ClientDao {
 
   private PreparedStatement insertClientStatement(Client client, Connection connection) throws SQLException {
     PreparedStatement ps = connection.prepareStatement(
-            "insert into User (email, password, salt, role, isBlocked, firstName, prefix, lastName, street, " +
-                    "houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth) values (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            Statement.RETURN_GENERATED_KEYS
-    );
+            "INSERT INTO User (email, password, salt, role, isBlocked, firstName, prefix, lastName, street, " +
+                    "houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth) " +
+                    "VALUES (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
     ps.setString(1, client.getEmail());
     ps.setString(2, client.getPassword());
     ps.setString(3, client.getSalt());
@@ -46,7 +45,6 @@ public class JdbcClientDao implements ClientDao {
     ps.setString(11, client.getAddress().getCity());
     ps.setInt(12, client.getBsn());
     ps.setDate(13, new java.sql.Date(client.getDateOfBirth().getTime()));
-    //TODO: beginkapitaal toewijzen door accountDAO aan te roepen (INSERT INTO Account...)
     return ps;
   }
 

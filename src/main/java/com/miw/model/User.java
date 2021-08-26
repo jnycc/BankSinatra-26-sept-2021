@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.*;
 
-// TODO access modifiers aanpassen naar protected
-
 public abstract class User {
 
     private final Logger logger = LoggerFactory.getLogger(User.class);
@@ -35,15 +33,14 @@ public abstract class User {
 
 
     public User(String email, String password, String salt, String firstName, String prefix, String lastName, boolean isBlocked) {
-        this.userId = generateUserid();
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.prefix = prefix;
         this.lastName = lastName;
-        this.salt = salt;           //
+        this.salt = salt;
         this.isBlocked = isBlocked;
-        logger.info("new User created");
+        logger.info("new User-object created");
     }
 
     public User(String email, String password) {
@@ -68,10 +65,6 @@ public abstract class User {
         this.lastName = lastName;
     }
 
-    private int generateUserid() {
-        // TODO: genereer userId?
-        return 0;
-    }
 
     public int getUserId() {
         return userId;
