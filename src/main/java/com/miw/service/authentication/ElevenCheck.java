@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ElevenCheckValidation.class)
 public @interface ElevenCheck {
-    String message() default "Number is invalid, does not pass the eleven test";
+    String message() default "Number is invalid, does not pass the eleven check";
 
     Class<?>[] groups() default {};
 

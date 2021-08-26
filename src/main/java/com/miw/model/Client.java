@@ -17,9 +17,7 @@ public class Client extends User{
     @Past
     private Date dateOfBirth;
 
-    @Range(min = 10000000, max = 999999999)
     @ElevenCheck
-    //TODO: 11 proef als check toevoegen
     private int bsn;
 
     @Valid
