@@ -15,6 +15,7 @@ public class JdbcClientDAO implements DAO<Client> {
     private final Logger logger = LoggerFactory.getLogger(JdbcClientDAO.class);
     private JdbcTemplate jdbcTemplate;
 
+    // TODO afmaken: snap de foutmelding niet...
     RowMapper<Client> rowMapper = (rs,rowNum) -> {
             Client client = new Client();
             client.setEmail(rs.getString("email"));
