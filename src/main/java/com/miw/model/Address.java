@@ -13,7 +13,6 @@ public class Address {
     @NotEmpty
     private String street;
 
-    @NotEmpty
     private int houseNumber;
 
     private String houseNumberExtension;

@@ -2,71 +2,46 @@ package com.miw.model;
 
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
+import javax.validation.constraints.Past;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Client extends User{
 
-    @NotEmpty
-    //TODO: dus wel een Date van maken :) Dan kunnen we @Past oid doen yay
-    private String dateOfBirth;
+    @NotNull
+    @Past
+    private Date dateOfBirth;
 
     @Range(min = 10000000, max = 999999999)
     //TODO: 11 proef als check toevoegen
     private int bsn;
 
+    @Valid
     private Address address;
+
     private Map<Crypto, Double> portfolio;
     private Account account;
 
-
-    public Client(String email, String password, String dateOfBirth, Address address, int bsn) {
-        super(email, password);
+    public Client(String email, String password, String firstName, String prefix, String lastName, Date dateOfBirth, int bsn, Address address) {
+        super(email, password, firstName, prefix, lastName);
         this.dateOfBirth = dateOfBirth;
-        this.address = address;
         this.bsn = bsn;
+        this.address = address;
         this.account = new Account();
-        this.portfolio = new HashMap<>();       // even besluiten welke soort map we gaan gebruiken...
-    }
-
-    public Client(String email, String password){
-        super(email, password);
-    }
-
-    public Client(String email, String password, String firstName, String prefix, String lastName, String dateOfBirth, int bsn, Address address) {
-        super(email, password, firstName, prefix, lastName);
-        this.dateOfBirth = dateOfBirth;
-        this.bsn = bsn;
-        this.address = address;
-    }
-
-    public Client(String email, String password, String firstName, String prefix, String lastName, int bsn, Address address) {
-        super(email, password, firstName, prefix, lastName);
-        this.bsn = bsn;
-        this.address = address;
-    }
-
-    public Client(String email, String firstName, String prefix, String lastName, Address address) {
-        super(email, firstName, prefix, lastName);
-        this.address = address;
-    }
-
-    public Client(String email, String firstName, String prefix, String lastName) {
-        super(email, firstName, prefix, lastName);
+        this.portfolio = new HashMap<>();       // TODO: besluiten wat voor soort Map we gaan gebruiken
     }
 
     public Client() {
     }
 
-
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

@@ -1,4 +1,5 @@
 package com.miw.database;
+import com.miw.model.Address;
 import com.miw.model.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ public class JdbcUserDao implements UserDao {
     ps.setString(10, client.getAddress().getZipCode());
     ps.setString(11, client.getAddress().getCity());
     ps.setInt(12, client.getBsn());
-    ps.setDate(13, java.sql.Date.valueOf(client.getDateOfBirth()));
+    ps.setDate(13, new java.sql.Date(client.getDateOfBirth().getTime()));
     return ps;
   }
 
@@ -81,14 +82,15 @@ public class JdbcUserDao implements UserDao {
       String lastName = resultSet.getString("lastName");
       String salt = resultSet.getString("salt");
       String hash = resultSet.getString("password");
-//      String street = resultSet.getString("street");
-//      int houseNumber = resultSet.getInt("houseNumber");
-//      String houseNrExtension = resultSet.getString("houseNumberExtension");
-//      String zipCode = resultSet.getString("zipCode");
-//      String city = resultSet.getString("city");
-//      int bsn = resultSet.getInt("bsn");
-//      Date dateOfBirth = resultSet.getDate("dateOfBirth");
-      Client client = new Client(email, firstName, prefix, lastName);//TODO: uitbreiden met meer sql-columns
+      String street = resultSet.getString("street");
+      int houseNumber = resultSet.getInt("houseNumber");
+      String houseNrExtension = resultSet.getString("houseNumberExtension");
+      String zipCode = resultSet.getString("zipCode");
+      String city = resultSet.getString("city");
+      Address address = new Address(city, zipCode, street, houseNumber, houseNrExtension);
+      int bsn = resultSet.getInt("bsn");
+      Date dateOfBirth = resultSet.getDate("dateOfBirth");
+      Client client = new Client(email, hash, firstName, prefix, lastName, dateOfBirth, bsn, address);
       client.setUserId(id);
       client.setSalt(salt);
       client.setPassword(hash);

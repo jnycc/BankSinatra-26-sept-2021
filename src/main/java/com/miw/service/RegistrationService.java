@@ -19,7 +19,7 @@ public class RegistrationService {
   public RegistrationService(RootRepository rootRepository) {
     super();
     this.rootRepository = rootRepository;
-    logger.info("New MemberService created");
+    logger.info("New RegistrationService");
   }
 
   public Client register(Client client) {
