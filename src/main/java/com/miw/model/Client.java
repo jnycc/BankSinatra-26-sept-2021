@@ -1,10 +1,12 @@
 package com.miw.model;
 
+import com.miw.service.authentication.ElevenCheck;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +18,7 @@ public class Client extends User{
     private Date dateOfBirth;
 
     @Range(min = 10000000, max = 999999999)
+    @ElevenCheck
     //TODO: 11 proef als check toevoegen
     private int bsn;
 
