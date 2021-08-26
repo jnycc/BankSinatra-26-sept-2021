@@ -3,13 +3,12 @@ package com.miw.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-<<<<<<< Updated upstream
 import javax.validation.constraints.*;
 
+
 // TODO Make abstract, create extension classes Client and Administrator
-=======
 // TODO access modifiers aanpassen naar protected
->>>>>>> Stashed changes
+
 public abstract class User {
 
     private final Logger logger = LoggerFactory.getLogger(User.class);
@@ -53,7 +52,7 @@ public abstract class User {
         super();
         this.email = email;
         this.password = password;
-        logger.info("new User created");
+        logger.info("new User-object created");
     }
 
     public User() {
@@ -72,7 +71,7 @@ public abstract class User {
     }
 
     private int generateUserid() {
-        // TODO genereer userId
+        // TODO genereer userId?
         return 0;
     }
 
@@ -125,7 +124,6 @@ public abstract class User {
         return password;
     }
 
-<<<<<<< Updated upstream
     public void setPassword(String password) {
         this.password = password;
     }
@@ -134,12 +132,6 @@ public abstract class User {
         return userId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-
-=======
     public void setUserId(int userId) {
         this.userId = userId;
     }
@@ -155,5 +147,4 @@ public abstract class User {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
->>>>>>> Stashed changes
 }

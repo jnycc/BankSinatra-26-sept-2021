@@ -27,8 +27,6 @@ public class JdbcUserDao implements UserDao {
     logger.info("New JdbcMemberDao");
   }
 
-  //TODO: Zorgen dat hij de salt doorgeeft aan de database
-  //TODO: LW-SQL statement aanpassen aan nieuwe User entiteit
   private PreparedStatement insertClientStatement(Client client, Connection connection) throws SQLException {
     PreparedStatement ps = connection.prepareStatement(
             "insert into User (email, password, salt, role, isBlocked, firstName, prefix, lastName, street, " +
@@ -48,6 +46,7 @@ public class JdbcUserDao implements UserDao {
     ps.setString(11, client.getAddress().getCity());
     ps.setInt(12, client.getBsn());
     ps.setDate(13, new java.sql.Date(client.getDateOfBirth().getTime()));
+    //TODO: beginkapitaal toewijzen door accountDAO aan te roepen (INSERT INTO Account...)
     return ps;
   }
 
@@ -66,7 +65,7 @@ public class JdbcUserDao implements UserDao {
     try {
       return jdbcTemplate.queryForObject(sql, new UserRowMapper(), email);
     } catch (EmptyResultDataAccessException e) {
-      logger.info("User bestaat niet");
+      logger.info("User does not exist in the database");
       return null;
     }
   }

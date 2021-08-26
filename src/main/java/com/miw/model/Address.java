@@ -1,20 +1,27 @@
 package com.miw.model;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 public class Address {
 
     @NotEmpty
+    @Pattern(regexp="^([a-zA-Z\\u0080-\\u024F]+(?:. |-| |'))*[a-zA-Z\\u0080-\\u024F]*$")
     private String city;
 
     @NotEmpty
+    @Pattern(regexp="^[1-9][0-9]{3} ?(?!sa|sd|ss|SA|SD|SS)[A-Za-z]{2}$")
     private String zipCode;
 
     @NotEmpty
+    @Pattern(regexp="^([a-zA-Z\\u0080-\\u024F]+(?:. |-| |'))*[a-zA-Z\\u0080-\\u024F]*$")
     private String street;
 
+    @Min(1)
     private int houseNumber;
 
+    @Pattern(regexp="[a-zA-Z]*[0-9]*-?/?[a-zA-Z]*[0-9]*")
     private String houseNumberExtension;
 
 
@@ -24,7 +31,6 @@ public class Address {
         this.street = street;
         this.houseNumber = houseNumber;
         this.houseNumberExtension = houseNumberExtension;
-
     }
 
     public String getCity() {
