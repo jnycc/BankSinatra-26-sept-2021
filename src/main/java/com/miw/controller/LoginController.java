@@ -1,6 +1,6 @@
 package com.miw.controller;
 
-import com.miw.database.JdbcUserDao;
+import com.miw.database.JdbcClientDao;
 import com.miw.model.Credentials;
 import com.miw.service.authentication.AuthenticationService;
 import com.miw.service.authentication.TokenService;
@@ -16,16 +16,16 @@ public class LoginController {
 
     private AuthenticationService authenticationService;
     private TokenService tokenService;
-    private JdbcUserDao jdbcUserDao;
+    private JdbcClientDao jdbcClientDao;
 
     private final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @Autowired
-    public LoginController(AuthenticationService authenticationService, TokenService ts, JdbcUserDao jdbcUserDao) {
+    public LoginController(AuthenticationService authenticationService, TokenService ts, JdbcClientDao jdbcClientDao) {
         super();
         this.authenticationService = authenticationService;
         this.tokenService = ts;
-        this.jdbcUserDao = jdbcUserDao;
+        this.jdbcClientDao = jdbcClientDao;
         logger.info("New LoginController Created");
     }
 
@@ -44,7 +44,7 @@ public class LoginController {
     @GetMapping("/gegevens/{email}")
     public ResponseEntity<?> toonMijnGegevens(@RequestHeader("Authorization") String token, @PathVariable("email") String email) {
         if (tokenService.validateToken(token)) {
-            return ResponseEntity.ok(jdbcUserDao.findByEmail(email));
+            return ResponseEntity.ok(jdbcClientDao.findByEmail(email));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
