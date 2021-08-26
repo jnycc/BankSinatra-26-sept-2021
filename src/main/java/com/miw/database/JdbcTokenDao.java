@@ -15,7 +15,7 @@ import java.util.TreeMap;
 @Repository
 public class JdbcTokenDao {
 
-    private final Logger logger = LoggerFactory.getLogger(JdbcUserDao.class);
+    private final Logger logger = LoggerFactory.getLogger(JdbcTokenDao.class);
 
     private JdbcTemplate jdbcTemplate;
 

@@ -1,10 +1,9 @@
 package com.miw.database;
 
 import com.miw.model.Client;
-import com.miw.model.User;
 
-public interface UserDao {
+public interface ClientDao {
 
   Client save(Client client);
-  User findByEmail(String email);
+  Client findByEmail(String email);
 }

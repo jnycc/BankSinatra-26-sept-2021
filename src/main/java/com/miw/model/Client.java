@@ -21,7 +21,6 @@ public class Client extends User{
 
     @Valid
     private Address address;
-
     private Map<Crypto, Double> portfolio;
     private Account account;
 
