@@ -62,14 +62,14 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`User` (
 -- Table `banksinatra`.`Account`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Account` (
-  `accountID` INT NOT NULL,
+  `accountID` INT NOT NULL AUTO_INCREMENT,
   `IBAN` VARCHAR(45) NOT NULL,
   `balance` DECIMAL(10,0) NOT NULL,
   `User_userID` INT NOT NULL,
   PRIMARY KEY (`accountID`),
   INDEX `fk_Account_User1_idx` (`User_userID` ASC) VISIBLE,
   CONSTRAINT `fk_Account_User1`
-    FOREIGN KEY (`User_userID`)
+    FOREIGN KEY (`userID`)
     REFERENCES `banksinatra`.`User` (`userID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
