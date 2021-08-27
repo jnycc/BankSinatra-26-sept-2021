@@ -16,7 +16,7 @@ USE `banksinatra` ;
 -- Table `banksinatra`.`BankingFee`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`BankingFee` (
-    `percentage` DECIMAL(15,0) NOT NULL,
+                                                          `percentage` DECIMAL(15,0) NOT NULL,
     PRIMARY KEY (`percentage`));
 
 
@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`BankingFee` (
 -- Table `banksinatra`.`Crypto`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Crypto` (
-    `cryptoID` INT NOT NULL,
-    `symbol` VARCHAR(10) NOT NULL,
+                                                      `cryptoID` INT NOT NULL,
+                                                      `symbol` VARCHAR(10) NOT NULL,
     `exchangeRate` DECIMAL(25) NOT NULL,
     `description` VARCHAR(150) NOT NULL,
     `name` VARCHAR(45) NOT NULL,
@@ -44,13 +44,14 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Role` (
 -- Table `banksinatra`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`User` (
-    `userID` INT NOT NULL,
-    `email` VARCHAR(100) NOT NULL,
+                                                    `userID` INT NOT NULL AUTO_INCREMENT,
+                                                    `email` VARCHAR(100) NOT NULL,
     `password` VARCHAR(100) NOT NULL,
-    `salt` VARCHAR(25) NOT NULL,
+    `salt` VARCHAR(100) NOT NULL,
+    `role` VARCHAR(45) NOT NULL,
     `isBlocked` TINYINT NOT NULL,
     `firstName` VARCHAR(45) NOT NULL,
-    `prefix` VARCHAR(25) NULL,
+    `prefix` VARCHAR(25) NOT NULL,
     `lastName` VARCHAR(100) NOT NULL,
     `street` VARCHAR(100) NULL,
     `houseNumber` INT NULL,
@@ -59,28 +60,21 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`User` (
     `city` VARCHAR(45) NULL,
     `bsn` INT NULL,
     `dateOfBirth` DATE NULL,
-    `Role_userRole` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`userID`),
-    INDEX `fk_User_Role1_idx` (`Role_userRole` ASC) VISIBLE,
-    CONSTRAINT `fk_User_Role1`
-    FOREIGN KEY (`Role_userRole`)
-    REFERENCES `banksinatra`.`Role` (`userRole`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    PRIMARY KEY (`userID`));
 
 
 -- -----------------------------------------------------
 -- Table `banksinatra`.`Account`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Account` (
-    `accountID` INT NOT NULL,
-    `IBAN` VARCHAR(45) NOT NULL,
+                                                       `accountID` INT NOT NULL AUTO_INCREMENT,
+                                                       `IBAN` VARCHAR(45) NOT NULL,
     `balance` DECIMAL(10,0) NOT NULL,
-    `User_userID` INT NOT NULL,
+    `userID` INT NOT NULL,
     PRIMARY KEY (`accountID`),
-    INDEX `fk_Account_User1_idx` (`User_userID` ASC) VISIBLE,
+    INDEX `fk_Account_User1_idx` (`userID` ASC) VISIBLE,
     CONSTRAINT `fk_Account_User1`
-    FOREIGN KEY (`User_userID`)
+    FOREIGN KEY (`userID`)
     REFERENCES `banksinatra`.`User` (`userID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
@@ -90,9 +84,9 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Account` (
 -- Table `banksinatra`.`Transaction`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Transaction` (
-    `transactionID` INT NOT NULL,
-    `date` DATETIME NOT NULL,
-    `units` DECIMAL(25,0) NOT NULL,
+                                                           `transactionID` INT NOT NULL,
+                                                           `date` DATETIME NOT NULL,
+                                                           `units` DECIMAL(25,0) NOT NULL,
     `exchangeRate` DECIMAL(25) NOT NULL,
     `bankingFee` DECIMAL(15,0) NOT NULL,
     `Account_accountID_buyer` INT NOT NULL,
@@ -123,9 +117,9 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Transaction` (
 -- Table `banksinatra`.`Asset`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Asset` (
-    `Account_accountID` INT NOT NULL,
-    `Crypto_cryptoID` INT NOT NULL,
-    `units` DECIMAL(10) NOT NULL,
+                                                     `Account_accountID` INT NOT NULL,
+                                                     `Crypto_cryptoID` INT NOT NULL,
+                                                     `units` DECIMAL(10) NOT NULL,
     PRIMARY KEY (`Account_accountID`, `Crypto_cryptoID`),
     INDEX `fk_Account_has_Crypto_Crypto1_idx` (`Crypto_cryptoID` ASC) VISIBLE,
     INDEX `fk_Account_has_Crypto_Account1_idx` (`Account_accountID` ASC) VISIBLE,
