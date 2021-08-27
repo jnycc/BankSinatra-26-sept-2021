@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`User` (
     `role` VARCHAR(45) NOT NULL,
     `isBlocked` TINYINT NOT NULL,
     `firstName` VARCHAR(45) NOT NULL,
-    `prefix` VARCHAR(25) NOT NULL,
+    `prefix` VARCHAR(25),
     `lastName` VARCHAR(100) NOT NULL,
     `street` VARCHAR(100) NULL,
     `houseNumber` INT NULL,
