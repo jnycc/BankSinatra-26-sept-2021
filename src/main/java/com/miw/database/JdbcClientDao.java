@@ -75,11 +75,11 @@ public class JdbcClientDao implements ClientDao {
     public Client mapRow(ResultSet resultSet, int i) throws SQLException {
       int id = resultSet.getInt("userID");
       String email = resultSet.getString("email");
+      String password = resultSet.getString("password");
+      String salt = resultSet.getString("salt");
       String firstName = resultSet.getString("firstName");
       String prefix = resultSet.getString("prefix");
       String lastName = resultSet.getString("lastName");
-      String salt = resultSet.getString("salt");
-      String hash = resultSet.getString("password");
       String street = resultSet.getString("street");
       int houseNumber = resultSet.getInt("houseNumber");
       String houseNrExtension = resultSet.getString("houseNumberExtension");
@@ -88,10 +88,8 @@ public class JdbcClientDao implements ClientDao {
       Address address = new Address(city, zipCode, street, houseNumber, houseNrExtension);
       int bsn = resultSet.getInt("bsn");
       Date dateOfBirth = resultSet.getDate("dateOfBirth");
-      Client client = new Client(email, hash, firstName, prefix, lastName, dateOfBirth, bsn, address);
+      Client client = new Client(email, password, salt, firstName, prefix, lastName, dateOfBirth, bsn, address);
       client.setUserId(id);
-      client.setSalt(salt);
-      client.setPassword(hash);
       return client;
     }
   }

@@ -54,8 +54,8 @@ public abstract class User {
         this(null, null, null, null, null, null, false);
     }
 
-    public User(String email, String password, String firstName, String prefix, String lastName) {
-        this(email, password, firstName, prefix, lastName, null, false);
+    public User(String email, String password, String salt, String firstName, String prefix, String lastName) {
+        this(email, password, salt, firstName, prefix, lastName, false);
     }
 
     public User(String email, String firstName, String prefix, String lastName) {
