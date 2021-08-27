@@ -46,14 +46,11 @@ public class RegisterController {
         //Validatie volledigheid en juiste format van input zijn in de domeinklassen zelf gebouwd.
         //Check of klant al bestaat in de database.
         if (validationService.checkExistingAccount(client.getEmail())) {
-            return ResponseEntity.badRequest().body("Registration failed. Account already exists.");
+            return ResponseEntity.unprocessableEntity().body("Registration failed. Account already exists.");
         }
         // Gebruiker opslaan in database en beginkapitaal toewijzen. Succesmelding geven.
         client = hashService.hash(client);
         registrationService.register(client);
-        Map<String, Object> responseBody = new LinkedHashMap<>();
-        responseBody.put("Message", "User successfully registered. Welcome to Bank Sinatra!");
-        responseBody.put("Accountdetails (currently visible only for demo-purposes)", client);
-        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
+        return new ResponseEntity<>("User successfully registered. Welcome to Bank Sinatra!", HttpStatus.CREATED);
     }
 }
