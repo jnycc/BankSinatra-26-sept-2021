@@ -2,20 +2,14 @@ package com.miw.model;
 
 public class Account {
 
-    // ATTRIBUTES
     private int accountId;
     private String iban;
     private double balance;
 
-
-    // CONSTRUCTORS
-
     public Account() {
-        this.accountId = generateAccountId();
         this.iban = generateIban();
-        this.balance = 10000;
+        this.balance = 10000.00;
     }
-
 
     public Account(double balance) {
         this.iban = generateIban();
@@ -23,18 +17,41 @@ public class Account {
     }
 
 
-    // METHODS
     private String generateIban() {
         //TODO: create unique iban number
-        return "generateIban";
+        return "generatedIban";
     }
 
-
-    private int generateAccountId() {
-        //TODO: create unique account ID
-        return 0;
+    public int getAccountId() {
+        return accountId;
     }
 
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
 
-    // GETTERS & SETTERS
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountId=" + accountId +
+                ", iban='" + iban + '\'' +
+                ", balance=" + balance +
+                '}';
+    }
 }

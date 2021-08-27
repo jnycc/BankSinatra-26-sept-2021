@@ -9,14 +9,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.Valid;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
+@RequestMapping("/register")
 public class RegisterController {
 
     private RegistrationService registrationService;
@@ -31,23 +37,23 @@ public class RegisterController {
         this.registrationService = registrationService;
         this.validationService = validationService;
         this.hashService = hashService;
-        logger.info("New RegisterController created");
+        logger.info("New RegisterController-object created");
     }
 
 
-    @PutMapping("/register") //TODO: RequestParam in RequestBody veranderen
-    public ResponseEntity<?> registerUser(@RequestBody Client client){
-        //Check volledigheid en juiste format vereiste gegevens (ValidationService)
-//        errors.append(validationService.validateInput());
-
-        //Check if existing user (ValidationService of UserService)
+    @PutMapping
+    public ResponseEntity<?> registerUser(@Valid @RequestBody Client client){
+        //Validatie volledigheid en juiste format van input zijn in de domeinklassen zelf gebouwd.
+        //Check of klant al bestaat in de database.
         if (validationService.checkExistingAccount(client.getEmail())) {
             return ResponseEntity.badRequest().body("Registration failed. Account already exists.");
         }
         // Gebruiker opslaan in database en beginkapitaal toewijzen. Succesmelding geven.
         client = hashService.hash(client);
         registrationService.register(client);
-        //return new ResponseEntity<>("User successfully registered." + user, HttpStatus.CREATED);
-        return new ResponseEntity<>("User successfully registered.", HttpStatus.CREATED);
+        Map<String, Object> responseBody = new LinkedHashMap<>();
+        responseBody.put("Message", "User successfully registered. Welcome to Bank Sinatra!");
+        responseBody.put("Accountdetails (currently visible only for demo-purposes)", client);
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 }

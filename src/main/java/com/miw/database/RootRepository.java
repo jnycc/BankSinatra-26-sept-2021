@@ -1,6 +1,7 @@
 
 package com.miw.database;
 
+import com.miw.model.Account;
 import com.miw.model.Client;
 import com.miw.model.User;
 import org.slf4j.Logger;
@@ -13,20 +14,25 @@ public class RootRepository {
 
   private final Logger logger = LoggerFactory.getLogger(RootRepository.class);
 
-  private UserDao userDao;
+  private ClientDao clientDAO;
+  private JdbcAccountDao temp;
 
   @Autowired
-  public RootRepository(UserDao userDao) {
+  public RootRepository(ClientDao clientDAO, JdbcAccountDao jdbcAccountDao) { // TODO: interface aanroepen ipv jdbcAccountDAO zelf
     super();
-    this.userDao = userDao;
+    this.clientDAO = clientDAO;
+    this.temp = jdbcAccountDao;
     logger.info("New RootRepository");
   }
 
   public Client saveUser(Client client) {
-    return userDao.save(client);
+    client = clientDAO.save(client);
+    Account updatedAccount = temp.save(client.getAccount(), client.getUserId());
+    client.setAccount(updatedAccount);
+    return client;
   }
 
-    public User findByEmail(String email) {
-      return userDao.findByEmail(email);
+  public User findByEmail(String email) {
+      return clientDAO.findByEmail(email);
     }
 }

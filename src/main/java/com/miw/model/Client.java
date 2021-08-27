@@ -1,62 +1,47 @@
 package com.miw.model;
 
+import com.miw.service.authentication.ElevenCheck;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Client extends User{
 
-    private String dateOfBirth;
+    @NotNull
+    @Past
+    private Date dateOfBirth;
+
+    @ElevenCheck
     private int bsn;
+
+    @Valid
     private Address address;
     private Map<Crypto, Double> portfolio;
-    private Account account;
+    private Account account = new Account(); // TODO: bij aanroep vanuit registerController, waarom is account null als dit in de construct zit?
 
-
-    public Client(String email, String password, String dateOfBirth, Address address, int bsn) {
-        super(email, password);
-        this.dateOfBirth = dateOfBirth;
-        this.address = address;
-        this.bsn = bsn;
-        this.account = new Account();
-        this.portfolio = new HashMap<>();       // even besluiten welke soort map we gaan gebruiken...
-    }
-
-    public Client(String email, String password){
-        super(email, password);
-    }
-
-    public Client(String email, String password, String firstName, String prefix, String lastName, String dateOfBirth, int bsn, Address address) {
+    public Client(String email, String password, String firstName, String prefix, String lastName, Date dateOfBirth, int bsn, Address address) {
         super(email, password, firstName, prefix, lastName);
         this.dateOfBirth = dateOfBirth;
         this.bsn = bsn;
         this.address = address;
+        this.portfolio = new HashMap<>();       // TODO: besluiten wat voor soort Map we gaan gebruiken
     }
 
-    public Client(String email, String password, String firstName, String prefix, String lastName, int bsn, Address address) {
-        super(email, password, firstName, prefix, lastName);
-        this.bsn = bsn;
-        this.address = address;
-    }
-
-    public Client(String email, String firstName, String prefix, String lastName, Address address) {
-        super(email, firstName, prefix, lastName);
-        this.address = address;
-    }
-
-    public Client(String email, String firstName, String prefix, String lastName) {
-        super(email, firstName, prefix, lastName);
+    public Client(String email, String password) {
+        super(email, password);
     }
 
     public Client() {
     }
 
-
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -72,4 +57,20 @@ public class Client extends User{
         return address;
     }
 
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "account=" + account +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }
