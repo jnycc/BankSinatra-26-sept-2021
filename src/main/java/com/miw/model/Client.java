@@ -22,8 +22,8 @@ public class Client extends User{
     private Map<Crypto, Double> portfolio;
     private Account account = new Account(); // TODO: bij aanroep vanuit registerController, waarom is account null als dit in de construct zit?
 
-    public Client(String email, String password, String firstName, String prefix, String lastName, Date dateOfBirth, int bsn, Address address) {
-        super(email, password, firstName, prefix, lastName);
+    public Client(String email, String password, String salt, String firstName, String prefix, String lastName, Date dateOfBirth, int bsn, Address address) {
+        super(email, password, salt, firstName, prefix, lastName);
         this.dateOfBirth = dateOfBirth;
         this.bsn = bsn;
         this.address = address;
