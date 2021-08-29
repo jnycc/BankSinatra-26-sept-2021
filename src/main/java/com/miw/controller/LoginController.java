@@ -1,5 +1,8 @@
 package com.miw.controller;
-
+/**
+ * @Author: Nijad Nazarli
+ * @Description: This controller enables users to Login to their account
+ */
 import com.miw.database.JdbcClientDao;
 import com.miw.model.Credentials;
 import com.miw.service.authentication.AuthenticationService;
@@ -33,18 +36,17 @@ public class LoginController {
         logger.info("New LoginController Created");
     }
 
-    // TODO User logt uit ? -> expire token
-    // TODO Check of de gebruiker al een geldige token bezit
     // TODO Eventueel JWT implementeren
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody Credentials credentials) {
         String token = authenticationService.authenticate(credentials);
         if (!token.isEmpty()) {
-            return new ResponseEntity<>(token, HttpStatus.CREATED);
+            return new ResponseEntity<>("Token: " + token, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>("Invalid log-in details", HttpStatus.UNAUTHORIZED);
     }
 
+    // TODO Eventueel deze methode hieruit halen, alleen voor test-doeleinden bedoeld
     @GetMapping("/gegevens/{email}")
     public ResponseEntity<?> toonMijnGegevens(@RequestHeader("Authorization") String token, @PathVariable("email") @Email String email) {
         if (tokenService.validateToken(token)) {

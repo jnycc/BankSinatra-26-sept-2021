@@ -1,5 +1,9 @@
 package com.miw.service.authentication;
-
+/**
+ * @Author: Nijad Nazarli
+ * @Description: This service class authenticates the user
+ *               based on the details entered while logging in
+ */
 import com.miw.database.JdbcTokenDao;
 import com.miw.database.JdbcClientDao;
 import com.miw.model.Client;
@@ -33,7 +37,7 @@ public class AuthenticationService {
     public String authenticate(Credentials credentials) {
         Client clientDatabase = clientDao.findByEmail(credentials.getEmail());
         Client clientLogIn = new Client(credentials.getEmail(), credentials.getPassword());
-        String hash = "";
+        String hash;
 
         if (clientDatabase != null) {
             clientLogIn.setSalt(clientDatabase.getSalt());
@@ -48,4 +52,19 @@ public class AuthenticationService {
         return "";
     }
 
+    public HashService getHashService() {
+        return hashService;
+    }
+
+    public JdbcClientDao getClientDao() {
+        return clientDao;
+    }
+
+    public TokenService getTokenService() {
+        return tokenService;
+    }
+
+    public JdbcTokenDao getJdbcTokenDao() {
+        return jdbcTokenDao;
+    }
 }
