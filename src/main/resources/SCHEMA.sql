@@ -16,7 +16,7 @@ USE `banksinatra` ;
 -- Table `banksinatra`.`BankingFee`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`BankingFee` (
-                                                          `percentage` DECIMAL(15,0) NOT NULL,
+    `percentage` DECIMAL(15,0) NOT NULL,
     PRIMARY KEY (`percentage`));
 
 
@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`BankingFee` (
 -- Table `banksinatra`.`Crypto`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Crypto` (
-                                                      `cryptoID` INT NOT NULL,
-                                                      `symbol` VARCHAR(10) NOT NULL,
+    `cryptoID` INT NOT NULL,
+    `symbol` VARCHAR(10) NOT NULL,
     `exchangeRate` DECIMAL(25) NOT NULL,
     `description` VARCHAR(150) NOT NULL,
     `name` VARCHAR(45) NOT NULL,
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Role` (
 -- Table `banksinatra`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`User` (
-                                                    `userID` INT NOT NULL AUTO_INCREMENT,
-                                                    `email` VARCHAR(100) NOT NULL,
+    `userID` INT NOT NULL AUTO_INCREMENT,
+    `email` VARCHAR(100) NOT NULL,
     `password` VARCHAR(100) NOT NULL,
     `salt` VARCHAR(100) NOT NULL,
     `role` VARCHAR(45) NOT NULL,
@@ -67,8 +67,8 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`User` (
 -- Table `banksinatra`.`Account`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Account` (
-                                                       `accountID` INT NOT NULL AUTO_INCREMENT,
-                                                       `IBAN` VARCHAR(45) NOT NULL,
+    `accountID` INT NOT NULL AUTO_INCREMENT,
+    `IBAN` VARCHAR(45) NOT NULL,
     `balance` DECIMAL(10,0) NOT NULL,
     `userID` INT NOT NULL,
     PRIMARY KEY (`accountID`),
@@ -84,30 +84,30 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Account` (
 -- Table `banksinatra`.`Transaction`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Transaction` (
-                                                           `transactionID` INT NOT NULL,
-                                                           `date` DATETIME NOT NULL,
-                                                           `units` DECIMAL(25,0) NOT NULL,
+    `transactionID` INT NOT NULL,
+    `date` DATETIME NOT NULL,
+    `units` DECIMAL(25,0) NOT NULL,
     `exchangeRate` DECIMAL(25) NOT NULL,
     `bankingFee` DECIMAL(15,0) NOT NULL,
-    `Account_accountID_buyer` INT NOT NULL,
-    `Account_accountID_seller` INT NOT NULL,
-    `Crypto_cryptoID` INT NOT NULL,
+    `accountID_buyer` INT NOT NULL,
+    `accountID_seller` INT NOT NULL,
+    `cryptoID` INT NOT NULL,
     PRIMARY KEY (`transactionID`),
-    INDEX `fk_Transaction_Account1_idx` (`Account_accountID_buyer` ASC) VISIBLE,
-    INDEX `fk_Transaction_Account2_idx` (`Account_accountID_seller` ASC) VISIBLE,
-    INDEX `fk_Transaction_Crypto1_idx` (`Crypto_cryptoID` ASC) VISIBLE,
+    INDEX `fk_Transaction_Account1_idx` (`accountID_buyer` ASC) VISIBLE,
+    INDEX `fk_Transaction_Account2_idx` (`accountID_seller` ASC) VISIBLE,
+    INDEX `fk_Transaction_Crypto1_idx` (`cryptoID` ASC) VISIBLE,
     CONSTRAINT `fk_Transaction_Account1`
-    FOREIGN KEY (`Account_accountID_buyer`)
+    FOREIGN KEY (`accountID_buyer`)
     REFERENCES `banksinatra`.`Account` (`accountID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
     CONSTRAINT `fk_Transaction_Account2`
-    FOREIGN KEY (`Account_accountID_seller`)
+    FOREIGN KEY (`accountID_seller`)
     REFERENCES `banksinatra`.`Account` (`accountID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
     CONSTRAINT `fk_Transaction_Crypto1`
-    FOREIGN KEY (`Crypto_cryptoID`)
+    FOREIGN KEY (`cryptoID`)
     REFERENCES `banksinatra`.`Crypto` (`cryptoID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
@@ -117,19 +117,19 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Transaction` (
 -- Table `banksinatra`.`Asset`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Asset` (
-                                                     `Account_accountID` INT NOT NULL,
-                                                     `Crypto_cryptoID` INT NOT NULL,
-                                                     `units` DECIMAL(10) NOT NULL,
-    PRIMARY KEY (`Account_accountID`, `Crypto_cryptoID`),
-    INDEX `fk_Account_has_Crypto_Crypto1_idx` (`Crypto_cryptoID` ASC) VISIBLE,
-    INDEX `fk_Account_has_Crypto_Account1_idx` (`Account_accountID` ASC) VISIBLE,
+    `accountID` INT NOT NULL,
+    `cryptoID` INT NOT NULL,
+    `units` DECIMAL(10) NOT NULL,
+    PRIMARY KEY (`accountID`, `cryptoID`),
+    INDEX `fk_Account_has_Crypto_Crypto1_idx` (`cryptoID` ASC) VISIBLE,
+    INDEX `fk_Account_has_Crypto_Account1_idx` (`accountID` ASC) VISIBLE,
     CONSTRAINT `fk_Account_has_Crypto_Account1`
-    FOREIGN KEY (`Account_accountID`)
+    FOREIGN KEY (`accountID`)
     REFERENCES `banksinatra`.`Account` (`accountID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
     CONSTRAINT `fk_Account_has_Crypto_Crypto1`
-    FOREIGN KEY (`Crypto_cryptoID`)
+    FOREIGN KEY (`cryptoID`)
     REFERENCES `banksinatra`.`Crypto` (`cryptoID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
