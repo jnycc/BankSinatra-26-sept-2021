@@ -15,7 +15,7 @@ public class Address {
     private String zipCode;
 
     @NotEmpty
-    @Pattern(regexp="^([a-zA-Z\\u0080-\\u024F]+(?:. |-| |'))*[a-zA-Z\\u0080-\\u024F]*$")
+    @Pattern(regexp="^([a-zA-Z\\u0080-\\u024F]+(?:. |-| |'))*[a-zA-Z0-9\\u0080-\\u024F]*$")
     private String street;
 
     @Min(1)
