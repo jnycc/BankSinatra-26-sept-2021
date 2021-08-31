@@ -1,9 +1,6 @@
 package com.miw.service.authentication;
 import com.miw.database.JdbcTokenDao;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.crypto.spec.SecretKeySpec;
@@ -18,7 +15,6 @@ import java.util.UUID;
 @Service
 public class TokenService {
 
-    private static String jwt;
     private JdbcTokenDao jdbcTokenDao;
 
     @Autowired
@@ -29,56 +25,52 @@ public class TokenService {
     public TokenService() {
     }
 
-    // Generating and validating jwt
 
-    public String generateJwt(String id, String userEmail, long ttlMillis){
-
-        //JWT signature algorithm:
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-
-        long nowMillis = System.currentTimeMillis();
-        Date dateIssued = new Date(nowMillis);
-
-        //We will sign our JWT with our ApiKey secret
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("pepper");
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+    public String jwtBuilder(String userEmail, long expTime){
+        //generating secret key for JWT signature
+        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("d24145c413bac64082d2a9681e20890a");
+        Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
 
         //set JWT Claims
         JwtBuilder builder = Jwts.builder()
-                .setId(id)
-                .setIssuedAt(dateIssued)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setSubject(userEmail)
+                .setExpiration(new Date(System.currentTimeMillis() + expTime))
                 //TODO: voeg rol toe in payload.
                 //.setClaims("roles", jdbcUserDao.getRoleByEmail(userEmail))
-                .signWith(signatureAlgorithm, signingKey);
+                .signWith(SignatureAlgorithm.HS256, signingKey);
 
-        //add expiration date and time
-        if (ttlMillis > 0) {
-            long expMillis = nowMillis + ttlMillis;
-            Date exp = new Date(expMillis);
-           builder.setExpiration(exp);
-        }
-
-        //Builds the JWT and serializes it to a compact, URL-safe string
+        //Building JWT set to compact, URL-safe string
         return builder.compact();
     }
 
     public static Claims decodeJWT(String jwt) {
         //This line will throw an exception if it is not a signed JWS (as expected)
         return Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary("pepper"))
+                .setSigningKey(DatatypeConverter.parseBase64Binary("d24145c413bac64082d2a9681e20890a"))
                 .parseClaimsJws(jwt).getBody();
     }
 
+    public Boolean decodeJWTBool(String jwt) {
+        //This line will throw an exception if it is not a signed JWS (as expected)
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(DatatypeConverter.parseBase64Binary("d24145c413bac64082d2a9681e20890a"))
+                    .parseClaimsJws(jwt).getBody();
+        } catch (ExpiredJwtException expired) {
+            // checken of refreshmenttoken nog geldig is?
 
-
-    // Generating and validating UUID token:
-
-    public String generateToken() {
-        return UUID.randomUUID().toString();       // TODO: omzetten in jason Web token?
+            return false;
+        }
+        return true;
     }
 
-    public boolean validateToken(String token) {
+
+    public String generateRefreshToken() {
+        return UUID.randomUUID().toString();
+    }
+
+    public boolean validateRefreshToken(String token) {
         // TODO: checken op datum?
         return jdbcTokenDao.retrieveToken(token) != null;
     }

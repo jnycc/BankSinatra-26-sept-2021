@@ -44,8 +44,7 @@ public class AuthenticationService {
             hash = hashService.hashForAuthenticate(clientLogIn).getPassword();
 
             if (clientDatabase.getPassword().equals(hash)) {
-                String token = tokenService.generateToken();
-                jdbcTokenDao.saveToken(token);
+                String token = tokenService.jwtBuilder(credentials.getEmail().toString(),7400000); //2 uur geldig
                 return token;
             }
         }

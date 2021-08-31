@@ -7,6 +7,7 @@ import com.miw.database.JdbcClientDao;
 import com.miw.model.Credentials;
 import com.miw.service.authentication.AuthenticationService;
 import com.miw.service.authentication.TokenService;
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +49,10 @@ public class LoginController {
 
     // TODO Eventueel deze methode hieruit halen, alleen voor test-doeleinden bedoeld
     @GetMapping("/gegevens/{email}")
-    public ResponseEntity<?> toonMijnGegevens(@RequestHeader("Authorization") String token, @PathVariable("email") @Email String email) {
-        if (tokenService.validateToken(token)) {
+    public ResponseEntity<?> showMyData(@RequestHeader("Authorization") String token, @PathVariable("email") @Email String email) {
+        //Claims claims = tokenService.decodeJwt
+
+        if (tokenService.decodeJWTBool(token)) {
             return ResponseEntity.ok(jdbcClientDao.findByEmail(email));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
