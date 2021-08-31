@@ -1,9 +1,6 @@
 package com.miw.service.authentication;
 import com.miw.database.JdbcTokenDao;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.crypto.spec.SecretKeySpec;
@@ -29,14 +26,13 @@ public class TokenService {
     }
 
 
-    public String jwtBuilder(String id, String userEmail, long expTime){
+    public String jwtBuilder(String userEmail, long expTime){
         //generating secret key for JWT signature
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("pepper");
+        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("d24145c413bac64082d2a9681e20890a");
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
 
         //set JWT Claims
         JwtBuilder builder = Jwts.builder()
-                .setId(id)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setSubject(userEmail)
                 .setExpiration(new Date(System.currentTimeMillis() + expTime))
@@ -51,17 +47,30 @@ public class TokenService {
     public static Claims decodeJWT(String jwt) {
         //This line will throw an exception if it is not a signed JWS (as expected)
         return Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary("pepper"))
+                .setSigningKey(DatatypeConverter.parseBase64Binary("d24145c413bac64082d2a9681e20890a"))
                 .parseClaimsJws(jwt).getBody();
     }
 
+    public Boolean decodeJWTBool(String jwt) {
+        //This line will throw an exception if it is not a signed JWS (as expected)
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(DatatypeConverter.parseBase64Binary("d24145c413bac64082d2a9681e20890a"))
+                    .parseClaimsJws(jwt).getBody();
+        } catch (ExpiredJwtException expired) {
+            // checken of refreshmenttoken nog geldig is?
+
+            return false;
+        }
+        return true;
+    }
 
 
-    public String generateToken() {
+    public String generateRefreshToken() {
         return UUID.randomUUID().toString();
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateRefreshToken(String token) {
         // TODO: checken op datum?
         return jdbcTokenDao.retrieveToken(token) != null;
     }

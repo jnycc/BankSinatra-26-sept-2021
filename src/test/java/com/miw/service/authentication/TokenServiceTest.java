@@ -17,23 +17,32 @@ class TokenServiceTest {
 
     @Test
     void jwtBuilder() {
-        String actualJwt = tokenService.jwtBuilder("123", "test@testen.nl", 10000000); //10 min
+        String expiredJwt = tokenService.jwtBuilder("test@testen.nl", 1); //10 min
+
+        String actualJwt = tokenService.jwtBuilder("test@testen.nl", 600000); //10 min
 
 
 
         System.out.println(actualJwt);
 
         String actualClaim = tokenService.decodeJWT(actualJwt).toString();
-        String expected = "{jti=123, iat=1630414071, sub=test@testen.nl, exp=1630424071}";
+        String expected = "{iat=1630414071, sub=test@testen.nl, exp=1630424071}";
+
+        System.out.println();
+
+
+        Boolean expired = tokenService.decodeJWTBool(expiredJwt);
+        System.out.println(expired);
+
+        Boolean notExpired = tokenService.decodeJWTBool(actualJwt);
+        System.out.println(notExpired);
+
 
 
         JwsHeader jwtHeader = Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary("pepper"))
                 .parseClaimsJws(actualJwt).getHeader();
 
-        String Id = Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary("pepper"))
-                .parseClaimsJws(actualJwt).getBody().getId().toString();
 
         String userEmail = Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary("pepper"))
@@ -43,6 +52,8 @@ class TokenServiceTest {
         System.out.println(jwtHeader);
 
         System.out.println("actualClaims = " + actualClaim);
+
+
 
 
         //TODO: expected jwt string toevoegen die rekening houdt met meegegeven tijd
