@@ -18,7 +18,6 @@ import java.util.UUID;
 @Service
 public class TokenService {
 
-    private static String jwt;
     private JdbcTokenDao jdbcTokenDao;
 
     @Autowired
@@ -29,37 +28,23 @@ public class TokenService {
     public TokenService() {
     }
 
-    // Generating and validating jwt
 
-    public String generateJwt(String id, String userEmail, long ttlMillis){
-
-        //JWT signature algorithm:
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-
-        long nowMillis = System.currentTimeMillis();
-        Date dateIssued = new Date(nowMillis);
-
-        //We will sign our JWT with our ApiKey secret
+    public String jwtBuilder(String id, String userEmail, long expTime){
+        //generating secret key for JWT signature
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("pepper");
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+        Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
 
         //set JWT Claims
         JwtBuilder builder = Jwts.builder()
                 .setId(id)
-                .setIssuedAt(dateIssued)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setSubject(userEmail)
+                .setExpiration(new Date(System.currentTimeMillis() + expTime))
                 //TODO: voeg rol toe in payload.
                 //.setClaims("roles", jdbcUserDao.getRoleByEmail(userEmail))
-                .signWith(signatureAlgorithm, signingKey);
+                .signWith(SignatureAlgorithm.HS256, signingKey);
 
-        //add expiration date and time
-        if (ttlMillis > 0) {
-            long expMillis = nowMillis + ttlMillis;
-            Date exp = new Date(expMillis);
-           builder.setExpiration(exp);
-        }
-
-        //Builds the JWT and serializes it to a compact, URL-safe string
+        //Building JWT set to compact, URL-safe string
         return builder.compact();
     }
 
@@ -72,10 +57,8 @@ public class TokenService {
 
 
 
-    // Generating and validating UUID token:
-
     public String generateToken() {
-        return UUID.randomUUID().toString();       // TODO: omzetten in jason Web token?
+        return UUID.randomUUID().toString();
     }
 
     public boolean validateToken(String token) {
