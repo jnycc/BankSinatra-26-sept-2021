@@ -2,6 +2,7 @@ package com.miw.model;
 
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Transaction {
 
@@ -61,4 +62,18 @@ public class Transaction {
     }
 
     // GETTERS & SETTERS
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transaction that = (Transaction) o;
+        return transactionNumber == that.transactionNumber;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(transactionNumber);
+    }
 }
