@@ -1,9 +1,16 @@
+/**
+ * @Author: Johnny Chan, MIW student 500878034.
+ * Deze class test de RegisterController en omvat de volgende 3 onderdelen:
+ * -> test of de registratie van een nieuwe user succesvol verloopt
+ * -> test of de registratie van een reeds bestaande user weigert
+ * -> test of de validatiechecks onvolledige en/of onjuiste input van klantgegevens weigert
+ */
 package com.miw.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miw.model.Address;
 import com.miw.model.Client;
-import com.miw.service.RegistrationService;
+import com.miw.service.authentication.RegistrationService;
 import com.miw.service.authentication.HashService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +65,7 @@ class RegisterControllerTest {
     @Test
     void registerNewClientTest() {
         //Met Mockito door validatiecheck slagen: klant bestaat niet, nieuwe klant mag dan geregistreerd worden
-        Mockito.when(registrationService.checkExistingAccount(testClient.getEmail())).thenReturn(false);
+        Mockito.when(registrationService.checkExistingClientAccount(testClient.getEmail())).thenReturn(false);
 
         //Test 1: de register endpoint uitvoeren waarna http-status code 201-Created verwacht wordt.
         try {
@@ -85,7 +92,7 @@ class RegisterControllerTest {
     @Test
     void registerExistingClientTest() {
         //Klant bestaat al in database (=true). Mockito db geeft dan true terug.
-        Mockito.when(registrationService.checkExistingAccount(testClient.getEmail())).thenReturn(true);
+        Mockito.when(registrationService.checkExistingClientAccount(testClient.getEmail())).thenReturn(true);
         //register endpoint uitvoeren en http-status code 409-conflict verwacht.
         try {
             mockMvc.perform(post("/register")
@@ -101,6 +108,7 @@ class RegisterControllerTest {
 
     /**
      * Global method for registering a new client using the /register endpoint in the RegisterController class.
+     *
      * @param testClient A client with one of the required fields as null or with invalid input.
      */
     public void registerTestClient(Client testClient) {
@@ -154,7 +162,7 @@ class RegisterControllerTest {
     /**
      * VALIDATION TESTS ON CLIENT INPUT WHEN REGISTERING.
      * RETURNED HTTP-STATUS CODE SHOULD BE 400-BAD REQUEST.
-     *
+     * <p>
      * -> email moet een geldige format zijn
      * ---> local part: digits 0-9, latin letters a-Z, printable characters !#$%&’*+-/=?^_`{|}~ and dot . if not initial or last character or used consecutively
      * ---> domain part: digits 0-9, latin letters a-Z, hyphen - or dot . if not initial or last character
