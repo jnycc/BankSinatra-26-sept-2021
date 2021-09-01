@@ -1,6 +1,4 @@
 package com.miw.model;
-
-
 import java.time.LocalDateTime;
 
 public class Transaction {
@@ -26,7 +24,6 @@ public class Transaction {
         this.units = units;
         this.price = calculatePrice();
         this.transactionDate = LocalDateTime.now();
-        this.transactionNumber = generateTransactionNumber();
     }
 
 
@@ -41,8 +38,6 @@ public class Transaction {
         this.transactionDate = LocalDateTime.now();
     }
 
-
-
     // METHODS
     private double calculatePrice() {
         //TODO: calculate price based on unit and course value of cryptocoin
@@ -50,14 +45,8 @@ public class Transaction {
     }
 
     private double calculateUnits(double price) {
-        //TODO: calculate price based on unit and course value of cryptocoin
-        return price * crypto.getValue();
-    }
-
-    private int generateTransactionNumber() {
-        //TODO: generate unique transactionNumber
-
-        return 0;
+        //TODO: calculate units based on price and course value of cryptocoin
+        return price / crypto.getValue();
     }
 
     // GETTERS & SETTERS

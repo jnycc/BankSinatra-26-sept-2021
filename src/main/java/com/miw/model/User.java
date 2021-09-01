@@ -17,6 +17,7 @@ public abstract class User {
 
     @NotEmpty
     @Size(min = 8, max = 64)
+    //@Pattern(regexp = "^(.+?)(?:\\1)+$") - maar dan dus het tegenovergestelde van dit aah
     protected String password;
 
     protected String salt;
@@ -30,7 +31,6 @@ public abstract class User {
     protected String lastName;
 
     protected boolean isBlocked;
-
 
     public User(String email, String password, String salt, String firstName, String prefix, String lastName, boolean isBlocked) {
         this.email = email;
