@@ -27,6 +27,10 @@ public class RegistrationService {
     return client;
   }
 
+  public boolean checkExistingAccount (String email) {
+    return rootRepository.findByEmail(email) != null;
+  }
+
   public RootRepository getRootRepository() {
     return rootRepository;
   }

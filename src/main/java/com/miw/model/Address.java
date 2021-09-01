@@ -3,6 +3,7 @@ package com.miw.model;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 public class Address {
 
@@ -71,6 +72,20 @@ public class Address {
 
     public void setHouseNumberExtension(String houseNumberExtension) {
         this.houseNumberExtension = houseNumberExtension;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return houseNumber == address.houseNumber && city.equals(address.city) && zipCode.equals(address.zipCode)
+                && street.equals(address.street) && Objects.equals(houseNumberExtension, address.houseNumberExtension);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(city, zipCode, street, houseNumber, houseNumberExtension);
     }
 }
 
