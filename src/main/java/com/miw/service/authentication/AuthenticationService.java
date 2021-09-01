@@ -8,7 +8,6 @@ import com.miw.database.JdbcTokenDao;
 import com.miw.database.JdbcClientDao;
 import com.miw.model.Client;
 import com.miw.model.Credentials;
-import com.miw.service.RegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

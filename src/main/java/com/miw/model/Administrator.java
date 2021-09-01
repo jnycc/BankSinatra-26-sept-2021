@@ -1,13 +1,21 @@
 package com.miw.model;
 
-public class Administrator extends User{
+public class Administrator extends User {
 
-    // CONSTRUCTOR
-    public Administrator(String username, String password) {
-        super(username, password);
+    public Administrator(String email, String password, String salt, String firstName, String prefix, String lastName) {
+        super(email, password, salt, firstName, prefix, lastName, true);
+    }
+
+    public Administrator(String email, String password) { //TODO: deze kan weg?
+        this(email, password, null, null, null, null);
+    }
+
+    //Default constructor die Spring gebruikt. Moet bij aanmaak nieuwe admin altijd blocked zijn in de database; in afwachting van goedkeuring.
+    public Administrator() {
+        this.isBlocked = true;
     }
 
     // METHODS
 
-    // GETTERS & SETTERS
+
 }

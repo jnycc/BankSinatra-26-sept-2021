@@ -44,22 +44,22 @@ public abstract class User {
         logger.info("new User-object created");
     }
 
-    public User(String email, String password) {
-        super();
-        this.email = email;
-        this.password = password;
-        logger.info("new User-object created");
+    public User(String email, String password, String salt, String firstName, String prefix, String lastName) {
+        this(email, password, salt, firstName, prefix, lastName, false);
     }
 
     public User() {
         this(null, null, null, null, null, null, false);
     }
 
-    public User(String email, String password, String salt, String firstName, String prefix, String lastName) {
-        this(email, password, salt, firstName, prefix, lastName, false);
+    public User(String email, String password) { //TODO: Renée vragen of we deze nog gebruiken
+        super();
+        this.email = email;
+        this.password = password;
+        logger.info("new User-object created");
     }
 
-    public User(String email, String firstName, String prefix, String lastName) {
+    public User(String email, String firstName, String prefix, String lastName) { //TODO: Renée vragen of we deze nog gebruiken
         this.email = email;
         this.firstName = firstName;
         this.prefix = prefix;
