@@ -1,5 +1,7 @@
 package com.miw.model;
 
+import java.util.Objects;
+
 public class Crypto {
 
     // ATTRIBUTES
@@ -26,5 +28,18 @@ public class Crypto {
     // GETTERS & SETTERS
     public double getValue() {
         return exchangeRate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Crypto crypto = (Crypto) o;
+        return name.equals(crypto.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

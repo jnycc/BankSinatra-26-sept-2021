@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 @Repository
 public class JdbcClientDao implements ClientDao {
@@ -44,7 +45,7 @@ public class JdbcClientDao implements ClientDao {
     ps.setString(10, client.getAddress().getZipCode());
     ps.setString(11, client.getAddress().getCity());
     ps.setInt(12, client.getBsn());
-    ps.setDate(13, new java.sql.Date(client.getDateOfBirth().getTime()));
+    ps.setDate(13, java.sql.Date.valueOf(client.getDateOfBirth()));
     return ps;
   }
 
@@ -87,7 +88,7 @@ public class JdbcClientDao implements ClientDao {
       String city = resultSet.getString("city");
       Address address = new Address(city, zipCode, street, houseNumber, houseNrExtension);
       int bsn = resultSet.getInt("bsn");
-      Date dateOfBirth = resultSet.getDate("dateOfBirth");
+      LocalDate dateOfBirth = resultSet.getObject("dateOfBirth", LocalDate.class);
       Client client = new Client(email, password, salt, firstName, prefix, lastName, dateOfBirth, bsn, address);
       client.setUserId(id);
       return client;
