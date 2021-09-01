@@ -7,79 +7,90 @@ import org.junit.jupiter.api.Test;
 
 import javax.xml.bind.DatatypeConverter;
 
+import java.awt.*;
+import java.util.Calendar;
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class TokenServiceTest {
 
-    ByteArrayToHexHelper byteArrayToHexHelper = new ByteArrayToHexHelper();
     TokenService tokenService = new TokenService();
 
     @Test
     void jwtBuilder() {
-        String expiredJwt = tokenService.jwtBuilder("test@testen.nl", 1); //10 min
+        // Creating future date
+        Date futureDate = new Date(2022, Calendar.JANUARY, 1, 0, 10, 10);
+        long futureMilSec = futureDate.getTime();
 
-        String actualJwt = tokenService.jwtBuilder("test@testen.nl", 600000); //10 min
+        // assert equals
+        String actualJwt = tokenService.jwtBuilderSetDate("test@testen.nl", futureMilSec, 600000).toString(); //10 min
+        String expectedJwt = "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjYxNTk5MTM2MjEwLCJzdWIiOiJ0ZXN0QHRlc3Rlbi5ubCIsImV4cCI6NjE1OTkxMzY4MTB9.syFzryGAxghLY868ErXKZiaLkyoV27gFUdZESx3zx7M";
+        assertEquals(expectedJwt, actualJwt);
+    }
 
+    @Test
+    void jwtExpired() {
+        // Create current date
+        Date today = new Date(System.currentTimeMillis());
+        long todayMilSec = today.getTime();
 
+        // create jwt with expiration date of zero
+        String expiredJwt = tokenService.jwtBuilderSetDate("test@testen.nl",todayMilSec, 0); //0 min
+        System.out.println(expiredJwt);
 
-        System.out.println(actualJwt);
+        // assert equals
+        Boolean actual = tokenService.decodeJWTBool(expiredJwt);
+        Boolean expected = false;
+        assertEquals(expected, actual);
+    }
 
-        String actualClaim = tokenService.decodeJWT(actualJwt).toString();
-        String expected = "{iat=1630414071, sub=test@testen.nl, exp=1630424071}";
+    @Test
+    void jwtNotExpired() {
+        // Create current date
+        Date today = new Date(System.currentTimeMillis());
+        long todayMilSec = today.getTime();
 
-        System.out.println();
+        // create jwt with expiration date of 10 minutes in the future
+        String expiredJwt = tokenService.jwtBuilderSetDate("test@testen.nl",todayMilSec, 600000); //10 min
 
-
-        Boolean expired = tokenService.decodeJWTBool(expiredJwt);
-        System.out.println(expired);
-
-        Boolean notExpired = tokenService.decodeJWTBool(actualJwt);
-        System.out.println(notExpired);
-
-
-
-        JwsHeader jwtHeader = Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary("pepper"))
-                .parseClaimsJws(actualJwt).getHeader();
-
-
-        String userEmail = Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary("pepper"))
-                .parseClaimsJws(actualJwt).getBody().getSubject().toString();
-
-
-        System.out.println(jwtHeader);
-
-        System.out.println("actualClaims = " + actualClaim);
-
-
-
-
-        //TODO: expected jwt string toevoegen die rekening houdt met meegegeven tijd
-        //String expectedJwt = "";
-        //assertEquals(actualJwt, expectedJwt);
+        // assert equals
+        Boolean actual = tokenService.decodeJWTBool(expiredJwt);
+        Boolean expected = true;
+        assertEquals(expected, actual);
     }
 
 
     @Test
-    public void decodeJWT() {
-        //TODO: fixen van waarom onderstaande niet werkt..
-        String jwtExample = "iOiJIUzI1NiJ9.eyJqdGkiOiIxMjMiLCJpYXQiOjE2MzA0MTMyODcsInN1YiI6InRlc3RAdGVzdGVuLm5sIiwiZXhwIjoxNjMwNDIzMjg3fQ.p5116Zlqjwg-HW-Qvj9RB3geZtSnkHJ5Ddb354bwZSk";
+    void decodeJwt() {
+        // Creating future date
+        Date futureDate = new Date(2022, Calendar.JANUARY, 1, 0, 10, 10);
+        long futureMilSec = futureDate.getTime();
 
-        Claims actualClaim = tokenService.decodeJWT("iOiJIUzI1NiJ9.eyJqdGkiOiIxMjMiLCJpYXQiOjE2MzA0MTMyODcsInN1YiI6InRlc3RAdGVzdGVuLm5sIiwiZXhwIjoxNjMwNDIzMjg3fQ.p5116Zlqjwg-HW-Qvj9RB3geZtSnkHJ5Ddb354bwZSk");
-        String expectedCLaim = "header={alg=HS256},body={jti=123, iat=1630413287, sub=test@testen.nl, " +
-                "exp=1630423287},signature=p5116Zlqjwg-HW-Qvj9RB3geZtSnkHJ5Ddb354bwZSk";
+        // creating JWT for test use
+        String testJwt = tokenService.jwtBuilderSetDate("test@testen.nl", futureMilSec, 600000).toString(); //10 min
 
-        //assertEquals(actualClaim, expectedCLaim);
-
-
-
-
-//        Claims actualClaim = tokenService.decodeJWT("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjMiLCJpYXQiOjE2MzAxNTQ4NzMsInN1YiI6InN1YmplY3QiLCJpc3MiOiJpc3N1ZXIifQ.G186f5H_aLbRFGPpAUmrNe9vWO2cWIToVfVq29dX7NY");
-//        System.out.println(actualClaim);
-//
-
-
+        // assert equals for decoded jwt
+        String actualClaim = tokenService.decodeJWT(testJwt).toString();
+        String expectedClaim = "{iat=61599136210, sub=test@testen.nl, exp=61599136810}";
+        assertEquals(expectedClaim, actualClaim);
     }
+
+
+    @Test
+    public void decodeExpiredjwt() {
+        // Creating future date
+        Date futureDate = new Date(2022, Calendar.JANUARY, 1, 0, 10, 10);
+        long futureMilSec = futureDate.getTime();
+
+        // creating JWT for test use
+        String testJwt = tokenService.jwtBuilderSetDate("test@testen.nl", futureMilSec, 0).toString(); //0 min
+
+        // assert equals for decoded jwt
+        String actualClaim = tokenService.decodeJWT(testJwt).toString();
+        String expectedClaim = "{iat=61599136210, sub=test@testen.nl, exp=61599136210}";
+        assertEquals(expectedClaim, actualClaim);
+    }
+
 }

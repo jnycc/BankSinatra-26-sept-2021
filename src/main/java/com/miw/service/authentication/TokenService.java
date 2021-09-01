@@ -44,6 +44,24 @@ public class TokenService {
         return builder.compact();
     }
 
+    public String jwtBuilderSetDate(String userEmail, long msNow,  long expTime){
+        //generating secret key for JWT signature
+        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("d24145c413bac64082d2a9681e20890a");
+        Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
+
+        //set JWT Claims
+        JwtBuilder builder = Jwts.builder()
+                .setIssuedAt(new Date(msNow))
+                .setSubject(userEmail)
+                .setExpiration(new Date(msNow + expTime))
+                //TODO: voeg rol toe in payload.
+                //.setClaims("roles", jdbcUserDao.getRoleByEmail(userEmail))
+                .signWith(SignatureAlgorithm.HS256, signingKey);
+
+        //Building JWT set to compact, URL-safe string
+        return builder.compact();
+    }
+
     public static Claims decodeJWT(String jwt) {
         //This line will throw an exception if it is not a signed JWS (as expected)
         return Jwts.parser()
