@@ -25,8 +25,11 @@ class TokenServiceTest {
         long futureMilSec = futureDate.getTime();
 
         // assert equals
-        String actualJwt = tokenService.jwtBuilderSetDate("test@testen.nl", futureMilSec, 600000).toString(); //10 min
-        String expectedJwt = "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjYxNTk5MTM2MjEwLCJzdWIiOiJ0ZXN0QHRlc3Rlbi5ubCIsImV4cCI6NjE1OTkxMzY4MTB9.syFzryGAxghLY868ErXKZiaLkyoV27gFUdZESx3zx7M";
+        String actualJwt = tokenService.jwtBuilderSetDate("test@testen.nl",
+                futureMilSec, 600000).toString(); //10 min
+        String expectedJwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" +
+                ".eyJpYXQiOjYxNTk5MTM2MjEwLCJzdWIiOiJ0ZXN0QHRlc3Rlbi5ubCIsImV4cCI6NjE1OTkxMzY4MTB9" +
+                ".MYUFnQnRlIdPP579jRRprgzOgYzJPm5mmBhNZdhLmgk";
         assertEquals(expectedJwt, actualJwt);
     }
 
