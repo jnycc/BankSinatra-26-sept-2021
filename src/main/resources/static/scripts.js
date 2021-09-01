@@ -6,17 +6,21 @@ btnLogin.addEventListener("click", () => {
 
     console.log("clicked login")
     let payload =
-        `{ email: "${ document.querySelector("#email").nodeValue }", 
-        password: "${ document.querySelector("#password").nodeValue }" }`
-    fetch('localhost:8080/login',
+        {email: `${document.querySelector("#email").value}`,
+            password: `${ document.querySelector("#password").value}`}
+
+    let jsonString = JSON.stringify(payload);
+    console.log(jsonString)
+
+    fetch('http://localhost:8080/login',
         {
             method: 'POST',
             header: { "Content-Type": "application/json" },
-            body: `${ payload }`
+            body: jsonString
         })
-        .then(res => res.json())
+        .then(res => res.text())
         .then(it => {
-            console.log(it)
+            localStorage.setItem('Authentication', it)
         })
         .catch(console.log('oeps'))
 })

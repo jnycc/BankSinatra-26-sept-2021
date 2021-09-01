@@ -3,6 +3,7 @@ package com.miw.controller;
  * @Author: Nijad Nazarli
  * @Description: This controller enables users to Login to their account
  */
+import com.google.gson.Gson;
 import com.miw.database.JdbcClientDao;
 import com.miw.model.Credentials;
 import com.miw.service.authentication.AuthenticationService;
@@ -17,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+
 
 @RestController
 @Validated
@@ -39,10 +41,14 @@ public class LoginController {
 
     // TODO Eventueel JWT implementeren
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody Credentials credentials) {
-        String token = authenticationService.authenticate(credentials);
+    public ResponseEntity<?> loginUser(@Valid @RequestBody String credentials) {
+        //TODO: string omzetten in Json
+        Gson gson = new Gson();
+        Credentials credentials1 = gson.fromJson(credentials, Credentials.class);
+
+        String token = authenticationService.authenticate(credentials1);
         if (!token.isEmpty()) {
-            return new ResponseEntity<>("Token: " + token, HttpStatus.OK);
+            return new ResponseEntity<>(token, HttpStatus.OK);
         }
         return new ResponseEntity<>("Invalid log-in details", HttpStatus.UNAUTHORIZED);
     }
