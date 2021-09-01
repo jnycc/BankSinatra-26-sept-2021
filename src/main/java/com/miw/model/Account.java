@@ -1,5 +1,10 @@
 package com.miw.model;
 
+import org.iban4j.CountryCode;
+import org.iban4j.Iban;
+
+import java.util.Objects;
+
 public class Account {
 
     private int accountId;
@@ -7,19 +12,12 @@ public class Account {
     private double balance;
 
     public Account() {
-        this.iban = generateIban();
-        this.balance = 10000.00;
+        this(10000);
     }
 
     public Account(double balance) {
-        this.iban = generateIban();
+        this.iban = Iban.random(CountryCode.NL).toString();
         this.balance = balance;
-    }
-
-
-    private String generateIban() {
-        //TODO: create unique iban number
-        return "generatedIban";
     }
 
     public int getAccountId() {
@@ -53,5 +51,18 @@ public class Account {
                 ", iban='" + iban + '\'' +
                 ", balance=" + balance +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return accountId == account.accountId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountId);
     }
 }
