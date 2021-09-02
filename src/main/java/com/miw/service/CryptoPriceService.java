@@ -22,7 +22,7 @@ import java.util.List;
  * kan hier ook staan!
  */
 
-public class ExchangeRateService {
+public class CryptoPriceService {
 
     private static String apiKey = "89b44b8d-1f46-4e3c-9b3b-d4c9a84d80d6"; // dit is ook top secret! :)
 
