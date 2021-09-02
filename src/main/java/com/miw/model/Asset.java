@@ -14,12 +14,13 @@ public class Asset {
     public Asset(Crypto crypto, double units) {
         this.crypto = crypto;
         this.units = units;
-        this.currentValue = setCalculatedValue();
+        this.currentValue = calculateValue();
     }
 
-    private double setCalculatedValue() {
-        return units * crypto.getPrice();
+    private double calculateValue() {
+        return units * crypto.getCryptoPrice();
     }
+
 
     public Crypto getCrypto() {
         return crypto;
