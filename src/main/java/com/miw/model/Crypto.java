@@ -42,4 +42,14 @@ public class Crypto {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    @Override
+    public String toString() {
+        return "Crypto{" +
+                "name='" + name + '\'' +
+                ", symbol='" + symbol + '\'' +
+                ", description='" + description + '\'' +
+                ", exchangeRate=" + exchangeRate +
+                '}';
+    }
 }

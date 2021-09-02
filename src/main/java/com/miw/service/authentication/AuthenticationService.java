@@ -44,11 +44,10 @@ public class AuthenticationService {
     public String authenticate(Credentials credentials) {
         Client clientDatabase = clientDao.findByEmail(credentials.getEmail());
         Client clientLogIn = new Client(credentials.getEmail(), credentials.getPassword());
-        String hash;
 
         if (clientDatabase != null) {
             clientLogIn.setSalt(clientDatabase.getSalt());
-            hash = hashService.hashForAuthenticate(clientLogIn).getPassword();
+            String hash = hashService.hashForAuthenticate(clientLogIn).getPassword();
 
             if (clientDatabase.getPassword().equals(hash)) {
                 if (clientDatabase.isBlocked()) {
@@ -64,11 +63,10 @@ public class AuthenticationService {
     public String authenticateAdmin(Credentials credentials) {
         Administrator adminDatabase = adminDao.findByEmail(credentials.getEmail());
         Administrator adminLogIn = new Administrator(credentials.getEmail(), credentials.getPassword());
-        String hash;
 
         if (adminDatabase != null) {
             adminLogIn.setSalt(adminDatabase.getSalt());
-            hash = hashService.hashForAuthenticate(adminLogIn).getPassword();
+            String hash = hashService.hashForAuthenticate(adminLogIn).getPassword();
 
             if (adminDatabase.getPassword().equals(hash)) {
                 if (adminDatabase.isBlocked()) {
