@@ -52,18 +52,11 @@ public abstract class User {
         this(null, null, null, null, null, null, false);
     }
 
-    public User(String email, String password) { //TODO: Renée vragen of we deze nog gebruiken
+    public User(String email, String password) {
         super();
         this.email = email;
         this.password = password;
         logger.info("new User-object created");
-    }
-
-    public User(String email, String firstName, String prefix, String lastName) { //TODO: Renée vragen of we deze nog gebruiken
-        this.email = email;
-        this.firstName = firstName;
-        this.prefix = prefix;
-        this.lastName = lastName;
     }
 
 
