@@ -8,13 +8,13 @@ public class Crypto {
     private String name;
     private String symbol;
     private String description;
-    private double price;
+    private double cryptoPrice;
 
     public Crypto(String name, String symbol, String description) {
         this.name = name;
         this.symbol = symbol;
         this.description = description;
-        this.price = retrieveValue();
+        this.cryptoPrice = retrieveValue();
     }
 
     private double retrieveValue() {
@@ -34,8 +34,8 @@ public class Crypto {
         return name;
     }
 
-    public double getPrice() {
-        return price;
+    public double getCryptoPrice() {
+        return cryptoPrice;
     }
 
     @Override

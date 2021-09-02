@@ -31,7 +31,7 @@ public class JdbcTransactionDao {
                 "VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         ps.setDate(1, java.sql.Date.valueOf(transaction.getTransactionDate().toLocalDate())); //TODO: dit moet anders kunnen denk ik :)
         ps.setDouble(2, transaction.getUnits());
-        ps.setDouble(3, transaction.getCrypto().getPrice());
+        ps.setDouble(3, transaction.getCrypto().getCryptoPrice());
         ps.setDouble(4, transaction.getBankCosts());
         ps.setInt(5, transaction.getBuyer().getUserId());
         ps.setInt(6, transaction.getSeller().getUserId());

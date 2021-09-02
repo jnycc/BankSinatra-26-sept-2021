@@ -10,7 +10,7 @@ public class Transaction {
     private Client seller;
     private Crypto crypto;
     private double units;
-    private double price;
+    private double transactionPrice;
     private double bankCosts;
 
     // price based on units
@@ -19,7 +19,7 @@ public class Transaction {
         this.seller = seller;
         this.crypto = crypto;
         this.units = units;
-        this.price = calculatePrice();
+        this.transactionPrice = calculatePrice();
         this.transactionDate = LocalDateTime.now();
     }
 
@@ -28,19 +28,19 @@ public class Transaction {
         this.buyer = buyer;
         this.seller = seller;
         this.crypto = crypto;
-        this.price = price;
+        this.transactionPrice = price;
         this.bankCosts = bankCosts;
         this.units = calculateUnits(price);
         this.transactionDate = LocalDateTime.now();
     }
 
     private double calculatePrice() {
-        return units * crypto.getPrice();
+        return units * crypto.getCryptoPrice();
     }
 
     private double calculateUnits(double price) {
         //TODO: calculate units based on price and course value of cryptocoin - add bank costs?
-        return price / crypto.getPrice();
+        return price / crypto.getCryptoPrice();
     }
 
     public void setTransactionId(int transactionId) {
@@ -67,8 +67,8 @@ public class Transaction {
         return units;
     }
 
-    public double getPrice() {
-        return price;
+    public double getTransactionPrice() {
+        return transactionPrice;
     }
 
     public double getBankCosts() {

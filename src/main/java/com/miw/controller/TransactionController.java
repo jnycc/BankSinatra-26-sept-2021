@@ -36,7 +36,7 @@ public class TransactionController {
         Client buyer = transaction.getBuyer();
         Crypto crypto = transaction.getCrypto();
         double units = transaction.getUnits();
-        double price = transaction.getPrice();
+        double price = transaction.getTransactionPrice();
         double bankCosts = transaction.getBankCosts();
 
         if(!transactionService.checkSufficientCrypto(seller, crypto, units)){
