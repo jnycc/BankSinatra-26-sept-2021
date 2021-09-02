@@ -50,19 +50,19 @@ public class AuthenticationService {
             clientLogIn.setSalt(clientDatabase.getSalt());
             hash = hashService.hashForAuthenticate(clientLogIn).getPassword();
 
-            if (clientDatabase.isBlocked()) {
-                return BLOCKED_USER;
-            }
             if (clientDatabase.getPassword().equals(hash)) {
+                if (clientDatabase.isBlocked()) {
+                    return BLOCKED_USER;
+                }
                 return tokenService.jwtBuilder(credentials.getEmail().toString(),7400000); //2 uur geldig
             }
+            return INVALID_CREDENTIALS;
         }
         return INVALID_CREDENTIALS;
     }
 
     public String authenticateAdmin(Credentials credentials) {
         Administrator adminDatabase = adminDao.findByEmail(credentials.getEmail());
-
         Administrator adminLogIn = new Administrator(credentials.getEmail(), credentials.getPassword());
         String hash;
 
@@ -71,11 +71,14 @@ public class AuthenticationService {
             hash = hashService.hashForAuthenticate(adminLogIn).getPassword();
 
             if (adminDatabase.getPassword().equals(hash)) {
-                String token = tokenService.jwtBuilder(credentials.getEmail().toString(),7400000); //2 uur geldig
-                return token;
+                if (adminDatabase.isBlocked()) {
+                    return BLOCKED_USER;
+                }
+                return tokenService.jwtBuilder(credentials.getEmail().toString(),7400000); //2 uur geldig
             }
+            return INVALID_CREDENTIALS;
         }
-        return "";
+        return INVALID_CREDENTIALS;
     }
 
     public HashService getHashService() {

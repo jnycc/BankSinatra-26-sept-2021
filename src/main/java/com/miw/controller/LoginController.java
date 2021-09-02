@@ -44,9 +44,18 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody String credentialsAsJson) {
         @Valid Credentials credentials = gson.fromJson(credentialsAsJson, Credentials.class);
-
         String response = authenticationService.authenticate(credentials);
+        return showLoginResponse(response);
+    }
 
+    @PostMapping("/admin/login")
+    public ResponseEntity<?> loginAdmin(@RequestBody String credentialsAsJson) {
+        @Valid Credentials credentials = gson.fromJson(credentialsAsJson, Credentials.class);
+        String response = authenticationService.authenticateAdmin(credentials);
+        return showLoginResponse(response);
+    }
+
+    public ResponseEntity<?> showLoginResponse(String response) {
         if (response.equals(authenticationService.getINVALID_CREDENTIALS())){
             return new ResponseEntity<>(authenticationService.getINVALID_CREDENTIALS(), HttpStatus.UNAUTHORIZED);
         } else if (response.equals(authenticationService.getBLOCKED_USER())) {
@@ -54,18 +63,6 @@ public class LoginController {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-    @PostMapping("/admin/login")
-    public ResponseEntity<?> loginAdmin(@RequestBody String credentialsAsJson) {
-        @Valid Credentials credentials = gson.fromJson(credentialsAsJson, Credentials.class);
-
-        String token = authenticationService.authenticateAdmin(credentials);
-        if (!token.isEmpty()) {
-            return new ResponseEntity<>(token, HttpStatus.OK);
-        }
-        return new ResponseEntity<>("Invalid log-in details", HttpStatus.UNAUTHORIZED);
-    }
-
 
     // TODO Eventueel deze methode hieruit halen, voorbeeld van resource ophalen met token
     @GetMapping("/gegevens/{email}")
