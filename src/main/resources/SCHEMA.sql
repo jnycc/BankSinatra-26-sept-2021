@@ -16,21 +16,33 @@ USE `banksinatra` ;
 -- Table `banksinatra`.`BankingFee`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`BankingFee` (
-    `percentage` DECIMAL(15,0) NOT NULL,
+    `percentage` DECIMAL(6,2) NOT NULL,
     PRIMARY KEY (`percentage`));
-
 
 -- -----------------------------------------------------
 -- Table `banksinatra`.`Crypto`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Crypto` (
-    `cryptoID` INT NOT NULL,
+    `cryptoID` INT NOT NULL AUTO_INCREMENT,
     `symbol` VARCHAR(10) NOT NULL,
-    `exchangeRate` DECIMAL(25) NOT NULL,
     `description` VARCHAR(150) NOT NULL,
     `name` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`cryptoID`));
 
+-- -----------------------------------------------------
+-- Table `banksinatra`.`CryptoPrice`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `banksinatra`.`CryptoPrice` (
+    `cryptoID` INT NOT NULL,
+    `cryptoPrice` DECIMAL(12,2) NOT NULL,
+    `dateRetrieved` DATETIME NOT NULL,
+    PRIMARY KEY (`cryptoID`, `dateRetrieved`),
+    INDEX `crypto_exchangerate_idx` (`cryptoID` ASC) VISIBLE,
+    CONSTRAINT `crypto_exchangerate`
+    FOREIGN KEY (`cryptoID`)
+    REFERENCES `banksinatra`.`Crypto` (`cryptoID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
 
 -- -----------------------------------------------------
 -- Table `banksinatra`.`Role`
@@ -38,7 +50,6 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Crypto` (
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Role` (
     `userRole` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`userRole`));
-
 
 -- -----------------------------------------------------
 -- Table `banksinatra`.`User`
@@ -62,14 +73,13 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`User` (
     `dateOfBirth` DATE NULL,
     PRIMARY KEY (`userID`));
 
-
 -- -----------------------------------------------------
 -- Table `banksinatra`.`Account`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Account` (
     `accountID` INT NOT NULL AUTO_INCREMENT,
     `IBAN` VARCHAR(45) NOT NULL,
-    `balance` DECIMAL(10,0) NOT NULL,
+    `balance` DECIMAL(16,2) NOT NULL,
     `userID` INT NOT NULL,
     PRIMARY KEY (`accountID`),
     INDEX `fk_Account_User1_idx` (`userID` ASC) VISIBLE,
@@ -79,16 +89,15 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Account` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-
 -- -----------------------------------------------------
 -- Table `banksinatra`.`Transaction`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Transaction` (
-    `transactionID` INT NOT NULL,
+    `transactionID` INT NOT NULL AUTO_INCREMENT,
     `date` DATETIME NOT NULL,
-    `units` DECIMAL(25,0) NOT NULL,
-    `exchangeRate` DECIMAL(25) NOT NULL,
-    `bankingFee` DECIMAL(15,0) NOT NULL,
+    `units` DECIMAL(20,8) NOT NULL,
+    `exchangeRate` DECIMAL(12,2) NOT NULL,
+    `bankingFee` DECIMAL(6,2) NOT NULL,
     `accountID_buyer` INT NOT NULL,
     `accountID_seller` INT NOT NULL,
     `cryptoID` INT NOT NULL,
@@ -112,14 +121,13 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Transaction` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-
 -- -----------------------------------------------------
 -- Table `banksinatra`.`Asset`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Asset` (
     `accountID` INT NOT NULL,
     `cryptoID` INT NOT NULL,
-    `units` DECIMAL(10) NOT NULL,
+    `units` DECIMAL(20,8) NOT NULL,
     PRIMARY KEY (`accountID`, `cryptoID`),
     INDEX `fk_Account_has_Crypto_Crypto1_idx` (`cryptoID` ASC) VISIBLE,
     INDEX `fk_Account_has_Crypto_Account1_idx` (`accountID` ASC) VISIBLE,
@@ -134,7 +142,9 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Asset` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-
+-- -----------------------------------------------------
+-- Table `banksinatra`.`Token`
+-- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Token` (
     `token` VARCHAR(60) NOT NULL,
     `dateTime` VARCHAR(45) NOT NULL,
