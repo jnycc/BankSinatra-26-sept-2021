@@ -69,7 +69,9 @@ public class JdbcAdminDao {
             String firstName = resultSet.getString("firstName");
             String prefix = resultSet.getString("prefix");
             String lastName = resultSet.getString("lastName");
+            boolean isBlocked = resultSet.getBoolean("isBlocked");
             Administrator admin = new Administrator(email, password, salt, firstName, prefix, lastName);
+            admin.setBlocked(isBlocked);
             admin.setUserId(id);
             return admin;
         }
