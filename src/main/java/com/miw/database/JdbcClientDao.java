@@ -89,8 +89,10 @@ public class JdbcClientDao implements ClientDao {
       Address address = new Address(city, zipCode, street, houseNumber, houseNrExtension);
       int bsn = resultSet.getInt("bsn");
       LocalDate dateOfBirth = resultSet.getObject("dateOfBirth", LocalDate.class);
+      boolean isBlocked = resultSet.getBoolean("isBlocked");
       Client client = new Client(email, password, salt, firstName, prefix, lastName, dateOfBirth, bsn, address);
       client.setUserId(id);
+      client.setBlocked(isBlocked);
       return client;
     }
   }

@@ -27,33 +27,47 @@ public class LoginController {
     private AuthenticationService authenticationService;
     private TokenService tokenService;
     private JdbcClientDao jdbcClientDao;
+    private Gson gson;
 
     private final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @Autowired
-    public LoginController(AuthenticationService authenticationService, TokenService ts, JdbcClientDao jdbcClientDao) {
+    public LoginController(AuthenticationService authenticationService, TokenService ts, JdbcClientDao jdbcClientDao, Gson gson) {
         super();
         this.authenticationService = authenticationService;
         this.tokenService = ts;
         this.jdbcClientDao = jdbcClientDao;
+        this.gson = gson;
         logger.info("New LoginController Created");
     }
 
-    // TODO Eventueel JWT implementeren
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody String credentials) {
-        //TODO: string omzetten in Json
-        Gson gson = new Gson();
-        Credentials credentials1 = gson.fromJson(credentials, Credentials.class);
+    public ResponseEntity<?> loginUser(@RequestBody String credentialsAsJson) {
+        @Valid Credentials credentials = gson.fromJson(credentialsAsJson, Credentials.class);
 
-        String token = authenticationService.authenticate(credentials1);
+        String response = authenticationService.authenticate(credentials);
+
+        if (response.equals(authenticationService.getINVALID_CREDENTIALS())){
+            return new ResponseEntity<>(authenticationService.getINVALID_CREDENTIALS(), HttpStatus.UNAUTHORIZED);
+        } else if (response.equals(authenticationService.getBLOCKED_USER())) {
+            return new ResponseEntity<>(authenticationService.getBLOCKED_USER(), HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/admin/login")
+    public ResponseEntity<?> loginAdmin(@RequestBody String credentialsAsJson) {
+        @Valid Credentials credentials = gson.fromJson(credentialsAsJson, Credentials.class);
+
+        String token = authenticationService.authenticateAdmin(credentials);
         if (!token.isEmpty()) {
             return new ResponseEntity<>(token, HttpStatus.OK);
         }
         return new ResponseEntity<>("Invalid log-in details", HttpStatus.UNAUTHORIZED);
     }
 
-    // TODO Eventueel deze methode hieruit halen, alleen voor test-doeleinden bedoeld
+
+    // TODO Eventueel deze methode hieruit halen, voorbeeld van resource ophalen met token
     @GetMapping("/gegevens/{email}")
     public ResponseEntity<?> showMyData(@RequestHeader("Authorization") String token, @PathVariable("email") @Email String email) {
         //Claims claims = tokenService.decodeJwt
