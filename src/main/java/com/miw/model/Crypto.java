@@ -4,14 +4,12 @@ import java.util.Objects;
 
 public class Crypto {
 
-    // ATTRIBUTES
+    private int cryptoId;
     private String name;
     private String symbol;
     private String description;
     private double exchangeRate;
 
-
-    // CONSTRUCTORS
     public Crypto(String name, String symbol, String description) {
         this.name = name;
         this.symbol = symbol;
@@ -19,14 +17,24 @@ public class Crypto {
         this.exchangeRate = retrieveValue();
     }
 
-    // METHODS
     private double retrieveValue() {
         //TODO: get recent value of cryptocoin thru API?
         return 0.0;
     }
 
-    // GETTERS & SETTERS
-    public double getValue() {
+    public int getCryptoId() {
+        return cryptoId;
+    }
+
+    public void setCryptoId(int cryptoId) {
+        this.cryptoId = cryptoId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getExchangeRate() {
         return exchangeRate;
     }
 

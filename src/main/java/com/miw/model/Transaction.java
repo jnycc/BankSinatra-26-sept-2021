@@ -5,7 +5,7 @@ import java.util.Objects;
 public class Transaction {
 
     // ATTRIBUTES
-    private int transactionNumber;
+    private int transactionId;
     private LocalDateTime transactionDate;
     private Client buyer;
     private Client seller;
@@ -27,7 +27,6 @@ public class Transaction {
         this.transactionDate = LocalDateTime.now();
     }
 
-
     // units based on price
     public Transaction(Client buyer, Client seller, Crypto crypto, double price, double bankCosts) {
         this.buyer = buyer;
@@ -41,28 +40,59 @@ public class Transaction {
 
     // METHODS
     private double calculatePrice() {
-        //TODO: calculate price based on unit and course value of cryptocoin
-        return units * crypto.getValue();
+        return units * crypto.getExchangeRate();
     }
 
     private double calculateUnits(double price) {
-        //TODO: calculate units based on price and course value of cryptocoin
-        return price / crypto.getValue();
+        //TODO: calculate units based on price and course value of cryptocoin - add bank costs?
+        return price / crypto.getExchangeRate();
     }
 
     // GETTERS & SETTERS
 
+
+    public void setTransactionId(int transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public LocalDateTime getTransactionDate() {
+        return transactionDate;
+    }
+
+    public Client getBuyer() {
+        return buyer;
+    }
+
+    public Client getSeller() {
+        return seller;
+    }
+
+    public Crypto getCrypto() {
+        return crypto;
+    }
+
+    public double getUnits() {
+        return units;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public double getBankCosts() {
+        return bankCosts;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
-        return transactionNumber == that.transactionNumber;
+        return transactionId == that.transactionId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(transactionNumber);
+        return Objects.hash(transactionId);
     }
 }

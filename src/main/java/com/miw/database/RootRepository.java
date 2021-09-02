@@ -5,10 +5,8 @@
  */
 package com.miw.database;
 
-import com.miw.model.Account;
-import com.miw.model.Administrator;
-import com.miw.model.Client;
-import com.miw.model.User;
+import com.miw.model.*;
+import com.miw.service.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +20,15 @@ public class RootRepository {
     private ClientDao clientDAO;
     private JdbcAccountDao jdbcAccountDao; // TODO: interface aanroepen ipv jdbcAccountDAO zelf
     private JdbcAdminDao jdbcAdminDao; // TODO: interface aanroepen ipv jdbcAdminDao zelf
+    private JdbcTransactionDao jdbcTransactionDao; //TODO: interface aanroepen ipv JdbcTransactionDao zelf
 
     @Autowired
-    public RootRepository(ClientDao clientDAO, JdbcAccountDao jdbcAccountDao, JdbcAdminDao jdbcAdminDao) { // TODO: interface aanroepen ipv jdbcAccountDao en jdbcAdminDao zelf
+    public RootRepository(ClientDao clientDAO, JdbcAccountDao jdbcAccountDao, JdbcAdminDao jdbcAdminDao, JdbcTransactionDao jdbcTransactionDao) { // TODO: interface aanroepen ipv jdbcAccountDao, jdbcAdminDao en jdbcTransactionDao zelf
         super();
         this.clientDAO = clientDAO;
         this.jdbcAccountDao = jdbcAccountDao;
         this.jdbcAdminDao = jdbcAdminDao;
+        this.jdbcTransactionDao = jdbcTransactionDao;
         logger.info("New RootRepository-object created");
     }
 
@@ -43,6 +43,11 @@ public class RootRepository {
     public Administrator saveNewAdmin(Administrator admin) {
         jdbcAdminDao.save(admin);
         return admin;
+    }
+
+    public Transaction saveNewTransaction(Transaction transaction){
+        jdbcTransactionDao.save(transaction);
+        return transaction;
     }
 
     public User findClientByEmail(String email) {
