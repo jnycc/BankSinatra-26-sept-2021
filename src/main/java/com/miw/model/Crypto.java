@@ -57,7 +57,7 @@ public class Crypto {
                 "name='" + name + '\'' +
                 ", symbol='" + symbol + '\'' +
                 ", description='" + description + '\'' +
-                ", exchangeRate=" + exchangeRate +
+                ", exchangeRate=" + cryptoPrice +
                 '}';
     }
 }
