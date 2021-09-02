@@ -1,8 +1,6 @@
 package com.miw.database;
 
 import com.miw.model.Account;
-import com.miw.model.Address;
-import com.miw.model.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.time.LocalDate;
 
 @Repository
 public class JdbcAccountDao {
@@ -44,14 +41,18 @@ public class JdbcAccountDao {
         return account;
     }
 
+    public void updateBalance(double newBalance, int accountId){
+        String updateQuery = "UPDATE Account SET balance = ? WHERE accountID = ?;";
+        jdbcTemplate.update(updateQuery, newBalance, accountId);
+    }
+
     public Account getAccountByEmail(String email) {
-        String sql = "SELECT * FROM account WHERE userID = ( SELECT userID FROM user WHERE email = ?);";
+        String sql = "SELECT * FROM Account WHERE userID = ( SELECT userID FROM user WHERE email = ?);";
         try {
             return jdbcTemplate.queryForObject(sql, new JdbcAccountDao.AccountRowMapper(), email);
         } catch (EmptyResultDataAccessException e) {
             logger.info("Account does not exist in the database");
             return null;
-
         }
     }
 
@@ -59,8 +60,8 @@ public class JdbcAccountDao {
 
         @Override
         public Account mapRow(ResultSet resultSet, int i) throws SQLException {
-            int accountId  = resultSet.getInt("accountID");;
-            String iban  = resultSet.getString("IBAN");;
+            int accountId  = resultSet.getInt("accountID");
+            String iban  = resultSet.getString("IBAN");
             double balance = resultSet.getDouble("balance");
             Account account = new Account(balance);
             account.setIban(iban);

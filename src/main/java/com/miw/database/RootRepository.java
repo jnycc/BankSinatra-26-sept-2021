@@ -6,7 +6,6 @@
 package com.miw.database;
 
 import com.miw.model.*;
-import com.miw.service.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +55,13 @@ public class RootRepository {
 
     public Administrator findAdminByEmail(String email) {
         return jdbcAdminDao.findByEmail(email);
+    }
+
+    public Account getAccountByEmail(String email){
+        return jdbcAccountDao.getAccountByEmail(email);
+    }
+
+    public void updateBalance(double newBalance, int accountId){
+        jdbcAccountDao.updateBalance(newBalance, accountId);
     }
 }

@@ -1,6 +1,5 @@
 package com.miw.service;
 
-import com.miw.database.JdbcTransactionDao;
 import com.miw.database.RootRepository;
 import com.miw.model.Client;
 import com.miw.model.Crypto;
@@ -29,16 +28,29 @@ public class TransactionService {
         rootRepository.saveNewTransaction(transaction);
     }
 
-    public boolean checkSufficientBalance(Client buyer, double transactionPrice){
-        // TODO: aanvullen als AccountDao is aangevuld
-        //maar basically rootRepository.findAccountByClient(buyer).getBalance >= transactionPrice
-        return false;
+    //TODO: uitbreiden met bankkosten erbij (wss buyer en seller meegeven - iets met instanceOf Bank oid)
+    public boolean checkSufficientBalance(String email, double transactionPrice){
+        return rootRepository.getAccountByEmail(email).getBalance() >= transactionPrice;
     }
 
     public boolean checkSufficientCrypto(Client seller, Crypto crypto, double units){
         // TODO: aanvullen als we PortfolioDao oid hebben
         //maar ook hier: aantal crypto in portfolio seller moet >= aantal crypto dat de buyer wil kopen
         return false;
+    }
+
+    public void transferBalance(Client seller, Client buyer, double price, double bankCosts){
+        //TODO: bankkosten nog verrekenen :) Dus ook een getAccountBank-methode in Dao?
+
+        double newSellerBalance = rootRepository.getAccountByEmail(seller.getEmail()).getBalance() + price;
+        double newBuyerBalance = rootRepository.getAccountByEmail(buyer.getEmail()).getBalance() - price;
+
+        rootRepository.updateBalance(newSellerBalance, seller.getAccount().getAccountId());
+        rootRepository.updateBalance(newBuyerBalance, buyer.getAccount().getAccountId());
+    }
+
+    public void transferCrypto(Client seller, Client buyer, Crypto crypto, double units){
+        //TODO: zie hierboven maar dan met Crypto. Portfolio-funcionaliteit voor nodig
     }
 
 }

@@ -31,11 +31,11 @@ public class JdbcTransactionDao {
                 "VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         ps.setDate(1, java.sql.Date.valueOf(transaction.getTransactionDate().toLocalDate())); //TODO: dit moet anders kunnen denk ik :)
         ps.setDouble(2, transaction.getUnits());
-        ps.setDouble(3, transaction.getCrypto().getExchangeRate());
+        ps.setDouble(3, transaction.getCrypto().getPrice());
         ps.setDouble(4, transaction.getBankCosts());
         ps.setInt(5, transaction.getBuyer().getUserId());
         ps.setInt(6, transaction.getSeller().getUserId());
-        ps.setInt(7, transaction.getCrypto().getCryptoId()); //TODO: manier om CryptoID te setten!
+        ps.setInt(7, transaction.getCrypto().getCryptoId()); //TODO: manier om CryptoID te setten! Of we moeten dit anders doen
         return ps;
     }
 

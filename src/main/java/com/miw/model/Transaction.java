@@ -4,7 +4,6 @@ import java.util.Objects;
 
 public class Transaction {
 
-    // ATTRIBUTES
     private int transactionId;
     private LocalDateTime transactionDate;
     private Client buyer;
@@ -13,9 +12,6 @@ public class Transaction {
     private double units;
     private double price;
     private double bankCosts;
-
-
-    // CONSTRUCTORS
 
     // price based on units
     public Transaction(Client buyer, Client seller, Crypto crypto, double units) {
@@ -38,18 +34,14 @@ public class Transaction {
         this.transactionDate = LocalDateTime.now();
     }
 
-    // METHODS
     private double calculatePrice() {
-        return units * crypto.getExchangeRate();
+        return units * crypto.getPrice();
     }
 
     private double calculateUnits(double price) {
         //TODO: calculate units based on price and course value of cryptocoin - add bank costs?
-        return price / crypto.getExchangeRate();
+        return price / crypto.getPrice();
     }
-
-    // GETTERS & SETTERS
-
 
     public void setTransactionId(int transactionId) {
         this.transactionId = transactionId;
