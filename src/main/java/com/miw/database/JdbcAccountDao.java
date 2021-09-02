@@ -1,21 +1,26 @@
 package com.miw.database;
 
 import com.miw.model.Account;
+import com.miw.model.Address;
+import com.miw.model.Client;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDate;
 
 @Repository
 public class JdbcAccountDao {
 
     private JdbcTemplate jdbcTemplate;
+    private final Logger logger = LoggerFactory.getLogger(JdbcAccountDao.class);
 
     @Autowired
     public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
@@ -37,6 +42,31 @@ public class JdbcAccountDao {
         int accountId = keyHolder.getKey().intValue();
         account.setAccountId(accountId);
         return account;
+    }
+
+    public Account getAccountByEmail(String email) {
+        String sql = "SELECT * FROM account WHERE userID = ( SELECT userID FROM user WHERE email = ?);";
+        try {
+            return jdbcTemplate.queryForObject(sql, new JdbcAccountDao.AccountRowMapper(), email);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Account does not exist in the database");
+            return null;
+
+        }
+    }
+
+    private static class AccountRowMapper implements RowMapper<Account> {
+
+        @Override
+        public Account mapRow(ResultSet resultSet, int i) throws SQLException {
+            int accountId  = resultSet.getInt("accountID");;
+            String iban  = resultSet.getString("IBAN");;
+            double balance = resultSet.getDouble("balance");
+            Account account = new Account(balance);
+            account.setIban(iban);
+            account.setAccountId(accountId);
+            return account;
+        }
     }
 
 }
