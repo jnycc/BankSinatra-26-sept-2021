@@ -56,10 +56,10 @@ class TokenServiceTest {
         long todayMilSec = today.getTime();
 
         // create jwt with expiration date of 10 minutes in the future
-        String expiredJwt = tokenService.jwtBuilderSetDate("test@testen.nl",todayMilSec, 600000); //10 min
+        String validJwt = tokenService.jwtBuilderSetDate("test@testen.nl",todayMilSec, 600000); //10 min
 
         // assert equals
-        Boolean actual = tokenService.decodeJWTBool(expiredJwt);
+        Boolean actual = tokenService.decodeJWTBool(validJwt);
         Boolean expected = true;
         assertEquals(expected, actual);
     }
