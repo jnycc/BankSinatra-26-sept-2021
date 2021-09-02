@@ -26,10 +26,24 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`BankingFee` (
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Crypto` (
     `cryptoID` INT NOT NULL,
     `symbol` VARCHAR(10) NOT NULL,
-    `exchangeRate` DECIMAL(25) NOT NULL,
     `description` VARCHAR(150) NOT NULL,
     `name` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`cryptoID`));
+
+-- -----------------------------------------------------
+-- Table `banksinatra`.`ExchangeRate`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `banksinatra`.`ExchangeRate` (
+    `cryptoID` INT NOT NULL,
+    `exchangeRate` DECIMAL(10,0) NOT NULL,
+    `dateRetrieved` DATETIME NOT NULL,
+    PRIMARY KEY (`cryptoID`, `dateRetrieved`),
+    INDEX `crypto_exchangerate_idx` (`cryptoID` ASC) VISIBLE,
+    CONSTRAINT `crypto_exchangerate`
+    FOREIGN KEY (`cryptoID`)
+    REFERENCES `banksinatra`.`Crypto` (`cryptoID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
