@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Map;
+
 @Repository
 public class RootRepository {
 
@@ -19,14 +21,16 @@ public class RootRepository {
     private ClientDao clientDAO;
     private JdbcAccountDao jdbcAccountDao; // TODO: interface aanroepen ipv jdbcAccountDAO zelf
     private JdbcAdminDao jdbcAdminDao; // TODO: interface aanroepen ipv jdbcAdminDao zelf
+    private JdbcAssetDao jdbcAssetDao;
     private JdbcTransactionDao jdbcTransactionDao; //TODO: interface aanroepen ipv JdbcTransactionDao zelf
 
     @Autowired
-    public RootRepository(ClientDao clientDAO, JdbcAccountDao jdbcAccountDao, JdbcAdminDao jdbcAdminDao, JdbcTransactionDao jdbcTransactionDao) { // TODO: interface aanroepen ipv jdbcAccountDao, jdbcAdminDao en jdbcTransactionDao zelf
+    public RootRepository(ClientDao clientDAO, JdbcAccountDao jdbcAccountDao, JdbcAdminDao jdbcAdminDao, JdbcAssetDao jdbcAssetDao, JdbcTransactionDao jdbcTransactionDao) { // TODO: interface aanroepen ipv jdbcAccountDao, jdbcAdminDao en jdbcTransactionDao zelf
         super();
         this.clientDAO = clientDAO;
         this.jdbcAccountDao = jdbcAccountDao;
         this.jdbcAdminDao = jdbcAdminDao;
+        this.jdbcAssetDao = jdbcAssetDao;
         this.jdbcTransactionDao = jdbcTransactionDao;
         logger.info("New RootRepository-object created");
     }
@@ -63,5 +67,10 @@ public class RootRepository {
 
     public void updateBalance(double newBalance, int accountId){
         jdbcAccountDao.updateBalance(newBalance, accountId);
+    }
+
+    public Map<String, Asset> getAssets(int accountId) {
+        Map<String, Asset> assets = jdbcAssetDao.getAssets(accountId);
+        return null;
     }
 }

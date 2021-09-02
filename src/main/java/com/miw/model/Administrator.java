@@ -6,7 +6,7 @@ public class Administrator extends User {
         super(email, password, salt, firstName, prefix, lastName, true);
     }
 
-    public Administrator(String email, String password) { //TODO: deze kan weg?
+    public Administrator(String email, String password) {
         this(email, password, null, null, null, null);
     }
 
