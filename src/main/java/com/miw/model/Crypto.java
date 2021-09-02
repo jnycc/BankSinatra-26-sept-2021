@@ -10,11 +10,11 @@ public class Crypto {
     private String description;
     private double cryptoPrice;
 
-    public Crypto(String name, String symbol, String description) {
+    public Crypto(String name, String symbol, String description, Double cryptoPrice) {
         this.name = name;
         this.symbol = symbol;
         this.description = description;
-        this.cryptoPrice = retrieveValue();
+        this.cryptoPrice = cryptoPrice;
     }
 
     private double retrieveValue() {
@@ -49,5 +49,16 @@ public class Crypto {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return "Crypto{" +
+                "cryptoId=" + cryptoId +
+                ", name='" + name + '\'' +
+                ", symbol='" + symbol + '\'' +
+                ", description='" + description + '\'' +
+                ", cryptoPrice=" + cryptoPrice +
+                '}';
     }
 }
