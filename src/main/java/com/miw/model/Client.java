@@ -20,7 +20,7 @@ public class Client extends User{
     @Valid
     private Address address;
     private Map<Crypto, Double> portfolio;
-    private Account account = new Account();
+    private Account account;
 
     public Client(String email, String password, String salt, String firstName, String prefix, String lastName, LocalDate dateOfBirth, int bsn, Address address) {
         super(email, password, salt, firstName, prefix, lastName);
@@ -35,6 +35,7 @@ public class Client extends User{
     }
 
     public Client() {
+        this.account = new Account();
     }
 
     public LocalDate getDateOfBirth() {
@@ -69,6 +70,7 @@ public class Client extends User{
     public String toString() {
         return "Client{" +
                 "account=" + account +
+                ", userId=" + userId +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';

@@ -20,10 +20,10 @@ public class BankSinatraApplication {
         SpringApplication.run(BankSinatraApplication.class, args);
 
         // TODO Vul Bank portfolio met daadwerkelijke Cryptomunten
-        for (int i = 1; i < NR_CRYPTOS + 1; i++) {
-            Crypto crypto = new Crypto(String.format("%d", i), String.format("Crypto key %d", i), "Crypto description");
-            cryptos.add(crypto);
-        }
+//        for (int i = 1; i < NR_CRYPTOS + 1; i++) {
+//            Crypto crypto = new Crypto(String.format("%d", i), String.format("Crypto key %d", i), "Crypto description", null);
+//            cryptos.add(crypto);
+//        }
         bank = new Bank(cryptos);
 
         System.out.println(bank);

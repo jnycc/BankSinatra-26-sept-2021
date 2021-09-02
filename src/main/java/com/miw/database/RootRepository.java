@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @Repository
 public class RootRepository {
@@ -53,8 +55,12 @@ public class RootRepository {
         return transaction;
     }
 
-    public User findClientByEmail(String email) {
-        return clientDAO.findByEmail(email);
+    public Client findClientByEmail(String email) {
+        Client client = clientDAO.findByEmail(email);
+        if (client != null) {
+            client.setAccount(getAccountByEmail(email));
+        }
+        return client;
     }
 
     public Administrator findAdminByEmail(String email) {
@@ -69,8 +75,9 @@ public class RootRepository {
         jdbcAccountDao.updateBalance(newBalance, accountId);
     }
 
-    public Map<String, Asset> getAssets(int accountId) {
-        Map<String, Asset> assets = jdbcAssetDao.getAssets(accountId);
-        return null;
+    public List<Asset> getAssets(int accountId) {
+//        Map<String, Asset> assetMap = new TreeMap<>();
+        List<Asset> assets = jdbcAssetDao.getAssets(accountId);
+        return assets;
     }
 }

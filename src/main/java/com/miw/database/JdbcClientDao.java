@@ -61,7 +61,7 @@ public class JdbcClientDao implements ClientDao {
 
   @Override
   public Client findByEmail(String email) {
-    String sql = "SELECT * FROM User WHERE email = ?";
+    String sql = "SELECT * FROM `User` WHERE email = ?";
     try {
       return jdbcTemplate.queryForObject(sql, new ClientRowMapper(), email);
     } catch (EmptyResultDataAccessException e) {
