@@ -10,7 +10,6 @@ import com.miw.database.JdbcClientDao;
 import com.miw.model.Administrator;
 import com.miw.model.Client;
 import com.miw.model.Credentials;
-import com.miw.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
