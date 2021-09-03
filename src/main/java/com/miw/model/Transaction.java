@@ -6,15 +6,15 @@ public class Transaction {
 
     private int transactionId;
     private LocalDateTime transactionDate;
-    private Client buyer;
-    private Client seller;
+    private int buyer;
+    private int seller;
     private Crypto crypto;
     private double units;
     private double transactionPrice;
     private double bankCosts;
 
     // price based on units
-    public Transaction(Client buyer, Client seller, Crypto crypto, double units) {
+    public Transaction(int buyer, int seller, Crypto crypto, double units) {
         this.buyer = buyer;
         this.seller = seller;
         this.crypto = crypto;
@@ -24,13 +24,13 @@ public class Transaction {
     }
 
     // units based on price
-    public Transaction(Client buyer, Client seller, Crypto crypto, double price, double bankCosts) {
+    public Transaction(int buyer, int seller, Crypto crypto, double transactionPrice, double bankCosts) {
         this.buyer = buyer;
         this.seller = seller;
         this.crypto = crypto;
-        this.transactionPrice = price;
+        this.transactionPrice = transactionPrice;
         this.bankCosts = bankCosts;
-        this.units = calculateUnits(price);
+        this.units = calculateUnits(transactionPrice);
         this.transactionDate = LocalDateTime.now();
     }
 
@@ -38,10 +38,10 @@ public class Transaction {
         return units * crypto.getCryptoPrice();
     }
 
-    private double calculateUnits(double price) {
-        //TODO: calculate units based on price and course value of cryptocoin - add bank costs?
-        return price / crypto.getCryptoPrice();
+    private double calculateUnits(double transactionPrice) {
+        return transactionPrice / crypto.getCryptoPrice();
     }
+
 
     public void setTransactionId(int transactionId) {
         this.transactionId = transactionId;
@@ -51,11 +51,11 @@ public class Transaction {
         return transactionDate;
     }
 
-    public Client getBuyer() {
+    public int getBuyer() {
         return buyer;
     }
 
-    public Client getSeller() {
+    public int getSeller() {
         return seller;
     }
 
