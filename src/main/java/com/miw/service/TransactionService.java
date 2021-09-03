@@ -29,7 +29,7 @@ public class TransactionService {
     }
 
     public boolean checkSufficientBalance(int accountId, double transactionPrice, double bankCosts){
-        return rootRepository.getAccountById(accountId).getBalance() >= transactionPrice * bankCosts;
+        return rootRepository.getAccountById(accountId).getBalance() >= transactionPrice + (transactionPrice * bankCosts);
     }
 
     public boolean checkSufficientCrypto(int seller, Crypto crypto, double units){
