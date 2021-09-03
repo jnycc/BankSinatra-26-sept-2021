@@ -26,7 +26,7 @@ public class TokenService {
     }
 
 
-    public String jwtBuilder(String userEmail, long expTime){ // input: Role role (nieuwe klasse Role?)
+    public static String jwtBuilder(String userEmail, long expTime){ // input: Role role (nieuwe klasse Role?)
         //generating secret key for JWT signature
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("d24145c413bac64082d2a9681e20890a");
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
@@ -46,7 +46,7 @@ public class TokenService {
         return builder.compact();
     }
 
-    public String jwtBuilderSetDate(String userEmail, long msNow,  long expTime){
+    public static String jwtBuilderSetDate(String userEmail, long msNow,  long expTime){
         //generating secret key for JWT signature
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("d24145c413bac64082d2a9681e20890a");
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
@@ -73,7 +73,18 @@ public class TokenService {
                 .parseClaimsJws(jwt).getBody();
     }
 
-    public Boolean decodeJWTBool(String jwt) {
+    public static String validateAndGetEmailJWT(String jwt) {
+        try {
+            return Jwts.parser()
+                    .setSigningKey(DatatypeConverter.parseBase64Binary("d24145c413bac64082d2a9681e20890a"))
+                    .parseClaimsJws(jwt).getBody().getSubject();
+        } catch (ExpiredJwtException expired) {
+            return null;
+        }
+    }
+
+
+    public static Boolean decodeJWTBool(String jwt) {
         //This line will throw an exception if it is not a signed JWS (as expected)
         try {
             Claims claims = Jwts.parser()

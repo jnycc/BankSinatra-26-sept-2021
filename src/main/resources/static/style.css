@@ -1,0 +1,169 @@
+#stylesheet
+
+@font-face {font-family: "Sinatra";
+    src: url("fonts/Sinatra.woff") format('woff');
+    font-weight: normal;
+    font-style: oblique;
+}
+@font-face {font-family: "Paradise";
+    src: url("fonts/Paradise.woff") format('woff');
+    font-weight: normal;
+    font-style: oblique;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    font-family: "Bookman Old Style", monospace;;
+}
+
+
+
+.header {
+    height: 120px;
+    width: 100%;
+    display: block;
+    background: lightgray;
+}
+
+.innerHeader {
+    height: 100%;
+    width: 1200px;
+    display: block;
+    margin: 0 auto;
+    background: #001d23;
+    color: #BABAD1;
+    font-family: "Sinatra", "Bookman Old Style", monospace;
+    font-size: 30px;
+    align-content: center;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.logoContainer {
+    height: 100%;
+    display: table;
+    float: left;
+    font-size: 30px;
+}
+
+.logoContainer h1 {
+    color: #BABAD1;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    font-family: "Paradise", "Bookman Old Style", monospace;
+    font-weight: 200;
+}
+
+.logoContainer h1 span {
+    font-weight: 800;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    font-family: "Paradise", "Bookman Old Style", monospace;
+}
+
+.navigation {
+    float: right;
+    height: 100%;
+    font-size: 20px;
+}
+
+.navigation a {
+    height: 100%;
+    display: table;
+    float: left;
+    padding: 2px 20px;
+}
+
+.navigation a li{
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    float: left;
+    padding: 2px 20px;
+    font-family: "Paradise", "Bookman Old Style", monospace;
+    color: #BABAD1;
+}
+
+.page {
+    height: 100%;
+    width: 1200px;
+    top: 120px;
+    display: block;
+    margin-left: 50px;
+    background: #BABAD1;
+    color: #001d23;
+    font-family: "Paradise", "Bookman Old Style", monospace;
+    font-size: 30px;
+}
+
+.titleBar {
+    font-family: "Sinatra", "Bookman Old Style", monospace;
+    font-size: 120px;
+    color: darkgoldenrod;
+    background: lightgray;
+    position: fixed;
+    height: 150px;
+    width: 100%;
+    display: block;
+    left: 0;
+    right: 0;
+    top: 0;
+    text-align: center;
+    padding: 20px 20px;
+}
+
+body {
+    background: lightgray;
+}
+.text {
+    font-family: "Paradise", monospace;
+    color: lightgray;
+    margin:0;
+    padding: 0;
+}
+.navigationBar {
+    font-family: "Paradise", "Bookman Old Style", monospace;
+    font-size: 60px;
+    color: darkgoldenrod;
+    background: lightgray;
+    position: fixed;
+    height: 65px;
+    width: 100%;
+    left: 0;
+    right: 0;
+    top: 0;
+    text-align: left;
+    padding: 20px 20px;
+}
+
+.button {
+    font-family: "Sinatra", "Bookman Old Style", monospace;
+    font-size: 10px;
+    background-color: lightgray;
+    outline: black;
+    color: ghostwhite;
+    border: solid 2px black;
+    border-radius: 10px;
+    padding: 10px 20px 10px 20px;
+    margin: 5px;
+    width: 1200px;
+}
+
+
+.gradient {
+    font-family: "Sinatra", "Bookman Old Style", monospace;
+    font-size: 100px;
+    background: radial-gradient(closest-side, navajowhite, goldenrod, darkgoldenrod, saddlebrown);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    padding: 30px 50px;
+    position: fixed;
+    top: -15px;
+    width: 100%;
+}
