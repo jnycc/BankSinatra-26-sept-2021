@@ -27,14 +27,16 @@ public class JdbcCryptoDao {
     }
 
     // insert met gebruik van symbol ipv id
-    private PreparedStatement insertPriceStatement(String symbol, double price, Connection connection) throws SQLException {
+    private PreparedStatement insertPriceStatement
+    (String symbol, double price, LocalDateTime time, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO CryptoPrice (cryptoID, cryptoPrice, dateRetrieved) " +
-                        "VALUES ((SELECT cryptoID FROM Crypto WHERE symbol = ?), ?, NOW())",
+                        "VALUES ((SELECT cryptoID FROM Crypto WHERE symbol = ?), ?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         );
         ps.setString(1, symbol);
         ps.setDouble(2, price);
+        ps.setTimestamp(3, Timestamp.valueOf(time));
         return ps;
     }
 
@@ -44,7 +46,7 @@ public class JdbcCryptoDao {
                 "FROM Crypto LEFT JOIN CryptoPrice " +
                 "ON Crypto.cryptoID = CryptoPrice.cryptoID " +
                 "WHERE Crypto.cryptoID = " +
-                "   (SELECT cryptoID " +
+                "    (SELECT cryptoID " +
                 "    FROM Crypto " +
                 "    WHERE symbol = ?) " +
                 "AND CryptoPrice.dateRetrieved = " +
@@ -58,9 +60,21 @@ public class JdbcCryptoDao {
         }
     }
 
-    public void saveCryptoPriceBySymbol(String symbol, double price) {
+    // vraagt de koers op die het dichtst bij het tijdstip [nu minus X aantal uur in het verleden] is opgeslagen
+    public double getPastPriceBySymbol(String symbol, int hoursAgo) {
+        String sql = "SELECT cryptoPrice FROM CryptoPrice WHERE cryptoID = (SELECT cryptoID FROM Crypto WHERE symbol = ?) " +
+                "ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, (NOW() - INTERVAL ? HOUR))) LIMIT 1;" ;
+        try {
+            return jdbcTemplate.queryForObject(sql, Double.class, symbol, hoursAgo);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Failed to get past crypto price by symbol");
+            return 0;
+        }
+    }
+
+    public void saveCryptoPriceBySymbol(String symbol, double price, LocalDateTime time) {
         String symbolClean = symbol.substring(1, (symbol.length() - 1)); //clean up quotation marks leftover from json
-        jdbcTemplate.update(connection -> insertPriceStatement(symbolClean, price, connection));
+        jdbcTemplate.update(connection -> insertPriceStatement(symbolClean, price, time, connection));
     }
 
     private static class CryptoRowMapper implements RowMapper<Crypto> {
