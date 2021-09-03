@@ -33,9 +33,9 @@ public class JdbcTransactionDao {
         ps.setDouble(2, transaction.getUnits());
         ps.setDouble(3, transaction.getCrypto().getCryptoPrice());
         ps.setDouble(4, transaction.getBankCosts());
-        ps.setInt(5, transaction.getBuyer().getUserId());
-        ps.setInt(6, transaction.getSeller().getUserId());
-        ps.setInt(7, transaction.getCrypto().getCryptoId()); //TODO: manier om CryptoID te setten! Of we moeten dit anders doen
+        ps.setInt(5, transaction.getBuyer());
+        ps.setInt(6, transaction.getSeller());
+        ps.setInt(7, transaction.getCrypto().getCryptoId());
         return ps;
     }
 

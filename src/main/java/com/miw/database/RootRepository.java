@@ -67,6 +67,10 @@ public class RootRepository {
         return jdbcAdminDao.findByEmail(email);
     }
 
+    public Account getAccountById(int accountId){
+        return jdbcAccountDao.getAccountById(accountId);
+    }
+
     public Account getAccountByEmail(String email){
         return jdbcAccountDao.getAccountByEmail(email);
     }
