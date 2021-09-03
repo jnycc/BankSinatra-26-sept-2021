@@ -2,7 +2,7 @@ package com.miw.model;
 
 import java.util.Objects;
 
-public class Crypto {
+public class Crypto implements Comparable<Crypto>{
 
     private int cryptoId;
     private String name;
@@ -60,5 +60,10 @@ public class Crypto {
                 ", description='" + description + '\'' +
                 ", cryptoPrice=" + cryptoPrice +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Crypto o) {
+        return this.cryptoId - o.getCryptoId();
     }
 }

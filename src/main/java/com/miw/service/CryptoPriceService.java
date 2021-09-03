@@ -102,4 +102,8 @@ public class CryptoPriceService {
         }
         return responseContent;
     }
+
+    public JdbcCryptoDao getJdbcCryptoDao() {
+        return jdbcCryptoDao;
+    }
 }
