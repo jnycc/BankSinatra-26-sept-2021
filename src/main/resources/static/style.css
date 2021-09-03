@@ -25,7 +25,7 @@
     height: 120px;
     width: 100%;
     display: block;
-    background: lightgray;
+    background: #002932;
 }
 
 .innerHeader {
@@ -33,9 +33,9 @@
     width: 1200px;
     display: block;
     margin: 0 auto;
-    background: #001d23;
+    background: #002932;
     color: #BABAD1;
-    font-family: "Sinatra", "Bookman Old Style", monospace;
+    font-family: "Paradise",  "Bookman Old Style", monospace !important;
     font-size: 30px;
     align-content: center;
     align-items: center;
