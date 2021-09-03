@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 
 @Repository
 public class JdbcCryptoDao {
@@ -24,6 +25,19 @@ public class JdbcCryptoDao {
         this.jdbcTemplate = jdbcTemplate;
         logger.info("New JdbcCryptoDao");
     }
+
+    // insert met gebruik van symbol ipv id
+    private PreparedStatement insertPriceStatement(String symbol, double price, Connection connection) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(
+                "INSERT INTO CryptoPrice (cryptoID, cryptoPrice, dateRetrieved) " +
+                        "VALUES ((SELECT cryptoID FROM Crypto WHERE symbol = ?), ?, NOW())",
+                Statement.RETURN_GENERATED_KEYS
+        );
+        ps.setString(1, symbol);
+        ps.setDouble(2, price);
+        return ps;
+    }
+
     // selecteert crypto en neemt automatisch de meest recente opgeslagen prijs
     public Crypto getCryptoBySymbol(String symbol) {
         String sql = "SELECT Crypto.*, CryptoPrice.cryptoPrice " +
@@ -42,6 +56,11 @@ public class JdbcCryptoDao {
             logger.info("Failed to get crypto by symbol");
             return null;
         }
+    }
+
+    public void saveCryptoPriceBySymbol(String symbol, double price) {
+        String symbolClean = symbol.substring(1, (symbol.length() - 1)); //clean up quotation marks leftover from json
+        jdbcTemplate.update(connection -> insertPriceStatement(symbolClean, price, connection));
     }
 
     private static class CryptoRowMapper implements RowMapper<Crypto> {
