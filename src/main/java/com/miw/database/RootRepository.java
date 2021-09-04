@@ -84,4 +84,8 @@ public class RootRepository {
         List<Asset> assets = jdbcAssetDao.getAssets(accountId);
         return assets;
     }
+
+    public double getSumOfUnitsPurchasedAndSold(int accountId) {
+        return jdbcTransactionDao.getSumOfUnitsPurchasedAndSold(accountId);
+    }
 }

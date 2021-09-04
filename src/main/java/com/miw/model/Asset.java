@@ -5,11 +5,11 @@ public class Asset {
     public Crypto crypto;
     private double units;
     private double currentValue;
-    private double deltaValueDay;
-    private double deltaValueMonth;
-    private double deltaValue3Months;
-    private double deltaValueYear;
-    private double deltaValueStart;
+    private double deltaDayValue;
+    private double deltaMonthValue;
+    private double delta3MonthsValue;
+    private double deltaYearValue;
+    private double deltaStartValue;
 
     public Asset(Crypto crypto, double units) {
         this.crypto = crypto;
@@ -46,11 +46,11 @@ public class Asset {
         this.currentValue = currentValue;
     }
 
-    public double getDeltaValueDay() {
-        return deltaValueDay;
+    public double getDeltaDayValue() {
+        return deltaDayValue;
     }
 
-    public void setDeltaValueDay(double deltaValueDay) {
-        this.deltaValueDay = deltaValueDay;
+    public void setDeltaDayValue(double deltaDayValue) {
+        this.deltaDayValue = deltaDayValue;
     }
 }

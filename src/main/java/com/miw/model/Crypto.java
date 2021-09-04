@@ -34,6 +34,10 @@ public class Crypto {
         return name;
     }
 
+    public String getSymbol() {
+        return symbol;
+    }
+
     public double getCryptoPrice() {
         return cryptoPrice;
     }
