@@ -48,4 +48,16 @@ public class JdbcTransactionDao {
         return transaction;
     }
 
+    //TODO: aanpassen zodat ie een parameter kan gebruiken voor verschillende situaties: day, month, 3 months, year, start
+    public double getSumOfUnitsPurchasedAndSold(int accountId) {
+        String sql = "SELECT " +
+                "(SELECT SUM(units) FROM `Transaction` " +
+                "WHERE accountID_buyer = ? AND date BETWEEN current_date() AND current_timestamp()) " +
+                "-" +
+                "(SELECT SUM(units) " +
+                "FROM `Transaction` " +
+                "WHERE accountID_seller = ? AND date BETWEEN current_date() AND current_timestamp()) " +
+                "AS sumOfUnitsPurchasedAndSold;";
+        return jdbcTemplate.queryForObject(sql, Double.class, accountId, accountId);
+    }
 }
