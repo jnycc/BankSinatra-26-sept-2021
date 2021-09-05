@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -45,17 +44,17 @@ class LoginControllerTest {
 
     @Test
     void loginUser() {
-        Credentials invalidCredentials = new Credentials("test@test.co", "zeerveiligwachtwoord");
-        Mockito.when(authenticationService.authenticate(invalidCredentials)).thenReturn("");
+        Credentials validCredentials = new Credentials("test@test.com", "zeerveiligwachtwoord2");
+        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MzA2OTE4ODEsInN1YiI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE2MzA2OTkyODF9.e0FE2OrTRImfnkIKkkuACikdh-CZHq7KuzTnQYeUsOI";
+        Mockito.when(authenticationService.authenticate(validCredentials)).thenReturn(token);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/login");
-        request.contentType(MediaType.APPLICATION_JSON).content(asJsonString(invalidCredentials));
-
+        request.contentType(MediaType.APPLICATION_JSON).content(asJsonString(validCredentials));
         try {
             ResultActions actions = mockMvc.perform(request);
-            MockHttpServletResponse response = actions.andExpect(status().isUnauthorized()).andDo(print()).andReturn().getResponse();
-            System.out.println(response.getContentAsString());
+            MockHttpServletResponse response = actions.andExpect(status().isOk()).andDo(print()).andReturn().getResponse();
             assertThat(response.getContentAsString()).isNotEmpty();
             assertThat(response.getContentType()).isEqualTo("text/plain;charset=UTF-8");
+            assertThat(response.getContentAsString()).isEqualTo(token);
         } catch (Exception e) {
             e.printStackTrace();
         }
