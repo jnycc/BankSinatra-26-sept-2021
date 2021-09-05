@@ -38,10 +38,10 @@ class AuthenticationServiceTest {
         Credentials shortPassword = new Credentials("nn@gmail.com", "11");
 
         assertThat(authenticationService.authenticate(validCredentials)).isNotEmpty();
-        assertThat(authenticationService.authenticate(noArgsCredentials)).isNullOrEmpty();
-        assertThat(authenticationService.authenticate(oneMoreCredentials)).isNullOrEmpty();
-        assertThat(authenticationService.authenticate(notAnEmail)).isNullOrEmpty();
-        assertThat(authenticationService.authenticate(shortPassword)).isNullOrEmpty();
+        assertThat(authenticationService.authenticate(noArgsCredentials)).isEqualTo(authenticationService.getINVALID_CREDENTIALS());
+        assertThat(authenticationService.authenticate(oneMoreCredentials)).isEqualTo(authenticationService.getINVALID_CREDENTIALS());
+        assertThat(authenticationService.authenticate(notAnEmail)).isEqualTo(authenticationService.getINVALID_CREDENTIALS());
+        assertThat(authenticationService.authenticate(shortPassword)).isEqualTo(authenticationService.getINVALID_CREDENTIALS());
 
 
     }
