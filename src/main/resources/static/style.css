@@ -167,3 +167,59 @@ body {
     top: -15px;
     width: 100%;
 }
+#overlay{
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 2;
+    cursor: pointer;
+}
+
+#registerFields{
+    padding-left: 15px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 35%;
+    width: 40%;
+    background-color: whitesmoke;
+    color: darkslategray;
+    border-color: darkslategray;
+    border-style: solid;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+}
+
+#submitReg{
+    height: 20px;
+    width: 70px;
+    margin-left: 45%;
+}
+
+.split {
+    height: 100%;
+    width: 50%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.left {
+    right: 45%;
+    top: 40%;
+}
+
+.right {
+    left: 60%;
+    top: 40%;
+}
