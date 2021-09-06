@@ -16,7 +16,6 @@
     padding: 0;
     list-style: none;
     text-decoration: none;
-    font-family: "Bookman Old Style", monospace;;
 }
 
 
@@ -35,8 +34,8 @@
     margin: 0 auto;
     background: #002932;
     color: #BABAD1;
-    font-family: "Paradise",  "Bookman Old Style", monospace !important;
-    font-size: 30px;
+    font-family: "Sinatra",  "Bookman Old Style", monospace;
+    font-size: 50px;
     align-content: center;
     align-items: center;
     vertical-align: middle;
