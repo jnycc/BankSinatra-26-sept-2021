@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.time.LocalDateTime;
 
+// TODO: id's uit crypto wegwerken, primary key -> symbol
+
 @Repository
 public class JdbcCryptoDao {
 
@@ -40,7 +42,7 @@ public class JdbcCryptoDao {
         return ps;
     }
 
-    // selecteert crypto en neemt automatisch de meest recente opgeslagen prijs
+    // Selecteert een crypto uit de db, neemt daarbij automatisch de meest recente opgeslagen prijs in het object op
     public Crypto getCryptoBySymbol(String symbol) {
         String sql = "SELECT Crypto.*, CryptoPrice.cryptoPrice " +
                 "FROM Crypto LEFT JOIN CryptoPrice " +
@@ -60,7 +62,12 @@ public class JdbcCryptoDao {
         }
     }
 
-    // vraagt de koers op die het dichtst bij het tijdstip [nu minus X aantal uur in het verleden] is opgeslagen
+    // Haalt enkel de laatste koers van een gegeven crypto op
+    public double getLatestPriceBySymbol(String symbol) {
+        return getCryptoBySymbol(symbol).getCryptoPrice();
+    }
+
+    // Vraagt de koers op die het dichtst bij het tijdstip [nu minus X aantal uur in het verleden] is opgeslagen
     public double getPastPriceBySymbol(String symbol, int hoursAgo) {
         String sql = "SELECT cryptoPrice FROM CryptoPrice WHERE cryptoID = (SELECT cryptoID FROM Crypto WHERE symbol = ?) " +
                 "ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, (NOW() - INTERVAL ? HOUR))) LIMIT 1;" ;
@@ -73,8 +80,7 @@ public class JdbcCryptoDao {
     }
 
     public void saveCryptoPriceBySymbol(String symbol, double price, LocalDateTime time) {
-        String symbolClean = symbol.substring(1, (symbol.length() - 1)); //clean up quotation marks leftover from json
-        jdbcTemplate.update(connection -> insertPriceStatement(symbolClean, price, time, connection));
+        jdbcTemplate.update(connection -> insertPriceStatement(symbol, price, time, connection));
     }
 
     private static class CryptoRowMapper implements RowMapper<Crypto> {

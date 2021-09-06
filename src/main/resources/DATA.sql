@@ -18,14 +18,4 @@ INSERT INTO Crypto (symbol, description, name) VALUES
 ('ICP', 'Een cryptomunt.', 'Internet Computer'),
 ('WBTC', 'Een cryptomunt.', 'Wrapped Bitcoin'),
 ('MATIC', 'Een cryptomunt.', 'Polygon'),
-('VET', 'Een cryptomunt.', 'VeChain'),
-('ETC', 'Een cryptomunt.', 'Ethereum Classic'),
-('XLM', 'Een cryptomunt.', 'Stellar'),
-('AVAX', 'Een cryptomunt.', 'Avalanche'),
-('FIL', 'Een cryptomunt.', 'Filecoin'),
-('TRX', 'Een cryptomunt.', 'Tron'),
-('THETA', 'Een cryptomunt.', 'Theta'),
-('DAI', 'Een cryptomunt.', 'Dai'),
-('FTT', 'Een cryptomunt.', 'FTX Token'),
-('XMR', 'Een cryptomunt.', 'Monero'),
-('ATOM', 'Een cryptomunt.', 'Cosmos');
+('VET', 'Een cryptomunt.', 'VeChain');
