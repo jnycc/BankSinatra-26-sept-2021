@@ -9,23 +9,39 @@
 </head>
 
 <body>
-<form>
+<form id="loginForm" class="split right">
     <h1>Login</h1>
     <label for="email"> Username: </label>
     <input id="email" type="text" name="email"><br><br>
     <label for="password"> Password: </label>
     <input id="password" type="password" name="password"> <br><br>
-    <input type="button" id="btnLogin" value="submit">
-
-    <!---<button id="btnLogin">Submit</button>---> <br><br>
-    <button id="btnRegister">Register</button>
+    <input type="button" id="btnLogin" value="submit"><br><br>
+    <input type="button" id="btnRegister" value="register">
 </form>
 
-<div>
-    <br><br><br>
-    <br><br><br>
-    <br><br><br>
-    <h1>Marketingpraatje</h1>
+<div id="overlay" name="Register">
+    <div id="registerFields">
+        <h1>Register</h1>
+        <p>Register as a new customer at Bank Sinatra</p><br>
+        <!--<label for="email-reg"> Email: </label>-->
+        <input id="email-reg" type="text" placeholder="Email">
+        <input id="password-reg" type="password" placeholder="Password"><br><br>
+        <input id="firstName" type="text" placeholder="Firstname">
+        <input id="prefix" type="text" placeholder="prefix">
+        <input id="lastName" type="text" placeholder="Lastname"><br><br>
+        <input id="dob" type="date" value="2021-09-05">
+        <input id="bsn" type="number" placeholder="BSN"><br><br>
+        <input id="city" type="text" placeholder="City">
+        <input id="zipcode" type="text" placeholder="Zipcode"><br><br>
+        <input id="street" type="text" placeholder="Street">
+        <input id="houseNumber" type="number" placeholder="House number">
+        <input id="hNrE" type="text" placeholder="Extension"><br><br>
+        <input id="submitReg" type="button" value="Submit">
+    </div>
+</div>
+
+<div id="slogan" class="split left">
+    <h1 class="h1">Marketingpraatje</h1>
     According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.
 </div>
 

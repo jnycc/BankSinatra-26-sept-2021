@@ -4,6 +4,7 @@
  */
 package com.miw.controller;
 
+import com.google.gson.*;
 import com.miw.model.Administrator;
 import com.miw.model.Client;
 import com.miw.service.authentication.HashService;
@@ -17,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
+import java.lang.reflect.Type;
+import java.time.LocalDate;
 
 
 @RestController
@@ -24,6 +27,7 @@ public class RegisterController {
 
     private RegistrationService registrationService;
     private HashService hashService;
+    private Gson gson;
 
     private final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
@@ -33,19 +37,27 @@ public class RegisterController {
         this.registrationService = registrationService;
         this.hashService = hashService;
         logger.info("New RegisterController-object created");
+        gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
+            @Override
+            public LocalDate deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                return LocalDate.parse(jsonElement.getAsJsonPrimitive().getAsString());
+            }
+        }).create();
     }
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerClient(@Valid @RequestBody Client client) {
+    public ResponseEntity<?> registerClient(@RequestBody String client) {
         //Validatie volledigheid en juiste format van input zijn in de domeinklassen zelf gebouwd.
         //Check of klant al bestaat in de database.
-        if (registrationService.checkExistingClientAccount(client.getEmail())) {
+        Client client1 = gson.fromJson(client, Client.class);
+
+        if (registrationService.checkExistingClientAccount(client1.getEmail())) {
             return new ResponseEntity<>("Registration failed. Account already exists.", HttpStatus.CONFLICT);
         }
         //Gebruiker opslaan in database en beginkapitaal toewijzen. Succesmelding geven.
-        client = (Client) hashService.hash(client);
-        registrationService.register(client);
+        client1 = (Client) hashService.hash(client1);
+        registrationService.register(client1);
         return new ResponseEntity<>("User successfully registered. Welcome to Bank Sinatra!", HttpStatus.CREATED);
     }
 
@@ -61,4 +73,5 @@ public class RegisterController {
         return new ResponseEntity<>("Your request for an administrator account has been received and is pending " +
                 "further approval. \nFor inquiries, please contact your Manager or IT Supervisor.", HttpStatus.CREATED);
     }
+
 }
