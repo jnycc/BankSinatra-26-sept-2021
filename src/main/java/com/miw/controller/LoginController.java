@@ -55,6 +55,18 @@ public class LoginController {
         return showLoginResponse(response);
     }
 
+    // Naar dashboardController?
+    @PostMapping("/authenticate")
+    public boolean authenticate(@RequestBody String token) {
+        return TokenService.decodeJWTBool(token);
+    }
+
+    // Naar dashboardController?
+    @PostMapping("/getEmail")
+    public String getEmail(@RequestBody String token) {
+        return TokenService.validateAndGetEmailJWT(token);
+    }
+
     public ResponseEntity<?> showLoginResponse(String response) {
         if (response.equals(authenticationService.getINVALID_CREDENTIALS())){
             return new ResponseEntity<>(authenticationService.getINVALID_CREDENTIALS(), HttpStatus.UNAUTHORIZED);

@@ -99,6 +99,11 @@
     font-family: "Paradise", "Bookman Old Style", monospace;
     font-size: 30px;
 }
+.leftpage {
+    width: 40%;
+    right: 0;
+
+}
 
 .titleBar {
     font-family: "Sinatra", "Bookman Old Style", monospace;

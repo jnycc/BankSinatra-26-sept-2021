@@ -36,14 +36,14 @@ class TokenServiceTest {
     }
 
     @Test
-    void jwtExpired() {
+    void decodeJWTBoolExpired() {
         Boolean actual = TokenService.decodeJWTBool(setUpInvalidJWT());
         Boolean expected = false;
         assertEquals(expected, actual);
     }
 
     @Test
-    void jwtNotExpired() {
+    void decodeJWTBoolValid() {
         Boolean actual = TokenService.decodeJWTBool(setUpValidJWT());
         Boolean expected = true;
         assertEquals(expected, actual);
