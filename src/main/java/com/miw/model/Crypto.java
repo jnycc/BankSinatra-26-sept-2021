@@ -17,6 +17,8 @@ public class Crypto implements Comparable<Crypto>{
         this.cryptoPrice = cryptoPrice;
     }
 
+    public Crypto(){}
+
     private double retrieveValue() {
         //TODO: get recent value of cryptocoin thru API?
         return 0.0;
@@ -47,7 +49,7 @@ public class Crypto implements Comparable<Crypto>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Crypto crypto = (Crypto) o;
-        return name.equals(crypto.name);
+        return symbol.equals(crypto.symbol);
     }
 
     @Override

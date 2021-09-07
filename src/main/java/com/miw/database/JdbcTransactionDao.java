@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.time.ZoneId;
 
 @Repository
 public class JdbcTransactionDao {
@@ -29,7 +30,8 @@ public class JdbcTransactionDao {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO Transaction " +
                 "(date, units, exchangeRate, bankingFee, accountID_buyer, accountID_seller, cryptoID) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-        ps.setDate(1, java.sql.Date.valueOf(transaction.getTransactionDate().toLocalDate())); //TODO: dit moet anders kunnen denk ik :)
+        //TODO: Hoera, wat een draak van een statement. Slaat op dit moment alleen datum op, niet tijd. LocalDateTime omzetten naar SQL.Date is een hel, blijkbaar. Andere oplossing voor vinden?
+        ps.setDate(1, new java.sql.Date(transaction.getTransactionDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
         ps.setDouble(2, transaction.getUnits());
         ps.setDouble(3, transaction.getCrypto().getCryptoPrice());
         ps.setDouble(4, transaction.getBankCosts());

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 public class TransactionController {
 
@@ -28,11 +29,12 @@ public class TransactionController {
     }
 
     @PostMapping("/buy") //TODO: URL aanpassen zeer waarschijnlijk
-    public ResponseEntity<?> doTransaction(@RequestBody String dingetjeHernoemMij){
+    public ResponseEntity<?> doTransaction(@RequestBody String transactionAsJson){
         /*Ik ga er voor het gemak vanuit dat er dus een Json ding binnen komt wat we naar een hele Transaction kunnen vertalen :)*/
 
         Gson gson = new Gson();
-        Transaction transaction = gson.fromJson(dingetjeHernoemMij, Transaction.class); //TODO: met team Frontend afstemmen hoe dit precies binnen gaat komen
+        Transaction transaction = gson.fromJson(transactionAsJson, Transaction.class); //TODO: met team Frontend afstemmen hoe dit precies binnen gaat komen
+        transaction.setTransactionPrice(transaction.calculatePrice()); //TODO: dit moet niet hier
 
         //TODO: dit even voor overzichtelijkheid gedaan, maar weghalen waarschijnlijk
         int seller = transaction.getSeller();
@@ -50,7 +52,7 @@ public class TransactionController {
 
         transactionService.transferBalance(seller, buyer, transactionPrice);
         transactionService.transferCrypto(seller, buyer, crypto, units);
-        transactionService.transferBankCosts(seller, buyer, transactionPrice, bankCosts);
+        //transactionService.transferBankCosts(seller, buyer, transactionPrice, bankCosts); //TODO: dit werkt nog niet goed, bankCosts zijn nog 0 - hoe te implementeren?
 
         transactionService.registerTransaction(transaction);
         return new ResponseEntity<>("Joepie de poepie, transactie gedaan", HttpStatus.OK);
