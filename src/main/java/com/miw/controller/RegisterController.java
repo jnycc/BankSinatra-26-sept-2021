@@ -12,6 +12,7 @@ import com.miw.service.authentication.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 
 
 @RestController
+@Validated
 public class RegisterController {
 
     private RegistrationService registrationService;
@@ -50,7 +52,7 @@ public class RegisterController {
     public ResponseEntity<?> registerClient(@RequestBody String client) {
         //Validatie volledigheid en juiste format van input zijn in de domeinklassen zelf gebouwd.
         //Check of klant al bestaat in de database.
-        Client client1 = gson.fromJson(client, Client.class);
+        @Valid Client client1 = gson.fromJson(client, Client.class);
 
         if (registrationService.checkExistingClientAccount(client1.getEmail())) { // TODO: boolean check toevoegen of bsn al bestaat in db
             return new ResponseEntity<>("Registration failed. Account already exists.", HttpStatus.CONFLICT);
@@ -62,14 +64,16 @@ public class RegisterController {
     }
 
     @PostMapping("/admin/register")
-    public ResponseEntity<?> registerAdmin(@Valid @RequestBody Administrator admin) {
+    public ResponseEntity<?> registerAdmin(@RequestBody String admin) {
         //Check of admin-account reeds bestaat in de database.
-        if (registrationService.checkExistingClientAccount(admin.getEmail())) {
+        @Valid Administrator admin1 = gson.fromJson(admin, Administrator.class);
+
+        if (registrationService.checkExistingClientAccount(admin1.getEmail())) {
             return new ResponseEntity<>("Registration failed. Admin account already exists.", HttpStatus.CONFLICT);
         }
         //Admin opslaan in de database met een blocked status.
-        admin = (Administrator) hashService.hash(admin);
-        registrationService.register(admin);
+        admin1 = (Administrator) hashService.hash(admin1);
+        registrationService.register(admin1);
         return new ResponseEntity<>("Your request for an administrator account has been received and is pending " +
                 "further approval. \nFor inquiries, please contact your Manager or IT Supervisor.", HttpStatus.CREATED);
     }

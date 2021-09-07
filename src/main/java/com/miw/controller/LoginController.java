@@ -4,6 +4,7 @@ package com.miw.controller;
  * @Description: This controller enables users to Login to their account
  */
 import com.google.gson.Gson;
+import com.miw.database.JdbcAccountDao;
 import com.miw.database.JdbcClientDao;
 import com.miw.model.Credentials;
 import com.miw.service.authentication.AuthenticationService;
@@ -27,16 +28,19 @@ public class LoginController {
     private AuthenticationService authenticationService;
     private TokenService tokenService;
     private JdbcClientDao jdbcClientDao;
+    private JdbcAccountDao jdbcAccountDao;
     private Gson gson;
 
     private final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @Autowired
-    public LoginController(AuthenticationService authenticationService, TokenService ts, JdbcClientDao jdbcClientDao, Gson gson) {
+    public LoginController(AuthenticationService authenticationService, JdbcAccountDao jdbcAccountDao,
+                           TokenService ts, JdbcClientDao jdbcClientDao, Gson gson) {
         super();
         this.authenticationService = authenticationService;
         this.tokenService = ts;
         this.jdbcClientDao = jdbcClientDao;
+        this.jdbcAccountDao = jdbcAccountDao;
         this.gson = gson;
         logger.info("New LoginController Created");
     }
@@ -53,6 +57,29 @@ public class LoginController {
         @Valid Credentials credentials = gson.fromJson(credentialsAsJson, Credentials.class);
         String response = authenticationService.authenticateAdmin(credentials);
         return showLoginResponse(response);
+    }
+
+    // Naar dashboardController?
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> authenticate(@RequestBody String token) {
+        if (TokenService.decodeJWTBool(token)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    // Naar dashboardController?
+    @PostMapping("/getEmail")
+    public String getEmail(@RequestBody String token) {
+        return TokenService.validateAndGetEmailJWT(token);
+    }
+
+    // Naar dashboardController?
+    @PostMapping("/getBalance")
+    public double getBalance(@RequestBody String token) {
+        String email = TokenService.validateAndGetEmailJWT(token);
+        return jdbcAccountDao.getBalanceByEmail(email);
     }
 
     public ResponseEntity<?> showLoginResponse(String response) {
