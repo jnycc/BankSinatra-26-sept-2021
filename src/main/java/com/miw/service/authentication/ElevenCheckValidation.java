@@ -4,6 +4,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /*
 @author Renée
@@ -31,7 +32,7 @@ public class ElevenCheckValidation implements ConstraintValidator<ElevenCheck, I
     }
 
     //Turns an Integer into a list of its individual digits, always returns a list of 9 items
-    public List<Integer> makeDigits(Integer fullNr){
+    private List<Integer> makeDigits(Integer fullNr){
         List<Integer> digits = new LinkedList<>();
         int temp = fullNr;
 
@@ -48,11 +49,8 @@ public class ElevenCheckValidation implements ConstraintValidator<ElevenCheck, I
         return digits;
     }
 
-    public int elevenTestSum(List<Integer> ints){
-        int sum = 0;
-        for (int i = 0; i < ints.size() - 1; i++) {
-            sum += ints.get(i) * (ints.size() - i);
-        }
+    private int elevenTestSum(List<Integer> ints){
+        int sum = IntStream.range(0, ints.size() - 1).map(i -> ints.get(i) * (ints.size() - i)).sum();
         sum += (ints.get(8) * -1);
         return sum;
     }
