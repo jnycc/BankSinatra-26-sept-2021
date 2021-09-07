@@ -18,23 +18,27 @@ function authenticate() {
         })
 }
 
-const emailExample = document.querySelector("#emailExample")
 
-emailExample.appendChild(getEmail());
+
+
+
+
+
+const emailExample = document.querySelector("#emailExample")
+emailExample.addEventListener("click", getEmail)
 
 function getEmail(){
-    fetch(`http://localhost:8080/getEmail`, {
+    fetch(`http://localhost:8080/getBalance`, {
         method: 'POST',
         body: `${localStorage.getItem('token')}`
     })
         .then(res => res.text())
         .then(it => {
-            if (it === "") {
-                console.log('nay')
-            } else {
-                console.log(it)
-            }
+            // if (it === null) {
+            //     console.log('no email is found')
+            // } else {
+            //     console.log(it)
+            // }
+            emailExample.innerHTML = it
         })
-        .catch(console.log('oeps'))
-    return it;
 }

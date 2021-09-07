@@ -23,7 +23,8 @@ class TokenServiceTest {
 
     // Set up invalid jwt with expirationdate of zero.
     private String setUpInvalidJWT(){
-        return TokenService.jwtBuilderSetDate("test@testen.nl", "admin", new Date().getTime(), 0); //0 min
+        return TokenService.jwtBuilderSetDate("test@testen.nl", "admin",
+                new Date().getTime(), 0); //0 min
     }
 
 
@@ -58,15 +59,24 @@ class TokenServiceTest {
     }
 
     @Test
+    void decodeJwt2() {
+        String actualClaim = (TokenService.decodeJWT(setUpValidJWT())).toString();
+        String expectedClaim = "{Role=admin, sub=test@testen.nl, exp=61693831210, iat=61693830610}";
+        assertEquals(expectedClaim, actualClaim);
+    }
+
+    @Test
     void GetEmailJWT() {
-        String actual = TokenService.validateAndGetEmailJWT(setUpValidJWT());
+        String actual = TokenService.validateAndGetEmailJWT(setUpValidJWT().toString());
         String expected = "test@testen.nl";
+        assertEquals(actual, expected);
     }
 
     @Test
     void GetEmailExpiredJWT() {
         String actual = TokenService.validateAndGetEmailJWT(setUpInvalidJWT());
         String expected = null;
+        assertEquals(actual, expected);
     }
 
 

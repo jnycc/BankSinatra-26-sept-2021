@@ -44,11 +44,11 @@ public class TokenService {
 
         //set JWT Claims
         JwtBuilder builder = Jwts.builder()
+                .setClaims(tokenClaims)
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setSubject(userEmail)
                 .setExpiration(new Date(System.currentTimeMillis() + expTime))
-                .setClaims(tokenClaims)
                 .signWith(SignatureAlgorithm.HS256, signingKey);
 
         //Building JWT set to compact, URL-safe string
@@ -68,8 +68,8 @@ public class TokenService {
 
         //set JWT Claims
         JwtBuilder builder = Jwts.builder()
-                .setHeaderParam("typ", "JWT")
                 .setClaims(tokenClaims)
+                .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date(msNow))
                 .setSubject(userEmail)
                 .setExpiration(new Date(msNow + expTime))
