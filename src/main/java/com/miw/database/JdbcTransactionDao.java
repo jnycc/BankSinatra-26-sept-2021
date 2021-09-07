@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 
 @Repository
 public class JdbcTransactionDao {
@@ -48,16 +49,21 @@ public class JdbcTransactionDao {
         return transaction;
     }
 
-    //TODO: aanpassen zodat ie een parameter kan gebruiken voor verschillende situaties: day, month, 3 months, year, start
-    public double getSumOfUnitsPurchasedAndSold(int accountId) {
+    public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
         String sql = "SELECT " +
                 "(SELECT SUM(units) FROM `Transaction` " +
-                "WHERE accountID_buyer = ? AND date BETWEEN current_date() AND current_timestamp()) " +
+                "WHERE accountID_buyer = ? AND date BETWEEN ? AND current_timestamp()" +
+                "AND cryptoID = (SELECT cryptoID FROM Crypto WHERE symbol = ?)) " +
                 "-" +
                 "(SELECT SUM(units) " +
                 "FROM `Transaction` " +
-                "WHERE accountID_seller = ? AND date BETWEEN current_date() AND current_timestamp()) " +
+                "WHERE accountID_seller = ? AND date BETWEEN ? AND current_timestamp() " +
+                "AND cryptoID = (SELECT cryptoID FROM Crypto WHERE symbol = ?))" +
                 "AS sumOfUnitsPurchasedAndSold;";
-        return jdbcTemplate.queryForObject(sql, Double.class, accountId, accountId);
+        try {
+            return jdbcTemplate.queryForObject(sql, Double.class, accountId, dateTime, symbol, accountId, dateTime, symbol);
+        } catch (NullPointerException e) {
+            return 0;
+        }
     }
 }

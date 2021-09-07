@@ -31,12 +31,28 @@ public class JdbcAssetDao {
         logger.info("JdbcAssetDAO-object created.");
     }
 
-    public List<Asset> getAssets(int accountId) {
-        String sql = "SELECT accountID, a.cryptoID, `name`, symbol, cryptoPrice, `description`, units, `dateRetrieved` " +
+    private String getAssetsStatement() {
+        String sql = "SELECT accountID, a.cryptoID, name, symbol, cryptoPrice, units, description, dateRetrieved " +
                 "FROM (Asset a JOIN Crypto c ON a.cryptoID = c.cryptoID) " +
                 "JOIN CryptoPrice p ON p.cryptoID = c.cryptoID " +
-                "WHERE accountID = ?;";
-        return jdbcTemplate.query(sql, new AssetRowMapper(), accountId);
+                "WHERE accountID = ? AND dateRetrieved >= DATE_ADD(" +
+                "   (SELECT dateRetrieved FROM CryptoPrice " +
+                "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1)" +
+                "   , INTERVAL -10 SECOND)" +
+                "AND dateRetrieved <= DATE_ADD(" +
+                "   (SELECT dateRetrieved FROM CryptoPrice " +
+                "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1)" +
+                "   , INTERVAL 10 SECOND);";
+        return sql;
+    }
+
+    public List<Asset> getAssets(int accountId) {
+        return jdbcTemplate.query(getAssetsStatement(), new AssetRowMapper(), accountId);
+    }
+
+    public Asset getAssetBySymbol(int accountId, String symbol) {
+        String sql = getAssetsStatement() + " AND WHERE symbol = " + symbol;
+        return jdbcTemplate.queryForObject(sql, new AssetRowMapper(), accountId, symbol);
     }
 
 

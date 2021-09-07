@@ -72,6 +72,17 @@ public class JdbcCryptoDao {
         }
     }
 
+    public double getPriceOnDateTimeBySymbol(String symbol, LocalDateTime dateTime) {
+        String sql = "SELECT cryptoPrice FROM CryptoPrice WHERE cryptoID = (SELECT cryptoID FROM Crypto WHERE symbol = ?) " +
+                "ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, ?)) LIMIT 1;";
+        try {
+            return jdbcTemplate.queryForObject(sql, Double.class, symbol, dateTime);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Failed to get selected crypto price by symbol on the selected dateTime.");
+            return 0;
+        }
+    }
+
     public void saveCryptoPriceBySymbol(String symbol, double price, LocalDateTime time) {
         String symbolClean = symbol.substring(1, (symbol.length() - 1)); //clean up quotation marks leftover from json
         jdbcTemplate.update(connection -> insertPriceStatement(symbolClean, price, time, connection));

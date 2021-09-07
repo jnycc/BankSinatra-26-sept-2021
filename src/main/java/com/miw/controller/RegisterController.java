@@ -52,7 +52,7 @@ public class RegisterController {
         //Check of klant al bestaat in de database.
         Client client1 = gson.fromJson(client, Client.class);
 
-        if (registrationService.checkExistingClientAccount(client1.getEmail())) {
+        if (registrationService.checkExistingClientAccount(client1.getEmail())) { // TODO: boolean check toevoegen of bsn al bestaat in db
             return new ResponseEntity<>("Registration failed. Account already exists.", HttpStatus.CONFLICT);
         }
         //Gebruiker opslaan in database en beginkapitaal toewijzen. Succesmelding geven.

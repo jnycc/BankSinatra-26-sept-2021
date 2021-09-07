@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -39,8 +38,8 @@ public class PortfolioController {
         Client client = portfolioService.findClientByEmail(email);
         System.out.println(client);
         //PortfolioService aanroepen om de vereiste gegevens te verzamelen en returnen aan frontend
-        Map<String, Asset> assets = portfolioService.getAssets(client.getUserId());
-        System.out.println(assets);
-        return ResponseEntity.ok(assets);
+        Map<String, Object> portfolio = portfolioService.getPortfolio(client.getUserId());
+        System.out.println(portfolio);
+        return ResponseEntity.ok(portfolio);
     }
 }

@@ -11,9 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 @Repository
 public class RootRepository {
@@ -85,7 +84,7 @@ public class RootRepository {
         return assets;
     }
 
-    public double getSumOfUnitsPurchasedAndSold(int accountId) {
-        return jdbcTransactionDao.getSumOfUnitsPurchasedAndSold(accountId);
+    public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
+        return jdbcTransactionDao.getSumOfUnitsPurchasedAndSold(accountId, dateTime, symbol);
     }
 }
