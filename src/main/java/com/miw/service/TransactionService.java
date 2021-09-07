@@ -53,9 +53,10 @@ public class TransactionService {
         rootRepository.updateBalance(newBuyerBalance, buyer);
     }
 
-    public void transferCrypto(int seller, int buyer, Crypto crypto, double units){
+/*    public void transferCrypto(int seller, int buyer, Crypto crypto, double units){
         //TODO: maken zodra JdbcAssetDao een methode update heeft
-    }
+        double newSellerAsset = rootRepository.getAssetBySymbol.getUnits() - units;
+    }*/
 
     //TODO: A) Is Bank accountId 1? B) Op een andere manier Bank account ophalen?
     public void transferBankCosts(int seller, int buyer, double transactionPrice, double bankCostsPercentage){

@@ -18,6 +18,7 @@ import java.util.List;
 public class RootRepository {
 
     private final Logger logger = LoggerFactory.getLogger(RootRepository.class);
+    public Asset getAssetBySymbol;
 
     private ClientDao clientDAO;
     private JdbcAccountDao jdbcAccountDao; // TODO: interface aanroepen ipv jdbcAccountDAO zelf

@@ -12,10 +12,11 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -29,6 +30,14 @@ public class JdbcAssetDao {
     public JdbcAssetDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         logger.info("JdbcAssetDAO-object created.");
+    }
+
+    private PreparedStatement insertAssetStatement (Asset asset, Connection connection) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(
+                "INSERT INTO Asset (cryptoID, units)" + "VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+        ps.setInt(1, asset.getCrypto().getCryptoId());
+        ps.setDouble(2, asset.getUnits());
+        return ps;
     }
 
     private String getAssetsStatement() {
@@ -55,6 +64,19 @@ public class JdbcAssetDao {
         return jdbcTemplate.queryForObject(sql, new AssetRowMapper(), accountId, symbol);
     }
 
+    public Asset save(Asset asset) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> insertAssetStatement(asset, connection), keyHolder);
+        int assetId = keyHolder.getKey().intValue();
+        asset.setAssetId(assetId);
+        logger.info("New asset has been saved to the database.");
+        return asset;
+    }
+
+    public void updateAsset(int newUnits, int assetId){
+        String updateQuery = "UPDATE Asset SET units = ? WHERE assetId = ?;";
+        jdbcTemplate.update(updateQuery, newUnits, assetId);
+    }
 
     private static class AssetRowMapper implements RowMapper<Asset> {
 
