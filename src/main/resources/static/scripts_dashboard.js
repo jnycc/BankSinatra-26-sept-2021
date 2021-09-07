@@ -24,10 +24,26 @@ function authenticate() {
 
 
 
-const emailExample = document.querySelector("#emailExample")
-emailExample.addEventListener("click", getEmail)
+const balancevalue = document.querySelector("#balanceValue")
+balancevalue.addEventListener("click", getBalance)
 
 function getEmail(){
+    fetch(`http://localhost:8080/getEmail`, {
+        method: 'POST',
+        body: `${localStorage.getItem('token')}`
+    })
+        .then(res => res.text())
+        .then(it => {
+            // if (it === null) {
+            //     console.log('no email is found')
+            // } else {
+            //     console.log(it)
+            // }
+            balancevalue.innerHTML = it
+        })
+}
+
+function getBalance(){
     fetch(`http://localhost:8080/getBalance`, {
         method: 'POST',
         body: `${localStorage.getItem('token')}`
@@ -39,6 +55,6 @@ function getEmail(){
             // } else {
             //     console.log(it)
             // }
-            emailExample.innerHTML = it
+            balancevalue.innerHTML = it
         })
 }
