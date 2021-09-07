@@ -182,7 +182,7 @@ body {
 
 #registerFields{
     padding-left: 15px;
-    position: absolute;
+    position: relative;
     top: 50%;
     left: 50%;
     height: 35%;
@@ -221,4 +221,15 @@ body {
 .right {
     left: 60%;
     top: 40%;
+}
+
+#registerLabel, #loginLabel{
+    display: inline;
+}
+
+#close-overlay-btn {
+    height: 6%;
+    width: 4%;
+    position: relative;
+    left: 420px;
 }
