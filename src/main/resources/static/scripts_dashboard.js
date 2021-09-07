@@ -8,15 +8,14 @@ function authenticate() {
         method: 'POST',
         body: `${localStorage.getItem('token')}`
     })
-        .then(res => res.text())
-        .then(it => {
-            if (it === "true") {
-                console.log('yay')
+        .then(res => {
+            if (res.status === 200) {
+                console.log("no problemo")
             } else {
-                console.log('nay')
+                console.log("your token is bad and you should feel bad")
+                window.location.replace("/index.html");
             }
         })
-        .catch(console.log('oeps'))
 }
 
 const emailExample = document.querySelector("#emailExample")

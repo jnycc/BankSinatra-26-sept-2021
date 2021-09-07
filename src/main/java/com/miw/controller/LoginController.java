@@ -57,8 +57,12 @@ public class LoginController {
 
     // Naar dashboardController?
     @PostMapping("/authenticate")
-    public boolean authenticate(@RequestBody String token) {
-        return TokenService.decodeJWTBool(token);
+    public ResponseEntity<?> authenticate(@RequestBody String token) {
+        if (TokenService.decodeJWTBool(token)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     // Naar dashboardController?
