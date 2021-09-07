@@ -84,6 +84,10 @@ public class RootRepository {
         return assets;
     }
 
+    public Asset getAssetBySymbol(int accountId, String symbol){
+        return jdbcAssetDao.getAssetBySymbol(accountId, symbol);
+    }
+
     public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
         return jdbcTransactionDao.getSumOfUnitsPurchasedAndSold(accountId, dateTime, symbol);
     }

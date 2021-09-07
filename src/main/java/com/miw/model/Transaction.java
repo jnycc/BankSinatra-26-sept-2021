@@ -38,9 +38,9 @@ public class Transaction {
         this.transactionDate = LocalDateTime.now();
     }
 
-    public double calculatePrice() {
+    private double calculatePrice() {
         return units * crypto.getCryptoPrice();
-    } //TODO: dit is nu public, omdat dit niet in de no-args constructor kan. Andere oplossing?
+    }
 
     private double calculateUnits(double transactionPrice) {
         return transactionPrice / crypto.getCryptoPrice();
