@@ -69,7 +69,7 @@ public class LoginController {
     public ResponseEntity<?> showMyData(@RequestHeader("Authorization") String token, @PathVariable("email") @Email String email) {
         //Claims claims = tokenService.decodeJwt
 
-        if (tokenService.decodeJWTBool(token)) {
+        if (TokenService.decodeJWTBool(token)) {
             return ResponseEntity.ok(jdbcClientDao.findByEmail(email));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

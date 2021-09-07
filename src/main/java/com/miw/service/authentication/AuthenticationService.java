@@ -52,7 +52,7 @@ public class AuthenticationService {
                 if (clientDatabase.isBlocked()) {
                     return BLOCKED_USER;
                 }
-                return tokenService.jwtBuilder(credentials.getEmail().toString(),7400000); //2 uur geldig
+                return TokenService.jwtBuilder(credentials.getEmail(), credentials.getClass().toString(), 7400000); //2 uur geldig
             }
             return INVALID_CREDENTIALS;
         }
@@ -71,7 +71,7 @@ public class AuthenticationService {
                 if (adminDatabase.isBlocked()) {
                     return BLOCKED_USER;
                 }
-                return tokenService.jwtBuilder(credentials.getEmail().toString(),7400000); //2 uur geldig
+                return TokenService.jwtBuilder(credentials.getEmail().toString(), credentials.getClass().toString(),7400000); //2 uur geldig
             }
             return INVALID_CREDENTIALS;
         }
