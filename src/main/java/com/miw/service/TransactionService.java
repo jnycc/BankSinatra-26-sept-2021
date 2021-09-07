@@ -30,8 +30,12 @@ public class TransactionService {
     }
 
     public Transaction setTransactionPrice(Transaction transaction){
-        transaction.setTransactionPrice(transaction.getCrypto().getCryptoPrice() * transaction.getUnits());
-        return transaction;
+        if(transaction.getUnits() < 0){
+            throw new IllegalArgumentException("Units may not be negative");
+        } else {
+            transaction.setTransactionPrice(transaction.getCrypto().getCryptoPrice() * transaction.getUnits());
+            return transaction;
+        }
     }
 
     public boolean checkSufficientBalance(int seller, int buyer, double transactionPrice, double bankCosts){

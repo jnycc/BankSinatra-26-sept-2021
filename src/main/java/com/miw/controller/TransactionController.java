@@ -32,9 +32,14 @@ public class TransactionController {
 
     @PostMapping("/buy") //TODO: URL aanpassen zeer waarschijnlijk
     public ResponseEntity<?> doTransaction(@RequestBody String transactionAsJson){
-
         Transaction transaction = gson.fromJson(transactionAsJson, Transaction.class);
-        transaction = transactionService.setTransactionPrice(transaction);
+
+        try{
+            transaction = transactionService.setTransactionPrice(transaction);
+        } catch (IllegalArgumentException e){
+            return new ResponseEntity<>("Buyer may not purchase a negative amount of currency. " +
+                    "Transaction cannot be completed", HttpStatus.CONFLICT);
+        }
 
         //TODO: dit even voor overzichtelijkheid gedaan, maar weghalen waarschijnlijk
         int seller = transaction.getSeller();
@@ -45,13 +50,17 @@ public class TransactionController {
         double bankCosts = transaction.getBankCosts();
 
         if(!transactionService.checkSufficientCrypto(seller, crypto, units)){
-            return new ResponseEntity<>("Seller has insufficient assets. Transaction cannot be completed.", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Seller has insufficient assets. Transaction cannot be completed.",
+                    HttpStatus.CONFLICT);
         } else if(!transactionService.checkSufficientBalance(seller, buyer, transactionPrice, bankCosts)){
-            return new ResponseEntity<>("Buyer has insufficient funds. Transaction cannot be completed.", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Buyer has insufficient funds. Transaction cannot be completed.",
+                    HttpStatus.CONFLICT);
         }
 
         transactionService.transferBalance(seller, buyer, transactionPrice);
         transactionService.transferCrypto(seller, buyer, crypto, units);
+
+        //TODO: dit werkt nog niet omdat Bank nog niet in de DB staat. Uitgecomment om te kunnen testen met Postman
         //transactionService.transferBankCosts(seller, buyer, transactionPrice, bankCosts);
 
         transactionService.registerTransaction(transaction);

@@ -82,6 +82,10 @@ public class Transaction {
         return bankCosts;
     }
 
+    public void setBankCosts(double bankCosts) {
+        this.bankCosts = bankCosts;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
