@@ -61,6 +61,16 @@ public class JdbcAccountDao {
         }
     }
 
+    public double getBalanceByEmail(String email) {
+        String sql = "SELECT balance FROM Account WHERE userID = ( SELECT userID FROM user WHERE email = ?);";
+        try {
+            return jdbcTemplate.queryForObject(sql, Double.class, email);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Account does not exist in the database");
+            return 0;
+        }
+    }
+
     private static class AccountRowMapper implements RowMapper<Account> {
 
         @Override
