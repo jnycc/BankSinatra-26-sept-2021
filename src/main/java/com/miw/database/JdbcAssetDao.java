@@ -63,6 +63,22 @@ public class JdbcAssetDao {
         return jdbcTemplate.query(sql, new AssetRowMapper(), accountId);
     }
 
+    public Double getSymbolUnitsAtDateTime(int accountId, String symbol, LocalDateTime dateTime) {
+        String sql = "SELECT (" +
+                "   (SELECT units " +
+                "   FROM Asset " +
+                "   WHERE accountID = ? AND symbol = ?) " +
+                "   +" +
+                "   (SELECT SUM(units) FROM `Transaction` " +
+                "   WHERE accountID_seller = ? AND symbol = ? AND `date` BETWEEN CURRENT_DATE() AND CURRENT_TIMESTAMP()) " +
+                "   - " +
+                "   (SELECT SUM(units) FROM `Transaction` " +
+                "   WHERE accountID_buyer = ? AND symbol = ? AND `date` BETWEEN CURRENT_DATE() AND CURRENT_TIMESTAMP())) " +
+                "AS unitsAtDateTime;";
+        Double units = jdbcTemplate.queryForObject(sql, Double.class, accountId, symbol, accountId, symbol, accountId, symbol);
+        return (units != null) ? units : 0.0;
+    }
+
 
     private static class AssetRowMapper implements RowMapper<Asset> {
 

@@ -38,7 +38,8 @@ public class PortfolioController {
         Client client = portfolioService.findClientByEmail(email);
         System.out.println(client);
         //PortfolioService aanroepen om de vereiste gegevens te verzamelen en returnen aan frontend
-        Map<String, Object> portfolio = portfolioService.getPortfolio(client.getUserId());
+//        Map<String, Object> portfolio = portfolioService.getPortfolio(client.getUserId());
+        Map<String, Object> portfolio = portfolioService.getPortfolio2(client.getUserId());
         System.out.println(portfolio);
         return ResponseEntity.ok(portfolio);
     }

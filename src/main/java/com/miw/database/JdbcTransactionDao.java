@@ -2,7 +2,10 @@ package com.miw.database;
 
 import com.miw.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -12,7 +15,10 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @Repository
 public class JdbcTransactionDao {
@@ -68,21 +74,46 @@ public class JdbcTransactionDao {
         }
     }
 
-//    public Map<String, Double> getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
-//        String sql = "SELECT " +
+    public List<String> getAllCryptosOwned(int accountId) {
+        String sql = "(SELECT symbol FROM `Transaction` WHERE accountID_buyer = ? OR accountID_seller = ? " +
+                "GROUP BY symbol) UNION (SELECT symbol FROM Asset WHERE accountID = ?);";
+        return jdbcTemplate.query(sql, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getString("symbol");
+            }
+        }, accountId, accountId, accountId);
+    }
+
+//    public Map<String, Double> getSumOfAllTransactions(int accountId, LocalDateTime dateTime) {
+//        String sql = "SELECT symbol, " +
 //                "(SELECT SUM(units) FROM `Transaction` " +
-//                "WHERE accountID_buyer = ? AND date BETWEEN ? AND current_timestamp()" +
-//                "AND cryptoID = (SELECT cryptoID FROM Crypto WHERE symbol = ?)) " +
+//                "WHERE accountID_buyer = ? AND date BETWEEN ? AND current_timestamp()) " +
 //                "-" +
 //                "(SELECT SUM(units) " +
 //                "FROM `Transaction` " +
-//                "WHERE accountID_seller = ? AND date BETWEEN ? AND current_timestamp() " +
-//                "AND cryptoID = (SELECT cryptoID FROM Crypto WHERE symbol = ?))" +
-//                "AS sumOfUnitsPurchasedAndSold;";
+//                "WHERE accountID_seller = ? AND date BETWEEN ? AND current_timestamp())" +
+//                "AS sumOfUnitsPurchasedAndSold " +
+//                "FROM `Transaction` GROUP BY symbol;";
 //        try {
-//            return jdbcTemplate.queryForObject(sql, Double.class, accountId, dateTime, symbol, accountId, dateTime, symbol);
+//            return jdbcTemplate.query(sql, new TransactionResultSetExtractor(), accountId, dateTime, accountId, dateTime);
 //        } catch (NullPointerException e) {
-//            return 0;
+//            return null;
+//        }
+//    }
+//
+//
+//    private static class TransactionResultSetExtractor implements ResultSetExtractor<Map<String, Double>> {
+//
+//        @Override
+//        public Map<String, Double> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+//            Map<String, Double> cryptosPurchasedAndSold = new TreeMap<>();
+//            while(resultSet.next()) {
+//                String symbol = resultSet.getString("symbol");
+//                double sumOfUnitsPurchasedAndSold = resultSet.getDouble("sumOfUnitsPurchasedAndSold");
+//                cryptosPurchasedAndSold.put(symbol, sumOfUnitsPurchasedAndSold);
+//            }
+//            return cryptosPurchasedAndSold;
 //        }
 //    }
 }

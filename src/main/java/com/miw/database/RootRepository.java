@@ -90,4 +90,18 @@ public class RootRepository {
     public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
         return jdbcTransactionDao.getSumOfUnitsPurchasedAndSold(accountId, dateTime, symbol);
     }
+
+    public List<String> getAllCryptosOwned(int accountId) {
+        return jdbcTransactionDao.getAllCryptosOwned(accountId);
+    }
+
+    public Double getSymbolUnitsAtDateTime(int accountId, String symbol, LocalDateTime dateTime) {
+        return jdbcAssetDao.getSymbolUnitsAtDateTime(accountId, symbol, dateTime);
+    }
+
+//    public Map<String, Double> getSumOfAllTransactions(int accountId, LocalDateTime dateTime) {
+//        return jdbcTransactionDao.getSumOfAllTransactions(accountId, dateTime);
+//    }
+
+
 }
