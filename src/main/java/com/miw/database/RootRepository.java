@@ -79,7 +79,6 @@ public class RootRepository {
     }
 
     public List<Asset> getAssets(int accountId) {
-//        Map<String, Asset> assetMap = new TreeMap<>();
         List<Asset> assets = jdbcAssetDao.getAssets(accountId);
         return assets;
     }
