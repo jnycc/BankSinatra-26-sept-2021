@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ public class PortfolioService {
     private RootRepository rootRepository;
     private JdbcCryptoDao jdbcCryptoDao;
     private final Logger logger = LoggerFactory.getLogger(PortfolioService.class);
+    private static DecimalFormat df = new DecimalFormat("#.##");
+    private Map<String, Asset> portfolioAssets = new TreeMap<>();
 
     @Autowired
     public PortfolioService(RootRepository rootRepository, JdbcCryptoDao jdbcCryptoDao) {
@@ -51,11 +54,29 @@ public class PortfolioService {
             portfolio.put(asset.getCrypto().getName(), asset);
         }
         portfolio.put("Total current value", totalCurrentValuePortfolio);
+//        portfolio.put("Total historical values", )
         return portfolio;
     }
 
     private double calculateCurrentValue(Asset asset) {
         return asset.getUnits() * asset.getCrypto().getCryptoPrice();
+    }
+
+    private Asset calculatePortfolioHistoricalValue() {
+        //Haal map van assets op dateTime x op o.b.v. Transaction-history met columns: symbol, sumOfTransactions
+        // loop erdoorheen en voor elke asset:
+        // -> terugrekenen naar historicalUnits en opslaan in map in Asset
+        // -> historicalPrice ophalen
+        // -> historical value (p*q) berekenen, deze opslaan in een aparte Map
+        // -> voor elke huidige asset de delta value van de asset berekenen, opslaan in map in Asset
+        //=> Asset returnen zodat ie daar in een map gestopt wordt.
+
+        //Later door de aparte map met historical values loopen om de totale deltawaarde (van elke asset currentvalue - historicalvalue) te berekenen
+
+        //2 objecten:
+        // a. map met Assets (met daarin map met historical units en deltawaarden)
+        // b. map met total historical deltawaarden van gehele portfolio
+        return null;
     }
 
     private void setDeltaValues(int accountId, Asset asset) {
@@ -76,6 +97,7 @@ public class PortfolioService {
         asset.setDeltaYearValue(deltaValue);
         asset.setDeltaYearPct(calculateDeltaPct(deltaValue, currentValue));
 
+
 //        deltaValue = //startdate = allereerste transactie
 //        asset.setDeltaStartValue(deltaValue);
 //        asset.setDeltaStartValuePct(deltaValue / (currentValue - deltaValue));
@@ -90,7 +112,6 @@ public class PortfolioService {
         }
     }
 
-
     /**
      * Calculates the difference between the total current value and the total value at a given historical dateTime
      * of a specified crypto-asset. This reflects both changes in market price and volume (units of assets purchased/sold).
@@ -99,7 +120,6 @@ public class PortfolioService {
      * @param dateTime point in time of which the crypto value is needed
      * @return difference between the total current value and the total value at the specified point of time of the crypto asset.
      */
-    // TODO: callt nu sql query voor ieder crypto in portfolio, nog efficiënter maken in 1 query.
     public double calculateDeltaValue(int accountId, Asset asset, LocalDateTime dateTime) {
         double priceBefore = jdbcCryptoDao.getPriceOnDateTimeBySymbol(asset.getCrypto().getSymbol(), dateTime);
 //        System.out.println(asset.getCrypto().getName());

@@ -1,10 +1,19 @@
 package com.miw.model;
 
+import java.util.Map;
+
 public class Asset {
 
     public Crypto crypto;
     private double units;
     private double currentValue;
+
+    private Map<String, Double> historicalNrOfUnits;
+    private double units1DayAgo;
+    private double units1MonthAgo;
+    private double units3MonthsAgo;
+    private double unitsYearAgo;
+    private double unitsAtStart;
 
     private double delta1DayValue;
     private double delta1DayPct;
@@ -14,8 +23,10 @@ public class Asset {
     private double delta3MonthsPct;
     private double deltaYearValue;
     private double deltaYearPct;
-    private double deltaStartValue;
-    private double deltaStartPct;
+    private double deltaStartTotalValue;
+    private double deltaStartTotalPct;
+//    private AssetDeltaValues assetDeltaValues;
+    private Map<String, Double> deltaValues;
 
     public Asset(Crypto crypto, double units) {
         this.crypto = crypto;
@@ -116,19 +127,19 @@ public class Asset {
         this.deltaYearPct = deltaYearPct;
     }
 
-    public double getDeltaStartValue() {
-        return deltaStartValue;
+    public double getDeltaStartTotalValue() {
+        return deltaStartTotalValue;
     }
 
-    public void setDeltaStartValue(double deltaStartValue) {
-        this.deltaStartValue = deltaStartValue;
+    public void setDeltaStartTotalValue(double deltaStartTotalValue) {
+        this.deltaStartTotalValue = deltaStartTotalValue;
     }
 
-    public double getDeltaStartPct() {
-        return deltaStartPct;
+    public double getDeltaStartTotalPct() {
+        return deltaStartTotalPct;
     }
 
-    public void setDeltaStartPct(double deltaStartPct) {
-        this.deltaStartPct = deltaStartPct;
+    public void setDeltaStartTotalPct(double deltaStartTotalPct) {
+        this.deltaStartTotalPct = deltaStartTotalPct;
     }
 }
