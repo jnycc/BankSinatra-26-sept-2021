@@ -85,16 +85,8 @@ public class TokenService {
                 .parseClaimsJws(jwt).getBody();
     }
 
-    // Will return userID if JWT is valid.
-    public static Integer validateAndGetID(String jwt) {
-        try {
-            return Integer.valueOf(decodeJWT(jwt).getSubject());
-        } catch (ExpiredJwtException expired) {
-            return 0;
-        }
-    }
 
-    public static Boolean decodeJWTBool(String jwt) {
+    public static Boolean validateJWT(String jwt) {
         try {
             decodeJWT(jwt);
         } catch (ExpiredJwtException expired) {
@@ -103,6 +95,33 @@ public class TokenService {
         }
         return true;
     }
+
+    // Will return userID if JWT is valid.
+    public static Integer GetUserID(String jwt) {
+        try {
+            return Integer.valueOf(decodeJWT(jwt).getSubject());
+        } catch (ExpiredJwtException expired) {
+            return 0;
+        }
+    }
+
+    // Will only return userrole if JWT is valid
+    public static String getRole(String jwt) {
+        try {
+            return decodeJWT(jwt).get("userrole").toString();
+        } catch (ExpiredJwtException invalid) {
+            return null;
+        }
+    }
+
+    public static Boolean validateAdmin(String jwt) {
+        return TokenService.getRole(jwt).equals("admin");
+    }
+
+    public static Boolean validateClient(String jwt) {
+        return TokenService.getRole(jwt).equals("client");
+    }
+
 
 
     //TODO: implement refreshtoken?

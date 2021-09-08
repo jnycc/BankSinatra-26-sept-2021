@@ -30,7 +30,7 @@ public class DashboardController {
 
     @PostMapping("/getBalance")
     public double getBalance(@RequestBody String token) {
-        int ID = TokenService.validateAndGetID(token);
+        int ID = TokenService.GetUserID(token);
         return jdbcAccountDao.getAccountByUserID(ID).getBalance();
     }
 

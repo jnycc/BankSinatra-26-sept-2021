@@ -34,14 +34,14 @@ class TokenServiceTest {
 
     @Test
     void decodeJWTBoolExpired() {
-        Boolean actual = TokenService.decodeJWTBool(setUpInvalidJWT());
+        Boolean actual = TokenService.validateJWT(setUpInvalidJWT());
         Boolean expected = false;
         assertEquals(expected, actual);
     }
 
     @Test
     void decodeJWTBoolValid() {
-        Boolean actual = TokenService.decodeJWTBool(setUpValidJWT());
+        Boolean actual = TokenService.validateJWT(setUpValidJWT());
         Boolean expected = true;
         assertEquals(expected, actual);
     }
@@ -57,16 +57,39 @@ class TokenServiceTest {
 
     @Test
     void validateAndGetID() {
-        int actual = TokenService.validateAndGetID(setUpValidJWT());
+        int actual = TokenService.GetUserID(setUpValidJWT());
         int expected = 1;
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
 
     @Test
-    void GetIDExpiredJWT() {
-        int actual = TokenService.validateAndGetID(setUpInvalidJWT());
+    void getIDExpiredJWT() {
+        int actual = TokenService.GetUserID(setUpInvalidJWT());
         int expected = 0;
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
     }
+
+    @Test
+    void getRole() {
+        String actual = TokenService.getRole(setUpValidJWT());
+        String expected = "admin";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void validateAdmin() {
+        Boolean actual = TokenService.validateAdmin(setUpValidJWT());
+        Boolean expected = true;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void validateClient() {
+        Boolean actual = TokenService.validateClient(setUpValidJWT());
+        Boolean expected = false;
+        assertEquals(expected, actual);
+    }
+
+
 
 }
