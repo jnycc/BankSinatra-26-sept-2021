@@ -30,7 +30,7 @@ public class JdbcClientDao implements ClientDao {
 
   private PreparedStatement insertClientStatement(Client client, Connection connection) throws SQLException {
     PreparedStatement ps = connection.prepareStatement(
-            "INSERT INTO User (email, password, salt, role, isBlocked, firstName, prefix, lastName, street, " +
+            "INSERT INTO User (email, password, salt, userRole, isBlocked, firstName, prefix, lastName, street, " +
                     "houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth) " +
                     "VALUES (?, ?, ?, 'client', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
     ps.setString(1, client.getEmail());

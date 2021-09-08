@@ -22,7 +22,7 @@ public class JdbcAdminDao {
     private final Logger logger = LoggerFactory.getLogger(JdbcAdminDao.class);
 
     private PreparedStatement insertAdminStatement(Administrator admin, Connection connection) {
-        String sql = "INSERT INTO User (email, password, salt, role, isBlocked, firstName, prefix, lastName) " +
+        String sql = "INSERT INTO User (email, password, salt, userRole, isBlocked, firstName, prefix, lastName) " +
                 "VALUES (?, ?, ?, 'admin', 1, ?, ?, ?);";
         PreparedStatement ps = null;
         try {
