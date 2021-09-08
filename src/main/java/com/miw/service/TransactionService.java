@@ -53,10 +53,18 @@ public class TransactionService {
         rootRepository.updateBalance(newBuyerBalance, buyer);
     }
 
-/*    public void transferCrypto(int seller, int buyer, Crypto crypto, double units){
+    public void transferCrypto(int seller, int buyer, Crypto crypto, double units){
         //TODO: maken zodra JdbcAssetDao een methode update heeft
-        double newSellerAsset = rootRepository.getAssetBySymbol.getUnits() - units;
-    }*/
+        double newSellerAsset = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() - units;
+        rootRepository.updateAsset(newSellerAsset, crypto.getSymbol(), seller);
+        if (rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()) != null) { // buyer already has crypto
+            double newBuyerAsset = rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()).getUnits + units;
+            rootRepository.updateAsset(newBuyerAsset, crypto.getSymbol(), buyer);
+        } else { // buyer does not have crypto yet
+            double newBuyerAsset = units;
+            rootRepository.saveAsset(newBuyerAsset, crypto.getSymbol(), buyer);
+        }
+    }
 
     //TODO: A) Is Bank accountId 1? B) Op een andere manier Bank account ophalen?
     public void transferBankCosts(int seller, int buyer, double transactionPrice, double bankCostsPercentage){

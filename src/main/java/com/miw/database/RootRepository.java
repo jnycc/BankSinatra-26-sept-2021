@@ -85,6 +85,14 @@ public class RootRepository {
         return assets;
     }
 
+    public void updateAsset(double newUnits, String symbol, int accountId){
+        jdbcAssetDao.updateAsset(newUnits, symbol, accountId);
+    }
+
+    public void saveAsset(Asset asset){
+        jdbcAssetDao.saveAsset(asset);
+    }
+
     public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
         return jdbcTransactionDao.getSumOfUnitsPurchasedAndSold(accountId, dateTime, symbol);
     }

@@ -2,7 +2,7 @@ package com.miw.model;
 
 public class Asset {
 
-    private int assetId;
+    private Account account;
     public Crypto crypto;
     private double units;
     private double currentValue;
@@ -29,8 +29,12 @@ public class Asset {
 //    }
 
 
-    public void setAssetId(int assetId) {
-        this.assetId = assetId;
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public Account getAccount() {
+        return account;
     }
 
     public Crypto getCrypto() {

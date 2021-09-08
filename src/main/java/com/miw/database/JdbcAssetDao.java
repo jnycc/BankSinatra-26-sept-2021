@@ -4,6 +4,7 @@
  */
 package com.miw.database;
 
+import com.miw.model.Account;
 import com.miw.model.Asset;
 import com.miw.model.Crypto;
 import org.slf4j.Logger;
@@ -12,8 +13,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -34,9 +33,10 @@ public class JdbcAssetDao {
 
     private PreparedStatement insertAssetStatement (Asset asset, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO Asset (cryptoID, units)" + "VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-        ps.setInt(1, asset.getCrypto().getCryptoId());
-        ps.setDouble(2, asset.getUnits());
+                "INSERT INTO Asset (accountID, cryptoID, units)" + "VALUES (?, ?, ?)");
+        ps.setInt(1, asset.getAccount().getAccountId());
+        ps.setInt(2, asset.getCrypto().getCryptoId());
+        ps.setDouble(3, asset.getUnits());
         return ps;
     }
 
@@ -64,18 +64,15 @@ public class JdbcAssetDao {
         return jdbcTemplate.queryForObject(sql, new AssetRowMapper(), accountId, symbol);
     }
 
-    public Asset save(Asset asset) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> insertAssetStatement(asset, connection), keyHolder);
-        int assetId = keyHolder.getKey().intValue();
-        asset.setAssetId(assetId);
+    public Asset saveAsset(Asset asset) {
+        jdbcTemplate.update(connection -> insertAssetStatement(asset, connection));
         logger.info("New asset has been saved to the database.");
         return asset;
     }
 
-    public void updateAsset(int newUnits, int assetId){
-        String updateQuery = "UPDATE Asset SET units = ? WHERE assetId = ?;";
-        jdbcTemplate.update(updateQuery, newUnits, assetId);
+    public void updateAsset(double newUnits, String symbol, int accountId){
+        String updateQuery = "UPDATE Asset SET units = ? WHERE symbol = ? AND accountID = ?;";
+        jdbcTemplate.update(updateQuery, newUnits, symbol, accountId);
     }
 
     private static class AssetRowMapper implements RowMapper<Asset> {
