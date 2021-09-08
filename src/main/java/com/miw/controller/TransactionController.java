@@ -13,26 +13,33 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 public class TransactionController {
 
     private TransactionService transactionService;
+    private Gson gson;
 
     private final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
     @Autowired
-    public TransactionController(TransactionService transactionService){
+    public TransactionController(TransactionService transactionService, Gson gson){
         super();
         this.transactionService = transactionService;
+        this.gson = gson;
         logger.info("New TransactionController-object created");
     }
 
     @PostMapping("/buy") //TODO: URL aanpassen zeer waarschijnlijk
-    public ResponseEntity<?> doTransaction(@RequestBody String dingetjeHernoemMij){
-        /*Ik ga er voor het gemak vanuit dat er dus een Json ding binnen komt wat we naar een hele Transaction kunnen vertalen :)*/
+    public ResponseEntity<?> doTransaction(@RequestBody String transactionAsJson){
+        Transaction transaction = gson.fromJson(transactionAsJson, Transaction.class);
 
-        Gson gson = new Gson();
-        Transaction transaction = gson.fromJson(dingetjeHernoemMij, Transaction.class); //TODO: met team Frontend afstemmen hoe dit precies binnen gaat komen
+        try{
+            transaction = transactionService.setTransactionPrice(transaction);
+        } catch (IllegalArgumentException e){
+            return new ResponseEntity<>("Buyer may not purchase a negative amount of currency. " +
+                    "Transaction cannot be completed", HttpStatus.CONFLICT);
+        }
 
         //TODO: dit even voor overzichtelijkheid gedaan, maar weghalen waarschijnlijk
         int seller = transaction.getSeller();
@@ -43,14 +50,18 @@ public class TransactionController {
         double bankCosts = transaction.getBankCosts();
 
         if(!transactionService.checkSufficientCrypto(seller, crypto, units)){
-            return new ResponseEntity<>("Seller has insufficient assets. Transaction cannot be completed.", HttpStatus.CONFLICT);
-        } else if(!transactionService.checkSufficientBalance(buyer, transactionPrice, bankCosts)){
-            return new ResponseEntity<>("Buyer has insufficient funds. Transaction cannot be completed.", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Seller has insufficient assets. Transaction cannot be completed.",
+                    HttpStatus.CONFLICT);
+        } else if(!transactionService.checkSufficientBalance(seller, buyer, transactionPrice, bankCosts)){
+            return new ResponseEntity<>("Buyer has insufficient funds. Transaction cannot be completed.",
+                    HttpStatus.CONFLICT);
         }
 
         transactionService.transferBalance(seller, buyer, transactionPrice);
         transactionService.transferCrypto(seller, buyer, crypto, units);
-        transactionService.transferBankCosts(seller, buyer, transactionPrice, bankCosts);
+
+        //TODO: dit werkt nog niet omdat Bank nog niet in de DB staat. Uitgecomment om te kunnen testen met Postman
+        //transactionService.transferBankCosts(seller, buyer, transactionPrice, bankCosts);
 
         transactionService.registerTransaction(transaction);
         return new ResponseEntity<>("Joepie de poepie, transactie gedaan", HttpStatus.OK);

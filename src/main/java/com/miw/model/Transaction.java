@@ -34,6 +34,10 @@ public class Transaction {
         this.transactionDate = LocalDateTime.now();
     }
 
+    public Transaction(){
+        this.transactionDate = LocalDateTime.now();
+    }
+
     private double calculatePrice() {
         return units * crypto.getCryptoPrice();
     }
@@ -41,7 +45,6 @@ public class Transaction {
     private double calculateUnits(double transactionPrice) {
         return transactionPrice / crypto.getCryptoPrice();
     }
-
 
     public void setTransactionId(int transactionId) {
         this.transactionId = transactionId;
@@ -71,8 +74,16 @@ public class Transaction {
         return transactionPrice;
     }
 
+    public void setTransactionPrice(double transactionPrice) {
+        this.transactionPrice = transactionPrice;
+    }
+
     public double getBankCosts() {
         return bankCosts;
+    }
+
+    public void setBankCosts(double bankCosts) {
+        this.bankCosts = bankCosts;
     }
 
     @Override

@@ -4,7 +4,6 @@ import java.util.Objects;
 
 public class Crypto implements Comparable<Crypto>{
 
-    private int cryptoId;
     private String name;
     private String symbol;
     private String description;
@@ -17,18 +16,13 @@ public class Crypto implements Comparable<Crypto>{
         this.cryptoPrice = cryptoPrice;
     }
 
+    public Crypto(){}
+
     private double retrieveValue() {
         //TODO: get recent value of cryptocoin thru API?
         return 0.0;
     }
 
-    public int getCryptoId() {
-        return cryptoId;
-    }
-
-    public void setCryptoId(int cryptoId) {
-        this.cryptoId = cryptoId;
-    }
 
     public String getName() {
         return name;
@@ -47,7 +41,7 @@ public class Crypto implements Comparable<Crypto>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Crypto crypto = (Crypto) o;
-        return name.equals(crypto.name);
+        return symbol.equals(crypto.symbol);
     }
 
     @Override
@@ -58,7 +52,6 @@ public class Crypto implements Comparable<Crypto>{
     @Override
     public String toString() {
         return "Crypto{" +
-                "cryptoId=" + cryptoId +
                 ", name='" + name + '\'' +
                 ", symbol='" + symbol + '\'' +
                 ", description='" + description + '\'' +
@@ -68,6 +61,6 @@ public class Crypto implements Comparable<Crypto>{
 
     @Override
     public int compareTo(Crypto o) {
-        return this.cryptoId - o.getCryptoId();
+        return this.name.compareTo(o.getName());
     }
 }

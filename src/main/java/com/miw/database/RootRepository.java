@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -78,12 +79,19 @@ public class RootRepository {
     }
 
     public List<Asset> getAssets(int accountId) {
-//        Map<String, Asset> assetMap = new TreeMap<>();
         List<Asset> assets = jdbcAssetDao.getAssets(accountId);
         return assets;
     }
 
-    public double getSumOfUnitsPurchasedAndSold(int accountId) {
-        return jdbcTransactionDao.getSumOfUnitsPurchasedAndSold(accountId);
+    public Asset getAssetBySymbol(int accountId, String symbol){
+        return jdbcAssetDao.getAssetBySymbol(accountId, symbol);
+    }
+
+    public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
+        return jdbcTransactionDao.getSumOfUnitsPurchasedAndSold(accountId, dateTime, symbol);
+    }
+
+    public void saveAccount(Account account, int userId) {
+        jdbcAccountDao.save(account, userId);
     }
 }

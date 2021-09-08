@@ -32,8 +32,8 @@ public class JdbcCryptoDao {
     private PreparedStatement insertPriceStatement
     (String symbol, double price, LocalDateTime time, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO CryptoPrice (cryptoID, cryptoPrice, dateRetrieved) " +
-                        "VALUES ((SELECT cryptoID FROM Crypto WHERE symbol = ?), ?, ?)",
+                "INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) " +
+                        "VALUES (?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         );
         ps.setString(1, symbol);
@@ -46,11 +46,8 @@ public class JdbcCryptoDao {
     public Crypto getCryptoBySymbol(String symbol) {
         String sql = "SELECT Crypto.*, CryptoPrice.cryptoPrice " +
                 "FROM Crypto LEFT JOIN CryptoPrice " +
-                "ON Crypto.cryptoID = CryptoPrice.cryptoID " +
-                "WHERE Crypto.cryptoID = " +
-                "    (SELECT cryptoID " +
-                "    FROM Crypto " +
-                "    WHERE symbol = ?) " +
+                "ON Crypto.symbol = CryptoPrice.symbol " +
+                "WHERE Crypto.symbol = ? " +
                 "AND CryptoPrice.dateRetrieved = " +
                 "    (SELECT MAX(dateRetrieved) " +
                 "    FROM CryptoPrice);";
@@ -69,12 +66,23 @@ public class JdbcCryptoDao {
 
     // Vraagt de koers op die het dichtst bij het tijdstip [nu minus X aantal uur in het verleden] is opgeslagen
     public double getPastPriceBySymbol(String symbol, int hoursAgo) {
-        String sql = "SELECT cryptoPrice FROM CryptoPrice WHERE cryptoID = (SELECT cryptoID FROM Crypto WHERE symbol = ?) " +
+        String sql = "SELECT cryptoPrice FROM CryptoPrice WHERE symbol = ? " +
                 "ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, (NOW() - INTERVAL ? HOUR))) LIMIT 1;" ;
         try {
             return jdbcTemplate.queryForObject(sql, Double.class, symbol, hoursAgo);
         } catch (EmptyResultDataAccessException e) {
             logger.info("Failed to get past crypto price by symbol");
+            return 0;
+        }
+    }
+
+    public double getPriceOnDateTimeBySymbol(String symbol, LocalDateTime dateTime) {
+        String sql = "SELECT cryptoPrice FROM CryptoPrice WHERE symbol = ? " +
+                "ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, ?)) LIMIT 1;";
+        try {
+            return jdbcTemplate.queryForObject(sql, Double.class, symbol, dateTime);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Failed to get selected crypto price by symbol on the selected dateTime.");
             return 0;
         }
     }
@@ -87,13 +95,11 @@ public class JdbcCryptoDao {
 
         @Override
         public Crypto mapRow(ResultSet resultSet, int i) throws SQLException {
-            int cryptoID  = resultSet.getInt("cryptoID");
             String name  = resultSet.getString("name");
             String symbol = resultSet.getString("symbol");
             String description = resultSet.getString("description");
             Double price = resultSet.getDouble("cryptoPrice");
             Crypto crypto = new Crypto(name, symbol, description, price);
-            crypto.setCryptoId(cryptoID);
             return crypto;
         }
     }
