@@ -16,6 +16,7 @@ public class TransactionService {
     private RootRepository rootRepository;
     private final Logger logger = LoggerFactory.getLogger(RegistrationService.class);
     private int accountBank;
+    private final double HALF = 0.5;
 
     @Autowired
     public TransactionService(RootRepository rootRepository) {
@@ -30,12 +31,18 @@ public class TransactionService {
     }
 
     public Transaction setTransactionPrice(Transaction transaction){
+        transaction.getCrypto().setCryptoPrice(rootRepository.getLatestPriceBySymbol(transaction.getCrypto().getSymbol()));
         if(transaction.getUnits() < 0){
-            throw new IllegalArgumentException("Units may not be negative");
+            throw new IllegalArgumentException("You cannot purchase a negative amount of assets");
         } else {
             transaction.setTransactionPrice(transaction.getCrypto().getCryptoPrice() * transaction.getUnits());
             return transaction;
         }
+    }
+
+    public Transaction setBankCosts(Transaction transaction){
+        transaction.setBankCosts(rootRepository.getBankCosts());
+        return transaction;
     }
 
     public boolean checkSufficientBalance(int seller, int buyer, double transactionPrice, double bankCosts){
@@ -45,7 +52,7 @@ public class TransactionService {
         } else if (buyer == accountBank){
             return buyerBalance >= transactionPrice;
         } else {
-            return buyerBalance >= transactionPrice + (0.5 * (transactionPrice * bankCosts));
+            return buyerBalance >= transactionPrice + (HALF * (transactionPrice * bankCosts));
         }
     }
 
@@ -73,7 +80,7 @@ public class TransactionService {
             rootRepository.updateBalance(rootRepository.getAccountById(seller).getBalance() - bankCosts, seller);
             rootRepository.updateBalance(rootRepository.getAccountById(buyer).getBalance() + bankCosts, buyer);
         } else { //both seller and buyer are clients
-            double share = bankCosts * 0.5;
+            double share = bankCosts * HALF;
             rootRepository.updateBalance(rootRepository.getAccountById(seller).getBalance() - share, seller);
             rootRepository.updateBalance(rootRepository.getAccountById(buyer).getBalance() - share, buyer);
             rootRepository.updateBalance(rootRepository.getAccountById(accountBank).getBalance() + bankCosts, accountBank);

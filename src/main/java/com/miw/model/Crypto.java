@@ -36,6 +36,10 @@ public class Crypto{
         return cryptoPrice;
     }
 
+    public void setCryptoPrice(double cryptoPrice) {
+        this.cryptoPrice = cryptoPrice;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
