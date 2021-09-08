@@ -90,4 +90,8 @@ public class RootRepository {
     public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
         return jdbcTransactionDao.getSumOfUnitsPurchasedAndSold(accountId, dateTime, symbol);
     }
+
+    public void saveAccount(Account account, int userId) {
+        jdbcAccountDao.save(account, userId);
+    }
 }

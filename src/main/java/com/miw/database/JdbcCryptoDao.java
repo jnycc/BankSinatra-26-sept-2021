@@ -47,7 +47,7 @@ public class JdbcCryptoDao {
         String sql = "SELECT Crypto.*, CryptoPrice.cryptoPrice " +
                 "FROM Crypto LEFT JOIN CryptoPrice " +
                 "ON Crypto.symbol = CryptoPrice.symbol " +
-                "WHERE symbol = ? " +
+                "WHERE Crypto.symbol = ? " +
                 "AND CryptoPrice.dateRetrieved = " +
                 "    (SELECT MAX(dateRetrieved) " +
                 "    FROM CryptoPrice);";

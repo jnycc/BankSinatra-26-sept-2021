@@ -2,7 +2,7 @@ package com.miw.model;
 
 import java.util.Objects;
 
-public class Crypto{
+public class Crypto implements Comparable<Crypto>{
 
     private String name;
     private String symbol;
@@ -59,4 +59,8 @@ public class Crypto{
                 '}';
     }
 
+    @Override
+    public int compareTo(Crypto o) {
+        return this.name.compareTo(o.getName());
+    }
 }
