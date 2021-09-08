@@ -115,7 +115,7 @@ function doLogin(currentLogin){
         })
         .then(res => {
             if (res.status === 200) {
-                showWelcomeScreen();
+                window.location.replace("http://localhost:8080/dashboard.html")
             } else if (res.status === 401) {
                 alert("Incorrect login details");
                 return;

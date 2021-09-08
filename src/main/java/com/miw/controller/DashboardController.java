@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,8 +21,11 @@ public class DashboardController {
     private JdbcAssetDao jdbcAssetDao;
 
     @Autowired
-    public DashboardController() {
+    public DashboardController(TokenService tokenService, JdbcAccountDao jdbcAccountDao, JdbcAssetDao jdbcAssetDao) {
         super();
+        this.tokenService = tokenService;
+        this.jdbcAccountDao = jdbcAccountDao;
+        this.jdbcAssetDao = jdbcAssetDao;
         logger.info("New DashboardController created");
     }
 
@@ -32,19 +34,18 @@ public class DashboardController {
         logger.info("something");
     }
 
+    //TODO: waarom komt token niet binnen???
     @PostMapping("/getBalance")
     public double getBalance(@RequestBody String token) {
-        int ID = TokenService.getUserID(token);
+        int ID = TokenService.getValidUserID(token);
         return jdbcAccountDao.getAccountByUserID(ID).getBalance();
     }
 
-    //TODO: getAssetsBuserID() toevoegen aan assetsDAO
     @PostMapping("/getPortfolioValue")
     public double getPortfolioValue(@RequestBody String token) {
-        int ID = TokenService.getUserID(token);
-        List<Asset> clientAssets = new ArrayList<Asset>();
-        clientAssets = jdbcAssetDao.getAssets(ID);
-        double totalValue = 0.0;
+        int ID = TokenService.getValidUserID(token);
+        List<Asset> clientAssets = jdbcAssetDao.getAssets(ID);
+        double totalValue = 0.00;
         for (Asset asset: clientAssets) {
             totalValue += asset.getUnits() * asset.getCurrentValue();
         }

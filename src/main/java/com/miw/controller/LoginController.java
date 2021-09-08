@@ -69,7 +69,7 @@ public class LoginController {
 
     @PostMapping("/getID")
     public int getuserID(@RequestBody String token) {
-        return TokenService.getUserID(token);
+        return TokenService.getValidUserID(token);
     }
 
     public ResponseEntity<?> showLoginResponse(String response) {

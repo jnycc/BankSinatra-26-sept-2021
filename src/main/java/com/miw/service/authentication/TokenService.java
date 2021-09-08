@@ -92,16 +92,16 @@ public class TokenService {
     }
 
     // Will return userID if JWT is valid.
-    public static Integer getUserID(String jwt) {
+    public static Integer getValidUserID(String jwt) {
         try {
             return Integer.valueOf(decodeJWT(jwt).getSubject());
         } catch (ExpiredJwtException expired) {
-            return 0;
+            return null;
         }
     }
 
     // Will only return userrole if JWT is valid
-    public static String getRole(String jwt) {
+    public static String getValidRole(String jwt) {
         try {
             return decodeJWT(jwt).get("userrole").toString();
         } catch (ExpiredJwtException invalid) {
@@ -110,11 +110,11 @@ public class TokenService {
     }
 
     public static Boolean validateAdmin(String jwt) {
-        return TokenService.getRole(jwt).equals("admin");
+        return TokenService.getValidRole(jwt).equals("admin");
     }
 
     public static Boolean validateClient(String jwt) {
-        return TokenService.getRole(jwt).equals("client");
+        return TokenService.getValidRole(jwt).equals("client");
     }
 
 
