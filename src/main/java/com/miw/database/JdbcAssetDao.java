@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.sql.*;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -32,6 +33,14 @@ public class JdbcAssetDao {
         logger.info("JdbcAssetDAO-object created.");
     }
 
+    private PreparedStatement insertAssetStatement (int accountId, String symbol, double units, Connection connection) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(
+                "INSERT INTO Asset (accountID, symbol, units)" + "VALUES (?, ?, ?)");
+        ps.setInt(1, accountId);
+        ps.setString(2, symbol);
+        ps.setDouble(3, units);
+        return ps;
+    }
 
     public Asset getAssetBySymbol(int accountId, String symbol) {
         String sql = "SELECT a.symbol, name, cryptoPrice, units, description, dateRetrieved " +
@@ -61,6 +70,16 @@ public class JdbcAssetDao {
                 "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1)" +
                 "   , INTERVAL 10 SECOND);";
         return jdbcTemplate.query(sql, new AssetRowMapper(), accountId);
+    }
+
+    public void saveAsset(int accountID, String symbol, double units) {
+        jdbcTemplate.update(connection -> insertAssetStatement(accountID, symbol, units, connection));
+        logger.info("New asset has been saved to the database.");
+    }
+
+    public void updateAsset(double newUnits, String symbol, int accountId){
+        String updateQuery = "UPDATE Asset SET units = ? WHERE symbol = ? AND accountID = ?;";
+        jdbcTemplate.update(updateQuery, newUnits, symbol, accountId);
     }
 
 

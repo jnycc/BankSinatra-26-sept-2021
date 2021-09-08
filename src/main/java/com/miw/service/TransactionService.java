@@ -60,6 +60,14 @@ public class TransactionService {
 
     public void transferCrypto(int seller, int buyer, Crypto crypto, double units){
         //TODO: maken zodra JdbcAssetDao een methode update heeft
+        double newSellerAsset = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() - units;
+        rootRepository.updateAsset(newSellerAsset, crypto.getSymbol(), seller);
+        if (rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()) != null) { // buyer already has crypto
+            double newBuyerAsset = rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()).getUnits() + units;
+            rootRepository.updateAsset(newBuyerAsset, crypto.getSymbol(), buyer);
+        } else { // buyer does not have crypto yet
+            rootRepository.saveAsset(buyer, crypto.getSymbol(), units);
+        }
     }
 
     public void transferBankCosts(int seller, int buyer, double transactionPrice, double bankCostsPercentage){

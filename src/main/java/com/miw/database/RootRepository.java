@@ -18,6 +18,7 @@ import java.util.List;
 public class RootRepository {
 
     private final Logger logger = LoggerFactory.getLogger(RootRepository.class);
+    public Asset getAssetBySymbol;
 
     private ClientDao clientDAO;
     private JdbcAccountDao jdbcAccountDao; // TODO: interface aanroepen ipv jdbcAccountDAO zelf
@@ -87,6 +88,14 @@ public class RootRepository {
         return jdbcAssetDao.getAssetBySymbol(accountId, symbol);
     }
 
+    public void updateAsset(double newUnits, String symbol, int accountId){
+        jdbcAssetDao.updateAsset(newUnits, symbol, accountId);
+    }
+
+    public void saveAsset(int buyer, String symbol, double units){
+        jdbcAssetDao.saveAsset(buyer, symbol, units);
+    }
+
     public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
         return jdbcTransactionDao.getSumOfUnitsPurchasedAndSold(accountId, dateTime, symbol);
     }
@@ -94,4 +103,5 @@ public class RootRepository {
     public void saveAccount(Account account, int userId) {
         jdbcAccountDao.save(account, userId);
     }
+
 }

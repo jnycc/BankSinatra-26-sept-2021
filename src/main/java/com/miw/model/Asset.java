@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class Asset {
 
+    private Account account;
     public Crypto crypto;
     private double units;
     private double currentValue;
@@ -38,6 +39,14 @@ public class Asset {
 //        return units * crypto.getCryptoPrice();
 //    }
 
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
 
     public Crypto getCrypto() {
         return crypto;
