@@ -17,7 +17,7 @@ import java.util.TreeSet;
 @SpringBootApplication
 public class BankSinatraApplication {
 
-    /*private Set<Crypto> cryptos = new TreeSet<>();
+    private Set<Crypto> cryptos = new TreeSet<>();
     private Logger logger = LoggerFactory.getLogger(BankSinatraApplication.class);
     static final int BANK_ID = 1;
     // TODO: Pas zo nodig TOP 20 Cryptos aan
@@ -32,7 +32,7 @@ public class BankSinatraApplication {
         Bank.getBankSinatra().setUpInitialPortfolio(cryptos);
         repository.saveAccount(Bank.getBankSinatra().getAccount(), BANK_ID);
         logger.info("Bank Sinatra is founded");
-    }*/
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(BankSinatraApplication.class, args);
