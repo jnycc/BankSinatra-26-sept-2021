@@ -16,8 +16,8 @@ USE `banksinatra` ;
 -- Table `banksinatra`.`Role`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `banksinatra`.`Role` (
-  `role` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`role`));
+  `userRole` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`userRole`));
 
 
 -- -----------------------------------------------------
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`User` (
   `email` VARCHAR(100) NOT NULL,
   `password` VARCHAR(100) NOT NULL,
   `salt` VARCHAR(100) NOT NULL,
-  `role` VARCHAR(45) NOT NULL,
+  `userRole` VARCHAR(45) NOT NULL,
   `isBlocked` TINYINT NOT NULL,
   `firstName` VARCHAR(45) NOT NULL,
   `prefix` VARCHAR(25) NULL DEFAULT NULL,
@@ -41,10 +41,10 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`User` (
   `bsn` INT NULL DEFAULT NULL,
   `dateOfBirth` DATE NULL DEFAULT NULL,
   PRIMARY KEY (`userID`),
-  INDEX `fk_User_Role1_idx` (`role` ASC) VISIBLE,
+  INDEX `fk_User_Role1_idx` (`userRole` ASC) VISIBLE,
   CONSTRAINT `fk_User_Role1`
-    FOREIGN KEY (`role`)
-    REFERENCES `banksinatra`.`Role` (`role`)
+    FOREIGN KEY (`userRole`)
+    REFERENCES `banksinatra`.`Role` (`userRole`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
@@ -168,6 +168,15 @@ INSERT INTO Role VALUES('bank');
 INSERT INTO user(email, password, salt, role, isBlocked, firstName, prefix, lastName,
                  street, houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth)
 VALUES ('', '', '', 'bank', 0, 'Bank', '', 'Sinatra', '', 0, '', '', '', 0, '2021-09-01');
+INSERT INTO `account` VALUES (1,'NL91NODX9826496343',5000000.00,1);
+INSERT INTO `asset` VALUES (1,'ADA',3617.10729350),(1,'BCH',3237.97825746),(1,'BNB',4446.80050983),
+                           (1,'BTC',1467.46154488),(1,'BUSD',2907.71188934),(1,'DOGE',4165.35024824),
+                           (1,'DOT',4299.78222044),(1,'ETH',4953.59009790),(1,'ICP',4204.44776219),
+                           (1,'LINK',3270.64077791),(1,'LTC',4452.54613758),(1,'LUNA',2664.79656423),
+                           (1,'MATIC',4202.83711257),(1,'SOL',4443.27804342),(1,'UNI',3251.06460353),
+                           (1,'USDC',1795.14359490),(1,'USDT',1520.26752852),(1,'VET',1989.28679912),
+                           (1,'WBTC',1514.80989533),(1,'XRP',3150.50238923);
+
 
 -- Gebruiker definiëren en toegang verlenen
 CREATE USER 'cursist'@'localhost' IDENTIFIED BY 'cohort';

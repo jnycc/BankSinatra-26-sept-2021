@@ -20,6 +20,12 @@ public class Account {
         this.balance = balance;
     }
 
+    public Account(int accountId, String iban, double balance) {
+        this.accountId = accountId;
+        this.iban = iban;
+        this.balance = balance;
+    }
+
     public int getAccountId() {
         return accountId;
     }

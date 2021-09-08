@@ -4,18 +4,14 @@ import java.util.*;
 
 public class Bank {
     private static Bank bankSinatra = null;
-    private Random random;
+    // private Random random;
     private Account account;
-    private Map<Crypto, Double> portfolio;
-    private final double START_CAPITAL = 5000000;
-    private final int NR_ASSETS_MIN = 1000;
-    private final int NR_ASSETS_MAX = 5000;
+    private Map<Crypto, Double> portfolio = new TreeMap<>();
+    // private final double START_CAPITAL = 5000000;
+    // private final int NR_ASSETS_MIN = 1000;
+    // private final int NR_ASSETS_MAX = 5000;
 
-    private Bank() {
-        this.account = new Account(START_CAPITAL);
-        this.random = new Random();
-        this.portfolio = new TreeMap<>();
-    }
+    private Bank() { }
 
     public Account getAccount() {
         return account;
@@ -41,9 +37,9 @@ public class Bank {
                 ", portfolio=" + portfolio + '}';
     }
 
-    public void setUpInitialPortfolio(Set<Crypto> cryptos) {
+    /*public void setUpInitialPortfolio(Set<Crypto> cryptos) {
         cryptos.forEach(c -> this.portfolio.put(c, (NR_ASSETS_MIN + (NR_ASSETS_MAX - NR_ASSETS_MIN) * random.nextDouble())));
-    }
+    }*/
 
     public static Bank getBankSinatra() {
         if (bankSinatra == null) {
