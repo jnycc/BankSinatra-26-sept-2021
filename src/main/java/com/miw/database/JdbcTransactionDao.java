@@ -60,11 +60,10 @@ public class JdbcTransactionDao {
 
     public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
         String sql = "SELECT " +
-                "(SELECT SUM(units) FROM `Transaction` " +
+                "(SELECT IFNULL(SUM(units), 0) FROM `Transaction` " +
                 "WHERE accountID_buyer = ? AND date BETWEEN ? AND current_timestamp() AND symbol = ?) " +
                 "-" +
-                "(SELECT SUM(units) " +
-                "FROM `Transaction` " +
+                "(SELECT IFNULL(SUM(units), 0) FROM `Transaction` " +
                 "WHERE accountID_seller = ? AND date BETWEEN ? AND current_timestamp() AND symbol = ?)" +
                 "AS sumOfUnitsPurchasedAndSold;";
         try {

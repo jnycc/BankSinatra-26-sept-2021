@@ -69,13 +69,14 @@ public class JdbcAssetDao {
                 "   FROM Asset " +
                 "   WHERE accountID = ? AND symbol = ?) " +
                 "   +" +
-                "   (SELECT SUM(units) FROM `Transaction` " +
-                "   WHERE accountID_seller = ? AND symbol = ? AND `date` BETWEEN CURRENT_DATE() AND CURRENT_TIMESTAMP()) " +
+                "   (SELECT IFNULL(SUM(units), 0) FROM `Transaction` " +
+                "   WHERE accountID_seller = ? AND symbol = ? AND `date` BETWEEN ? AND CURRENT_TIMESTAMP()) " +
                 "   - " +
-                "   (SELECT SUM(units) FROM `Transaction` " +
-                "   WHERE accountID_buyer = ? AND symbol = ? AND `date` BETWEEN CURRENT_DATE() AND CURRENT_TIMESTAMP())) " +
+                "   (SELECT IFNULL(SUM(units), 0) FROM `Transaction` " +
+                "   WHERE accountID_buyer = ? AND symbol = ? AND `date` BETWEEN ? AND CURRENT_TIMESTAMP())) " +
                 "AS unitsAtDateTime;";
-        Double units = jdbcTemplate.queryForObject(sql, Double.class, accountId, symbol, accountId, symbol, accountId, symbol);
+        Double units = jdbcTemplate.queryForObject(sql, Double.class, accountId, symbol, accountId, symbol, dateTime,
+                accountId, symbol, dateTime);
         return (units != null) ? units : 0.0;
     }
 
