@@ -1,7 +1,6 @@
 package com.miw.controller;
 
 import com.google.gson.Gson;
-import com.miw.model.Crypto;
 import com.miw.model.Transaction;
 import com.miw.service.TransactionService;
 import org.slf4j.Logger;
@@ -33,45 +32,60 @@ public class TransactionController {
     //TODO: deze methode is te lang, dus nog een keer opbreken in kleinere methodes
     @PostMapping("/buy") //TODO: URL aanpassen zeer waarschijnlijk
     public ResponseEntity<?> doTransaction(@RequestBody String transactionAsJson){
-        //Zet JSON string om naar Transaction
         Transaction transaction = gson.fromJson(transactionAsJson, Transaction.class);
 
-        //Check of aantal units niet negatief is en set de transactionPrice
-        try{
-            transaction = transactionService.setTransactionPrice(transaction);
-        } catch (IllegalArgumentException e){
-            return new ResponseEntity<>("Buyer may not purchase a negative amount of currency. " +
-                    "Transaction cannot be completed", HttpStatus.CONFLICT);
+        if(transaction.getUnits() < 0){
+            return new ResponseEntity<>("Buyer cannot purchase negative asssets. " +
+                    "Transaction cannot be completed.", HttpStatus.CONFLICT);
         }
 
-        //Haal actueel bankCosts-percentage uit database
-        transaction = transactionService.setBankCosts(transaction);
+        transaction = setPrice(transaction);
+        transaction = setCosts(transaction);
 
-        //TODO: dit even voor overzichtelijkheid gedaan, maar weghalen waarschijnlijk
-        int seller = transaction.getSeller();
-        int buyer = transaction.getBuyer();
-        Crypto crypto = transaction.getCrypto();
-        double units = transaction.getUnits();
-        double transactionPrice = transaction.getTransactionPrice();
-        double bankCosts = transaction.getBankCosts();
-
-        //Check of seller genoeg Crypto heeft en buyer genoeg geld
-        if(!transactionService.checkSufficientCrypto(seller, crypto, units)){
+        if(!checkSufficientCrypto(transaction)){
             return new ResponseEntity<>("Seller has insufficient assets. Transaction cannot be completed.",
                     HttpStatus.CONFLICT);
-        } else if(!transactionService.checkSufficientBalance(seller, buyer, transactionPrice, bankCosts)){
+        } else if(!checkSufficientBalance(transaction)){
             return new ResponseEntity<>("Buyer has insufficient funds. Transaction cannot be completed.",
                     HttpStatus.CONFLICT);
         }
 
-        //Maak geld, crypto en banking fee over
-        transactionService.transferBalance(seller, buyer, transactionPrice);
-        transactionService.transferCrypto(seller, buyer, crypto, units);
-
-        //TODO: dit werkt nog niet omdat Bank nog niet in de DB staat. Uitgecomment om te kunnen testen met Postman
-        //transactionService.transferBankCosts(seller, buyer, transactionPrice, bankCosts);
+        transfer(transaction);
 
         transactionService.registerTransaction(transaction);
         return new ResponseEntity<>("Joepie de poepie, transactie gedaan", HttpStatus.OK);
+    }
+
+
+    private void transfer(Transaction transaction){
+        transactionService.transferBalance(transaction.getSeller(), transaction.getBuyer(),
+                transaction.getTransactionPrice());
+        transactionService.transferCrypto(transaction.getSeller(), transaction.getBuyer(),
+                transaction.getCrypto(), transaction.getUnits());
+        transactionService.transferBankCosts(transaction.getSeller(), transaction.getBuyer(),
+                transaction.getTransactionPrice(), transaction.getBankCosts());
+    }
+
+    private Transaction setPrice(Transaction transaction){
+        return transactionService.setTransactionPrice(transaction);
+    }
+
+    private Transaction setCosts(Transaction transaction){
+        return transactionService.setBankCosts(transaction);
+    }
+
+    private boolean checkSufficientCrypto(Transaction transaction){
+        try{
+            return transactionService.checkSufficientCrypto(transaction.getSeller(), transaction.getCrypto(),
+                    transaction.getUnits());
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean checkSufficientBalance(Transaction transaction){
+        return transactionService.checkSufficientBalance(transaction.getSeller(), transaction.getBuyer(),
+                transaction.getTransactionPrice(), transaction.getBankCosts());
     }
 }
