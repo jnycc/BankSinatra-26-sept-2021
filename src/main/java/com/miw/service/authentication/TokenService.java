@@ -31,49 +31,44 @@ public class TokenService {
     public TokenService() {
     }
 
+    //generating secret key for JWT signature
+    public static Key generateKey(){
+        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(new PepperService().getPepper());
+        return new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
+    }
+
 
     public static String jwtBuilder(int userID, String role, long expTime){ // input: Role role (nieuwe klasse Role?)
-        //generating secret key for JWT signature
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(new PepperService().getPepper());
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
-
         // creating specific claims to add
         Map<String, Object> tokenClaims = new HashMap<>();
         tokenClaims.put("userrole", role);
 
-        //set JWT Claims
+        //set JWT Claims and set to compact, URL-safe string
         JwtBuilder builder = Jwts.builder()
                 .setClaims(tokenClaims)
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setSubject(String.valueOf(userID))
                 .setExpiration(new Date(System.currentTimeMillis() + expTime))
-                .signWith(SignatureAlgorithm.HS256, signingKey);
-
-        //Building JWT set to compact, URL-safe string
+                .signWith(SignatureAlgorithm.HS256, generateKey());
         return builder.compact();
     }
 
+
     //TODO: clean up code (super() of same method above?)
     public static String jwtBuilderSetDate(int userID, String role, long msNow, long expTime){
-        //generating secret key for JWT signature
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(new PepperService().getPepper());
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
-
         // creating specific claims to add
         Map<String, Object> tokenClaims = new HashMap<>();
         tokenClaims.put("userrole", role);
 
-        //set JWT Claims
+        //set JWT Claims and set to compact, URL-safe string
         JwtBuilder builder = Jwts.builder()
                 .setClaims(tokenClaims)
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date(msNow))
                 .setSubject(String.valueOf(userID))
                 .setExpiration(new Date(msNow + expTime))
-                .signWith(SignatureAlgorithm.HS256, signingKey);
-
-        //Building JWT set to compact, URL-safe string
+                .signWith(SignatureAlgorithm.HS256, generateKey());
         return builder.compact();
     }
 
@@ -97,7 +92,7 @@ public class TokenService {
     }
 
     // Will return userID if JWT is valid.
-    public static Integer GetUserID(String jwt) {
+    public static Integer getUserID(String jwt) {
         try {
             return Integer.valueOf(decodeJWT(jwt).getSubject());
         } catch (ExpiredJwtException expired) {

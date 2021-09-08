@@ -70,7 +70,7 @@ public class LoginController {
 
     @PostMapping("/getID")
     public int getuserID(@RequestBody String token) {
-        return TokenService.GetUserID(token);
+        return TokenService.getUserID(token);
     }
 
     public ResponseEntity<?> showLoginResponse(String response) {

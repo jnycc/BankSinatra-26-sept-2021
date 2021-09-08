@@ -33,16 +33,16 @@ function getBalance(){
         })
 }
 
-// const portfolioValue = document.querySelector("#portfolioValue")
-// portfolioValue.addEventListener("click", getPortfolioValue)
-//
-// function getPortfolioValue(){
-//     fetch(`http://localhost:8080/getPortfolioValue`, {
-//         method: 'POST',
-//         body: `${localStorage.getItem('token')}`
-//     })
-//         .then(res => res.text())
-//         .then(it => {
-//             portfolioValue.innerHTML = it
-//         })
-// }
+const portfolioValue = document.querySelector("#portfolioValue")
+portfolioValue.addEventListener("click", getPortfolioValue)
+
+function getPortfolioValue(){
+    fetch(`http://localhost:8080/getPortfolioValue`, {
+        method: 'POST',
+        body: `${localStorage.getItem('token')}`
+    })
+        .then(res => res.text())
+        .then(it => {
+            portfolioValue.innerHTML = it
+        })
+}
