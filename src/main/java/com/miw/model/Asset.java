@@ -8,15 +8,9 @@ public class Asset {
     public Crypto crypto;
     private double units;
     private double currentValue;
-    private Map<String, Double> historicalValues; //interval, oldValue
-
     private Map<String, Double> historicalNrOfUnits; //interval, units
-    private double units1DayAgo;
-    private double units1MonthAgo;
-    private double units3MonthsAgo;
-    private double unitsYearAgo;
-    private double unitsAtStart;
-
+    private Map<String, Double> historicalValues; //interval, oldValue
+    private Map<String, Double> deltaValues;
 //    private double delta1DayValue;
 //    private double delta1DayPct;
 //    private double delta1MonthValue;
@@ -28,7 +22,6 @@ public class Asset {
 //    private double deltaStartTotalValue;
 //    private double deltaStartTotalPct;
 //    private AssetDeltaValues assetDeltaValues;
-    private Map<String, Double> deltaValues;
 
     public Asset(Crypto crypto, double units) {
         this.crypto = crypto;

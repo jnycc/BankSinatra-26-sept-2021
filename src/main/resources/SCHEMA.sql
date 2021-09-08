@@ -162,6 +162,7 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Asset` (
 -- Vaste basisrollen instellen
 INSERT INTO Role VALUES('client');
 INSERT INTO Role VALUES('admin');
+INSERT INTO Role VALUES('bank');
 
 -- Gebruiker definiëren en toegang verlenen
 CREATE USER 'cursist'@'localhost' IDENTIFIED BY 'cohort';
