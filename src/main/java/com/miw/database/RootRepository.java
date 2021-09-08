@@ -90,6 +90,14 @@ public class RootRepository {
         return jdbcAssetDao.getAssetBySymbol(accountId, symbol);
     }
 
+    public List<String> getAllCryptosOwned(int accountId) {
+        return jdbcTransactionDao.getAllCryptosOwned(accountId);
+    }
+
+    public Double getSymbolUnitsAtDateTime(int accountId, String symbol, LocalDateTime dateTime) {
+        return jdbcAssetDao.getSymbolUnitsAtDateTime(accountId, symbol, dateTime);
+    }
+
     public void updateAsset(double newUnits, String symbol, int accountId){
         jdbcAssetDao.updateAsset(newUnits, symbol, accountId);
     }
@@ -113,5 +121,7 @@ public class RootRepository {
     public void saveAccount(Account account, int userId) {
         jdbcAccountDao.save(account, userId);
     }
+
+
 
 }

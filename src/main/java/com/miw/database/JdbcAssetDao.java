@@ -72,6 +72,23 @@ public class JdbcAssetDao {
         return jdbcTemplate.query(sql, new AssetRowMapper(), accountId);
     }
 
+    public Double getSymbolUnitsAtDateTime(int accountId, String symbol, LocalDateTime dateTime) {
+        String sql = "SELECT (" +
+                "   (SELECT units " +
+                "   FROM Asset " +
+                "   WHERE accountID = ? AND symbol = ?) " +
+                "   +" +
+                "   (SELECT IFNULL(SUM(units), 0) FROM `Transaction` " +
+                "   WHERE accountID_seller = ? AND symbol = ? AND `date` BETWEEN ? AND CURRENT_TIMESTAMP()) " +
+                "   - " +
+                "   (SELECT IFNULL(SUM(units), 0) FROM `Transaction` " +
+                "   WHERE accountID_buyer = ? AND symbol = ? AND `date` BETWEEN ? AND CURRENT_TIMESTAMP())) " +
+                "AS unitsAtDateTime;";
+        Double units = jdbcTemplate.queryForObject(sql, Double.class, accountId, symbol, accountId, symbol, dateTime,
+                accountId, symbol, dateTime);
+        return (units != null) ? units : 0.0;
+    }
+
     public void saveAsset(int accountID, String symbol, double units) {
         jdbcTemplate.update(connection -> insertAssetStatement(accountID, symbol, units, connection));
         logger.info("New asset has been saved to the database.");
