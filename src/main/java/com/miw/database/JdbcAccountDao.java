@@ -46,7 +46,7 @@ public class JdbcAccountDao {
         jdbcTemplate.update(updateQuery, newBalance, accountId);
     }
 
-    public Account getAccountById(int accountId){
+    public Account getAccountByUserID(int accountId){
         String sql = "SELECT * FROM Account WHERE accountID = ?;";
         return jdbcTemplate.queryForObject(sql, new JdbcAccountDao.AccountRowMapper(), accountId);
     }

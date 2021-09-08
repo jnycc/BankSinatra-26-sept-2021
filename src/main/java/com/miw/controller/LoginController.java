@@ -69,17 +69,9 @@ public class LoginController {
         }
     }
 
-    // Naar dashboardController?
-    @PostMapping("/getEmail")
-    public String getEmail(@RequestBody String token) {
-        return TokenService.validateAndGetEmailJWT(token);
-    }
-
-    // Naar dashboardController?
-    @PostMapping("/getBalance")
-    public double getBalance(@RequestBody String token) {
-        String email = TokenService.validateAndGetEmailJWT(token);
-        return jdbcAccountDao.getBalanceByEmail(email);
+    @PostMapping("/getID")
+    public int getuserID(@RequestBody String token) {
+        return TokenService.validateAndGetID(token);
     }
 
     public ResponseEntity<?> showLoginResponse(String response) {
@@ -95,7 +87,6 @@ public class LoginController {
     @GetMapping("/gegevens/{email}")
     public ResponseEntity<?> showMyData(@RequestHeader("Authorization") String token, @PathVariable("email") @Email String email) {
         //Claims claims = tokenService.decodeJwt
-
         if (TokenService.decodeJWTBool(token)) {
             return ResponseEntity.ok(jdbcClientDao.findByEmail(email));
         } else {

@@ -7,6 +7,7 @@ package com.miw.service.authentication;
 import com.miw.database.JdbcAdminDao;
 import com.miw.database.JdbcTokenDao;
 import com.miw.database.JdbcClientDao;
+import com.miw.database.JdbcUserDao;
 import com.miw.model.Administrator;
 import com.miw.model.Client;
 import com.miw.model.Credentials;
@@ -22,6 +23,7 @@ public class AuthenticationService {
     private JdbcClientDao clientDao;
     private TokenService tokenService;
     private JdbcTokenDao jdbcTokenDao;
+    private JdbcUserDao jdbcUserDao;
     private JdbcAdminDao adminDao;
     private final String INVALID_CREDENTIALS = "Invalid credentials";
     private final String BLOCKED_USER = "User is blocked";
@@ -30,19 +32,23 @@ public class AuthenticationService {
 
     @Autowired
     public AuthenticationService(HashService hs, JdbcClientDao clientDao, TokenService tokenService,
-                                 JdbcTokenDao jdbcTokenDao, JdbcAdminDao adminDao) {
+                                 JdbcTokenDao jdbcTokenDao, JdbcUserDao jdbcUserDao, JdbcAdminDao adminDao) {
         super();
         this.hashService = hs;
         this.clientDao = clientDao;
         this.tokenService = tokenService;
         this.jdbcTokenDao = jdbcTokenDao;
+        this.jdbcUserDao = jdbcUserDao;
         this.adminDao = adminDao;
         logger.info("New AuthenticationService created");
     }
 
     public String authenticate(Credentials credentials) {
-        Client clientDatabase = clientDao.findByEmail(credentials.getEmail());
-        Client clientLogIn = new Client(credentials.getEmail(), credentials.getPassword());
+        String email = credentials.getEmail();
+        Client clientDatabase = clientDao.findByEmail(email);
+        Client clientLogIn = new Client(email, credentials.getPassword());
+        int jwtExpTime = 7400000; //2 uur geldig
+
 
         if (clientDatabase != null) {
             clientLogIn.setSalt(clientDatabase.getSalt());
@@ -52,7 +58,9 @@ public class AuthenticationService {
                 if (clientDatabase.isBlocked()) {
                     return BLOCKED_USER;
                 }
-                return TokenService.jwtBuilder(credentials.getEmail(), credentials.getClass().toString(), 7400000); //2 uur geldig
+                //TODO: rol halen
+                return TokenService.jwtBuilder(jdbcUserDao.getIDByEmail(email),
+                        jdbcUserDao.getRoleByEmail(email), jwtExpTime);
             }
             return INVALID_CREDENTIALS;
         }
@@ -62,6 +70,8 @@ public class AuthenticationService {
     public String authenticateAdmin(Credentials credentials) {
         Administrator adminDatabase = adminDao.findByEmail(credentials.getEmail());
         Administrator adminLogIn = new Administrator(credentials.getEmail(), credentials.getPassword());
+        int jwtExpTime = 7400000; //2 uur geldig
+        String email = credentials.getEmail();
 
         if (adminDatabase != null) {
             adminLogIn.setSalt(adminDatabase.getSalt());
@@ -72,7 +82,8 @@ public class AuthenticationService {
                     return BLOCKED_USER;
                 }
                 // TODO: role ophalen via de database
-                return TokenService.jwtBuilder(credentials.getEmail().toString(), "client",7400000); //2 uur geldig
+                return TokenService.jwtBuilder(jdbcUserDao.getIDByEmail(email),
+                        jdbcUserDao.getRoleByEmail(email), jwtExpTime); //2 uur geldig
             }
             return INVALID_CREDENTIALS;
         }

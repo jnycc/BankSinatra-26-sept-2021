@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 @Repository
 public class RootRepository {
@@ -68,7 +66,7 @@ public class RootRepository {
     }
 
     public Account getAccountById(int accountId){
-        return jdbcAccountDao.getAccountById(accountId);
+        return jdbcAccountDao.getAccountByUserID(accountId);
     }
 
     public Account getAccountByEmail(String email){
