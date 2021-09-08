@@ -54,7 +54,12 @@ public class JdbcAssetDao {
                 "   (SELECT dateRetrieved FROM CryptoPrice " +
                 "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1)" +
                 "   , INTERVAL 10 SECOND);";
-        return jdbcTemplate.queryForObject(sql, new AssetRowMapper(), accountId, symbol);
+        try{
+            return jdbcTemplate.queryForObject(sql, new AssetRowMapper(), accountId, symbol);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public List<Asset> getAssets(int accountId) {

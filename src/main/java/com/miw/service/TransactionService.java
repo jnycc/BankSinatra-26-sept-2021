@@ -1,5 +1,6 @@
 package com.miw.service;
 
+import com.miw.BankSinatraApplication;
 import com.miw.database.RootRepository;
 import com.miw.model.*;
 import com.miw.service.authentication.RegistrationService;
@@ -7,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class TransactionService {
@@ -22,7 +21,7 @@ public class TransactionService {
     public TransactionService(RootRepository rootRepository) {
         super();
         this.rootRepository = rootRepository;
-        accountBank = Bank.getBankSinatra().getAccount().getAccountId();
+        accountBank = BankSinatraApplication.BANK_ID;
         logger.info("New TransactionService");
     }
 
@@ -32,12 +31,8 @@ public class TransactionService {
 
     public Transaction setTransactionPrice(Transaction transaction){
         transaction.getCrypto().setCryptoPrice(rootRepository.getLatestPriceBySymbol(transaction.getCrypto().getSymbol()));
-        if(transaction.getUnits() < 0){
-            throw new IllegalArgumentException("You cannot purchase a negative amount of assets");
-        } else {
-            transaction.setTransactionPrice(transaction.getCrypto().getCryptoPrice() * transaction.getUnits());
-            return transaction;
-        }
+        transaction.setTransactionPrice(transaction.getCrypto().getCryptoPrice() * transaction.getUnits());
+        return transaction;
     }
 
     public Transaction setBankCosts(Transaction transaction){
