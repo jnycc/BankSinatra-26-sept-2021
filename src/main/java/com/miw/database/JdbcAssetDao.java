@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.sql.*;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +81,11 @@ public class JdbcAssetDao {
         jdbcTemplate.update(updateQuery, newUnits, symbol, accountId);
     }
 
+    // TODO: deleteAsset method
+    public void deleteAsset(String symbol, int accountId){
+        String deleteQuery = "DELETE FROM Asset WHERE symbol = ? AND accountID =?";
+        jdbcTemplate.execute(deleteQuery);
+    }
 
     private static class AssetRowMapper implements RowMapper<Asset> {
 

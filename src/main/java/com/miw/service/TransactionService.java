@@ -66,13 +66,18 @@ public class TransactionService {
     }
 
     public void transferCrypto(int seller, int buyer, Crypto crypto, double units){
-        //TODO: maken zodra JdbcAssetDao een methode update heeft
         double newSellerAsset = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() - units;
-        rootRepository.updateAsset(newSellerAsset, crypto.getSymbol(), seller);
-        if (rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()) != null) { // buyer already has crypto
+
+        if (!(newSellerAsset == 0)) { // seller still has units of this crypto
+            rootRepository.updateAsset(newSellerAsset, crypto.getSymbol(), seller);
+        } else { // seller has no units of this crypto anymore
+            rootRepository.deleteAsset(crypto.getSymbol(), seller);
+        }
+
+        if (rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()) != null) { // buyer already has this crypto
             double newBuyerAsset = rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()).getUnits() + units;
             rootRepository.updateAsset(newBuyerAsset, crypto.getSymbol(), buyer);
-        } else { // buyer does not have crypto yet
+        } else { // buyer does not have this crypto yet
             rootRepository.saveAsset(buyer, crypto.getSymbol(), units);
         }
     }
