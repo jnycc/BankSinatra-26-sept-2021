@@ -122,6 +122,9 @@ public class RootRepository {
         jdbcAccountDao.save(account, userId);
     }
 
+    public void deleteAsset(String symbol, int seller) {
+        jdbcAssetDao.deleteAsset(symbol, seller);
+    }
 
 
 }
