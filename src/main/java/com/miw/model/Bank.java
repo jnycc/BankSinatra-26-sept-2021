@@ -1,6 +1,5 @@
 package com.miw.model;
 
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class Bank {
@@ -11,8 +10,6 @@ public class Bank {
     private final double START_CAPITAL = 5000000;
     private final int NR_ASSETS_MIN = 1000;
     private final int NR_ASSETS_MAX = 5000;
-    private DecimalFormat df = new DecimalFormat("#.##");
-
 
     private Bank() {
         this.account = new Account(START_CAPITAL);
@@ -45,7 +42,7 @@ public class Bank {
     }
 
     public void setUpInitialPortfolio(Set<Crypto> cryptos) {
-        cryptos.forEach(c -> this.portfolio.put(c, Double.parseDouble(df.format(NR_ASSETS_MIN + (NR_ASSETS_MAX - NR_ASSETS_MIN) * random.nextDouble()))));
+        cryptos.forEach(c -> this.portfolio.put(c, (NR_ASSETS_MIN + (NR_ASSETS_MAX - NR_ASSETS_MIN) * random.nextDouble())));
     }
 
     public static Bank getBankSinatra() {
