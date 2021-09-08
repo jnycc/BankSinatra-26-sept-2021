@@ -70,7 +70,7 @@ public class RootRepository {
     }
 
     public Account getAccountById(int accountId){
-        return jdbcAccountDao.getAccountById(accountId);
+        return jdbcAccountDao.getAccountByUserID(accountId);
     }
 
     public Account getAccountByEmail(String email){

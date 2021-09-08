@@ -9,7 +9,6 @@ import com.miw.database.JdbcClientDao;
 import com.miw.model.Credentials;
 import com.miw.service.authentication.AuthenticationService;
 import com.miw.service.authentication.TokenService;
-import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,24 +61,16 @@ public class LoginController {
     // Naar dashboardController?
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody String token) {
-        if (TokenService.decodeJWTBool(token)) {
+        if (TokenService.validateJWT(token)) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
-    // Naar dashboardController?
-    @PostMapping("/getEmail")
-    public String getEmail(@RequestBody String token) {
-        return TokenService.validateAndGetEmailJWT(token);
-    }
-
-    // Naar dashboardController?
-    @PostMapping("/getBalance")
-    public double getBalance(@RequestBody String token) {
-        String email = TokenService.validateAndGetEmailJWT(token);
-        return jdbcAccountDao.getBalanceByEmail(email);
+    @PostMapping("/getID")
+    public int getuserID(@RequestBody String token) {
+        return TokenService.GetUserID(token);
     }
 
     public ResponseEntity<?> showLoginResponse(String response) {
@@ -95,8 +86,7 @@ public class LoginController {
     @GetMapping("/gegevens/{email}")
     public ResponseEntity<?> showMyData(@RequestHeader("Authorization") String token, @PathVariable("email") @Email String email) {
         //Claims claims = tokenService.decodeJwt
-
-        if (TokenService.decodeJWTBool(token)) {
+        if (TokenService.validateJWT(token)) {
             return ResponseEntity.ok(jdbcClientDao.findByEmail(email));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

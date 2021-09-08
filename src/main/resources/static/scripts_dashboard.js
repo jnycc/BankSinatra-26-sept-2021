@@ -19,29 +19,8 @@ function authenticate() {
 }
 
 
-
-
-
-
-
 const balancevalue = document.querySelector("#balanceValue")
 balancevalue.addEventListener("click", getBalance)
-
-function getEmail(){
-    fetch(`http://localhost:8080/getEmail`, {
-        method: 'POST',
-        body: `${localStorage.getItem('token')}`
-    })
-        .then(res => res.text())
-        .then(it => {
-            // if (it === null) {
-            //     console.log('no email is found')
-            // } else {
-            //     console.log(it)
-            // }
-            balancevalue.innerHTML = it
-        })
-}
 
 function getBalance(){
     fetch(`http://localhost:8080/getBalance`, {
@@ -50,11 +29,20 @@ function getBalance(){
     })
         .then(res => res.text())
         .then(it => {
-            // if (it === null) {
-            //     console.log('no email is found')
-            // } else {
-            //     console.log(it)
-            // }
             balancevalue.innerHTML = it
         })
 }
+
+// const portfolioValue = document.querySelector("#portfolioValue")
+// portfolioValue.addEventListener("click", getPortfolioValue)
+//
+// function getPortfolioValue(){
+//     fetch(`http://localhost:8080/getPortfolioValue`, {
+//         method: 'POST',
+//         body: `${localStorage.getItem('token')}`
+//     })
+//         .then(res => res.text())
+//         .then(it => {
+//             portfolioValue.innerHTML = it
+//         })
+// }

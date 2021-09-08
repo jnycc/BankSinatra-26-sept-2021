@@ -2,7 +2,6 @@ package com.miw.service.authentication;
 import com.miw.database.JdbcAdminDao;
 import com.miw.database.JdbcClientDao;
 import com.miw.database.JdbcTokenDao;
-import com.miw.model.Client;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,21 +32,21 @@ public class TokenService {
     }
 
 
-    public static String jwtBuilder(String userEmail, String role, long expTime){ // input: Role role (nieuwe klasse Role?)
+    public static String jwtBuilder(int userID, String role, long expTime){ // input: Role role (nieuwe klasse Role?)
         //generating secret key for JWT signature
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(new PepperService().getPepper());
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
 
         // creating specific claims to add
         Map<String, Object> tokenClaims = new HashMap<>();
-        tokenClaims.put("Role", role);
+        tokenClaims.put("userrole", role);
 
         //set JWT Claims
         JwtBuilder builder = Jwts.builder()
                 .setClaims(tokenClaims)
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setSubject(userEmail)
+                .setSubject(String.valueOf(userID))
                 .setExpiration(new Date(System.currentTimeMillis() + expTime))
                 .signWith(SignatureAlgorithm.HS256, signingKey);
 
@@ -55,23 +54,22 @@ public class TokenService {
         return builder.compact();
     }
 
-    public static String jwtBuilderSetDate(String userEmail, String role, long msNow, long expTime){
-
+    //TODO: clean up code (super() of same method above?)
+    public static String jwtBuilderSetDate(int userID, String role, long msNow, long expTime){
         //generating secret key for JWT signature
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(new PepperService().getPepper());
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
 
         // creating specific claims to add
         Map<String, Object> tokenClaims = new HashMap<>();
-        tokenClaims.put("Role", role);
-
+        tokenClaims.put("userrole", role);
 
         //set JWT Claims
         JwtBuilder builder = Jwts.builder()
                 .setClaims(tokenClaims)
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date(msNow))
-                .setSubject(userEmail)
+                .setSubject(String.valueOf(userID))
                 .setExpiration(new Date(msNow + expTime))
                 .signWith(SignatureAlgorithm.HS256, signingKey);
 
@@ -79,56 +77,63 @@ public class TokenService {
         return builder.compact();
     }
 
+    //Will throw an exception JWT is expired or invalid
     public static Claims decodeJWT(String jwt) {
-        //This line will throw an exception if it is not a signed JWS (as expected)
         //TODO: splitsen op spatie en Bearer weghalen
         return Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(new PepperService().getPepper()))
                 .parseClaimsJws(jwt).getBody();
     }
 
-    public static String validateAndGetEmailJWT(String jwt) {
-        try {
-            return Jwts.parser()
-                    .setSigningKey(DatatypeConverter.parseBase64Binary(new PepperService().getPepper()))
-                    .parseClaimsJws(jwt).getBody().getSubject();
-        } catch (ExpiredJwtException expired) {
-            return null;
-        }
-    }
 
-
-    public static Boolean decodeJWTBool(String jwt) {
-        //This line will throw an exception if it is not a signed JWS (as expected)
+    public static Boolean validateJWT(String jwt) {
         try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(DatatypeConverter.parseBase64Binary(new PepperService().getPepper()))
-                    .parseClaimsJws(jwt).getBody();
+            decodeJWT(jwt);
         } catch (ExpiredJwtException expired) {
-            // checken of refreshmenttoken nog geldig is?
+            // TODO: checken of refreshmenttoken nog geldig is?
             return false;
         }
         return true;
     }
 
-    public static Boolean decodeJWTBool2(String jwt) {
-        return Jwts.parser().isSigned(jwt);
+    // Will return userID if JWT is valid.
+    public static Integer GetUserID(String jwt) {
+        try {
+            return Integer.valueOf(decodeJWT(jwt).getSubject());
+        } catch (ExpiredJwtException expired) {
+            return 0;
+        }
+    }
+
+    // Will only return userrole if JWT is valid
+    public static String getRole(String jwt) {
+        try {
+            return decodeJWT(jwt).get("userrole").toString();
+        } catch (ExpiredJwtException invalid) {
+            return null;
+        }
+    }
+
+    public static Boolean validateAdmin(String jwt) {
+        return TokenService.getRole(jwt).equals("admin");
+    }
+
+    public static Boolean validateClient(String jwt) {
+        return TokenService.getRole(jwt).equals("client");
     }
 
 
+
+    //TODO: implement refreshtoken?
     public String generateRefreshToken() {
         return UUID.randomUUID().toString();
     }
 
     public boolean validateRefreshToken(String token) {
-        // TODO: checken op datum?
         return jdbcTokenDao.retrieveToken(token) != null;
     }
 
-    // TODO: methode creeren die token meegeeft via de header --> IN HTML
-
-
-}
+} // end of main
 
 
 ///////         NOTES           //////
