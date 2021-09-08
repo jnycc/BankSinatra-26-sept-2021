@@ -19,3 +19,6 @@ INSERT INTO Crypto (symbol, description, name) VALUES
 ('WBTC', 'Een cryptomunt.', 'Wrapped Bitcoin'),
 ('MATIC', 'Een cryptomunt.', 'Polygon'),
 ('VET', 'Een cryptomunt.', 'VeChain');
+
+INSERT INTO Bankingfee (percentage) VALUES
+(0.01);

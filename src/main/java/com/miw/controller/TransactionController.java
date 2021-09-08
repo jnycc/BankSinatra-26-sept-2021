@@ -30,16 +30,22 @@ public class TransactionController {
         logger.info("New TransactionController-object created");
     }
 
+    //TODO: deze methode is te lang, dus nog een keer opbreken in kleinere methodes
     @PostMapping("/buy") //TODO: URL aanpassen zeer waarschijnlijk
     public ResponseEntity<?> doTransaction(@RequestBody String transactionAsJson){
+        //Zet JSON string om naar Transaction
         Transaction transaction = gson.fromJson(transactionAsJson, Transaction.class);
 
+        //Check of aantal units niet negatief is en set de transactionPrice
         try{
             transaction = transactionService.setTransactionPrice(transaction);
         } catch (IllegalArgumentException e){
             return new ResponseEntity<>("Buyer may not purchase a negative amount of currency. " +
                     "Transaction cannot be completed", HttpStatus.CONFLICT);
         }
+
+        //Haal actueel bankCosts-percentage uit database
+        transaction = transactionService.setBankCosts(transaction);
 
         //TODO: dit even voor overzichtelijkheid gedaan, maar weghalen waarschijnlijk
         int seller = transaction.getSeller();
@@ -49,6 +55,7 @@ public class TransactionController {
         double transactionPrice = transaction.getTransactionPrice();
         double bankCosts = transaction.getBankCosts();
 
+        //Check of seller genoeg Crypto heeft en buyer genoeg geld
         if(!transactionService.checkSufficientCrypto(seller, crypto, units)){
             return new ResponseEntity<>("Seller has insufficient assets. Transaction cannot be completed.",
                     HttpStatus.CONFLICT);
@@ -57,6 +64,7 @@ public class TransactionController {
                     HttpStatus.CONFLICT);
         }
 
+        //Maak geld, crypto en banking fee over
         transactionService.transferBalance(seller, buyer, transactionPrice);
         transactionService.transferCrypto(seller, buyer, crypto, units);
 
@@ -66,5 +74,4 @@ public class TransactionController {
         transactionService.registerTransaction(transaction);
         return new ResponseEntity<>("Joepie de poepie, transactie gedaan", HttpStatus.OK);
     }
-
 }

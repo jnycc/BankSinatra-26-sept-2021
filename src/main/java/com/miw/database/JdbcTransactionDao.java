@@ -52,6 +52,11 @@ public class JdbcTransactionDao {
         return transaction;
     }
 
+    public double getBankCosts(){
+        String sql = "SELECT * FROM `Bankingfee`";
+        return jdbcTemplate.queryForObject(sql, Double.class);
+    }
+
     public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
         String sql = "SELECT " +
                 "(SELECT SUM(units) FROM `Transaction` " +

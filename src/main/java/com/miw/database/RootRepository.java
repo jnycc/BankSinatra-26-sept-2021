@@ -25,15 +25,17 @@ public class RootRepository {
     private JdbcAdminDao jdbcAdminDao; // TODO: interface aanroepen ipv jdbcAdminDao zelf
     private JdbcAssetDao jdbcAssetDao;
     private JdbcTransactionDao jdbcTransactionDao; //TODO: interface aanroepen ipv JdbcTransactionDao zelf
+    private JdbcCryptoDao jdbcCryptoDao;
 
     @Autowired
-    public RootRepository(ClientDao clientDAO, JdbcAccountDao jdbcAccountDao, JdbcAdminDao jdbcAdminDao, JdbcAssetDao jdbcAssetDao, JdbcTransactionDao jdbcTransactionDao) { // TODO: interface aanroepen ipv jdbcAccountDao, jdbcAdminDao en jdbcTransactionDao zelf
+    public RootRepository(ClientDao clientDAO, JdbcAccountDao jdbcAccountDao, JdbcAdminDao jdbcAdminDao, JdbcAssetDao jdbcAssetDao, JdbcTransactionDao jdbcTransactionDao, JdbcCryptoDao jdbcCryptoDao) { // TODO: interface aanroepen ipv jdbcAccountDao, jdbcAdminDao en jdbcTransactionDao zelf
         super();
         this.clientDAO = clientDAO;
         this.jdbcAccountDao = jdbcAccountDao;
         this.jdbcAdminDao = jdbcAdminDao;
         this.jdbcAssetDao = jdbcAssetDao;
         this.jdbcTransactionDao = jdbcTransactionDao;
+        this.jdbcCryptoDao = jdbcCryptoDao;
         logger.info("New RootRepository-object created");
     }
 
@@ -98,6 +100,14 @@ public class RootRepository {
 
     public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
         return jdbcTransactionDao.getSumOfUnitsPurchasedAndSold(accountId, dateTime, symbol);
+    }
+
+    public double getBankCosts(){
+        return jdbcTransactionDao.getBankCosts();
+    }
+
+    public double getLatestPriceBySymbol(String symbol){
+        return jdbcCryptoDao.getLatestPriceBySymbol(symbol);
     }
 
     public void saveAccount(Account account, int userId) {
