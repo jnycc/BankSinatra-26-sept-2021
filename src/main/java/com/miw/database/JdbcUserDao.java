@@ -19,6 +19,8 @@ public class JdbcUserDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    //public String getClientAdminByID()
+
     public String getRoleByEmail(String email) {
         String sql = "SELECT userRole FROM user WHERE email = ?;";
         try {

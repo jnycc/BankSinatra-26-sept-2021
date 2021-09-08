@@ -58,7 +58,6 @@ public class LoginController {
         return showLoginResponse(response);
     }
 
-    // Naar dashboardController?
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody String token) {
         if (TokenService.validateJWT(token)) {
