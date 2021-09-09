@@ -20,8 +20,8 @@ function authenticate() {
 
 
 const balancevalue = document.querySelector("#balanceValue")
-balancevalue.addEventListener("click", getBalance)
 
+//TODO: omzetten in return statement?
 function getBalance(){
     fetch(`http://localhost:8080/getBalance`, {
         method: 'POST',
@@ -33,6 +33,7 @@ function getBalance(){
         })
 }
 
+//TODO: omzetten in return statement?
 const portfolioValue = document.querySelector("#portfolioValue")
 portfolioValue.addEventListener("click", getPortfolioValue)
 

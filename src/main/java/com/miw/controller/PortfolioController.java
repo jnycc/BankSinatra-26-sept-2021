@@ -30,7 +30,6 @@ public class PortfolioController {
     @GetMapping("/portfolio")
     public ResponseEntity<?> getPortfolioOverview(//@RequestHeader("Authorization") String token,
                                                   @RequestBody String emailAsJson) {
-
         JsonObject jsonObject = gson.fromJson(emailAsJson, JsonObject.class); //verander de json in een json-object
         String email = jsonObject.get("email").getAsString(); //haal o.b.v. key de value uit json-object
         //System.out.printf("Json:\n%s\nConverted string: %s\n", emailAsJson, email);

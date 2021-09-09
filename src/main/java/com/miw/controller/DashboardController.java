@@ -29,11 +29,6 @@ public class DashboardController {
         logger.info("New DashboardController created");
     }
 
-    @GetMapping("/dashboard")
-    void something(){
-        logger.info("something");
-    }
-
     //TODO: waarom komt token niet binnen???
     @PostMapping("/getBalance")
     public double getBalance(@RequestBody String token) {

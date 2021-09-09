@@ -101,7 +101,7 @@ public class TokenService {
     }
 
     // Will only return userrole if JWT is valid
-    public static String getValidRole(String jwt) {
+    public static String getRole(String jwt) {
         try {
             return decodeJWT(jwt).get("userrole").toString();
         } catch (ExpiredJwtException invalid) {
@@ -110,11 +110,11 @@ public class TokenService {
     }
 
     public static Boolean validateAdmin(String jwt) {
-        return TokenService.getValidRole(jwt).equals("admin");
+        return TokenService.getRole(jwt).equals("admin");
     }
 
     public static Boolean validateClient(String jwt) {
-        return TokenService.getValidRole(jwt).equals("client");
+        return TokenService.getRole(jwt).equals("client");
     }
 
 
