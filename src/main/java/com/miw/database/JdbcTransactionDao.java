@@ -1,5 +1,6 @@
 package com.miw.database;
 
+import com.miw.model.Crypto;
 import com.miw.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,8 +34,8 @@ public class JdbcTransactionDao {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO Transaction " +
                 "(date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-        //TODO: Hoera, wat een draak van een statement. Slaat op dit moment alleen datum op, niet tijd. LocalDateTime omzetten naar SQL.Date is een hel, blijkbaar. Andere oplossing voor vinden?
-        ps.setDate(1, new java.sql.Date(transaction.getTransactionDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+        ps.setDate(1, new java.sql.Date(transaction.getTransactionDate()
+                .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
         ps.setDouble(2, transaction.getUnits());
         ps.setDouble(3, transaction.getCrypto().getCryptoPrice());
         ps.setDouble(4, transaction.getBankCosts());
@@ -90,16 +91,12 @@ public class JdbcTransactionDao {
     public List<Integer> getTransactionsByUserId (int userId) {
         String sql = "SELECT transactionID FROM Transaction WHERE accountID_buyer = (SELECT accountID FROM Account WHERE userID = ?) " +
                 "OR accountID_seller = (SELECT accountID FROM Account WHERE userID = ?)";
-        return jdbcTemplate.query(sql, new RowMapper<Integer>() {
-            @Override
-            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
-                return resultSet.getInt("transactionID");
-            }
-        }, userId, userId);
+        return jdbcTemplate.query(sql, (resultSet, i) -> resultSet.getInt("transactionID"), userId, userId);
     }
 
     //TODO: RowMapper afmaken als er een oplossing is voor LocalDateTime
-/*    private static class TransactionRowMapper implements RowMapper<Transaction> {
+    //TODO: tijdelijke oplossing: LocalDate().atStartOfDay();
+    private static class TransactionRowMapper implements RowMapper<Transaction> {
 
         @Override
         public Transaction mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -110,8 +107,10 @@ public class JdbcTransactionDao {
             double units = resultSet.getDouble("units");
             double transactionPrice = resultSet.getDouble("cryptoPrice");
             double bankCosts = resultSet.getDouble("bankingFee");
-            Transaction transaction = new Transaction(transactionId, units, buyer, seller, crypto, transactionPrice, bankCosts);
+            LocalDateTime transactionDate = resultSet.getDate("date").toLocalDate().atStartOfDay();
+            Transaction transaction = new Transaction(transactionId, units, buyer, seller, crypto, transactionPrice,
+                    bankCosts, transactionDate);
             return transaction;
         }
-    }*/
+    }
 }

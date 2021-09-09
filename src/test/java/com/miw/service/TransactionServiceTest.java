@@ -8,9 +8,14 @@ import com.miw.model.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@AutoConfigureMockMvc
+@SpringBootTest
 class TransactionServiceTest {
 
     RootRepository mockRepo = Mockito.mock(RootRepository.class);
@@ -28,6 +33,7 @@ class TransactionServiceTest {
 
     @BeforeEach
     public void setup(){
+        //TODO: tests werkende krijgen met Bank
         testBank = Bank.getBankSinatra();
         testBank.getAccount().setAccountId(0);
         testSellerAccount = new Account();

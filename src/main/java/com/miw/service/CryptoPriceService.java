@@ -47,7 +47,7 @@ public class CryptoPriceService {
         this.jdbcCryptoDao = jdbcCryptoDao;
     }
 
-    @Scheduled(fixedRate = CALL_FREQUENCY, initialDelay = INITIAL_DELAY)
+    @Scheduled(fixedRate = CALL_FREQUENCY/*, initialDelay = INITIAL_DELAY*/)
     private void updatePrices() {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
