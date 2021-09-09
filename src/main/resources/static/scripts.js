@@ -7,26 +7,24 @@ const closeOverlayBtn = document.querySelector("#close-overlay-btn")
 const adminBtn = document.querySelector("#admin")
 const clientBtn = document.querySelector("#client")
 
-// TODO pas linkjes aan naar remote
-const userLogin = 'http://localhost:8080/login';
-const adminLogin = 'http://localhost:8080/admin/login';
-const userRegister = 'http://localhost:8080/register';
-const adminRegister = 'http://localhost:8080/admin/register';
-let currentLogin = 'http://localhost:8080/login';
-let currentRegister = 'http://localhost:8080/register';
+let url = new URL(window.location.href)
+const userLogin = `${url.origin}/login`;
+const adminLogin = `${url.origin}/admin/login`;
+const userRegister = `${url.origin}/register`;
+const adminRegister = `${url.origin}/admin/register`;
+let currentLogin = `${url.origin}/login`;
+let currentRegister = `${url.origin}/register`;
 
 btnRegister.addEventListener('click', toggleOverlay);
 closeOverlayBtn.addEventListener('click', closeOverlay);
 adminBtn.addEventListener('click', switchToAdmin);
 clientBtn.addEventListener('click', switchToClient);
-
 loginForm.addEventListener('submit', function(e) {
     if(loginForm.children.namedItem("email").validity.valid && loginForm.children.namedItem("password").validity.valid) {
         e.preventDefault();
         doLogin(currentLogin);
     }
 });
-
 registerForm.addEventListener('submit', function (e) {
     if (checkRegistrationFields()) {
         e.preventDefault();
