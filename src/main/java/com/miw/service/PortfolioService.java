@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 public class PortfolioService {
@@ -38,28 +36,31 @@ public class PortfolioService {
      * Obtains the client's portfolio with all assets, including the current, historical and delta values.
      * Delta values are changes in the value of the assets and total portfolio
      * compared to 1 day/1 month/3 months/1 year ago/start date.
+     *
      * @param accountId client's accountId as in the database
      * @return Client's portfolio with all assets, including the current, historical and delta values.
      */
     // Door map van alle portfolioAssets loopen (global attribute) en hiervan deltawaarden berekenen + totale historische waarden
     public Map<String, Object> getPortfolio(int accountId) {
-        calculatePortfolioHistoricalValue(accountId); //vult een global map met Assets. Ieder asset bevat de current, historical en deltawaarden in eigen maps.
-        //loopen door de portfolio-map met assets, hiervan de totale deltawaarde van de gehele portfolio berekenen.
-        double totalCurrentValue = 0.0;
-        double totalValue1DayAgo = 0.0;
-        double totalValue1MonthAgo = 0.0;
-        for (Asset asset : portfolioAssets.values()) {
-            totalCurrentValue += asset.getCurrentValue();
-            totalValue1DayAgo += asset.getHistoricalValues().get("value1DayAgo");
-            totalValue1MonthAgo += asset.getHistoricalValues().get("value1MonthAgo");
-        }
         Map<String, Object> portfolio = new TreeMap<>();
+        calculatePortfolioHistoricalValues(accountId); //vult een global map met Assets. Ieder asset bevat de current, historical en deltawaarden in eigen maps.
         portfolio.put("Portfolio assets", portfolioAssets);
-        portfolio.put("Total current value", totalCurrentValue);
-        portfolio.put("Total delta 1 day value", totalCurrentValue - totalValue1DayAgo);
-        portfolio.put("Total delta 1 day %", (totalCurrentValue - totalValue1DayAgo) / totalValue1DayAgo);
-        portfolio.put("Total delta 1 month value", totalCurrentValue - totalValue1MonthAgo);
-        portfolio.put("Total delta 1 month %", (totalCurrentValue - totalValue1MonthAgo) / totalValue1MonthAgo);
+        // De keys (e.g. value1DayAgo) uit de historicalValues map uit een willekeurige asset halen.
+        // Bepaalt ook het aantal benodigde puts (i.e. loops) voor de map met totale delta values.
+        Asset assets = portfolioAssets.values().stream().findFirst().get();
+        List<String> deltaKeys = new ArrayList<>(assets.getHistoricalValues().keySet());
+        for (String deltaKey : deltaKeys) {
+            double totalCurrentValue = 0.0;
+            double totalHistoricalValue = 0.0;
+            //loopen door de portfolio-map met assets, hiervan de totale delta values van de gehele portfolio berekenen.
+            for (Asset asset : portfolioAssets.values()) {
+                totalCurrentValue += asset.getCurrentValue();
+                totalHistoricalValue += asset.getHistoricalValues().get(deltaKey);
+            }
+            portfolio.put(("Total delta " + deltaKey), totalCurrentValue - totalHistoricalValue);
+            portfolio.put(("Total delta " + deltaKey + " %"), calculateDeltaPct(totalCurrentValue, totalHistoricalValue));
+            portfolio.put("Total  current value: ", totalCurrentValue);
+        }
         return portfolio;
     }
 
@@ -73,39 +74,62 @@ public class PortfolioService {
     //Result: 2 objecten
     // a. map met Assets (met daarin map met historical units en deltawaarden)
     // b. map met total historical deltawaarden van gehele portfolio
+
     /**
      * Obtains a list of all crypto-assets ever owned by the user from the database.
      * For each crypto-asset ever owned, calculates the difference between the current value (units * current price)
      * and the value at a given historical dateTime (units on dateTime * price on dateTime).
      * This reflects both changes in market price and volume (units of assets purchased/sold).
+     *
      * @param accountId client's accountId as in the database
      */
-    private void calculatePortfolioHistoricalValue(int accountId) {
+    private void calculatePortfolioHistoricalValues(int accountId) {
         List<String> allCryptosOwned = rootRepository.getAllCryptosOwned(accountId);
-        Asset asset;
+        LocalDateTime dateTime = rootRepository.getDateTimeOfFirstTransaction(accountId); //get startDate = date of first transaction
         for (String symbol : allCryptosOwned) {
-            asset = rootRepository.getAssetBySymbol(accountId, symbol);
-
-            Double units1DayAgo = rootRepository.getSymbolUnitsAtDateTime(accountId, symbol, LocalDateTime.now().minusDays(1));
-            asset.getHistoricalNrOfUnits().put("units1DayAgo", units1DayAgo);
-            Double price1DayAgo = jdbcCryptoDao.getPriceOnDateTimeBySymbol(symbol, LocalDateTime.now().minusDays(1));
-            Double value1DayAgo = price1DayAgo * units1DayAgo;
-            asset.getHistoricalValues().put("value1DayAgo", value1DayAgo);
-
-            asset.getDeltaValues().put("delta1DayValue", asset.getCurrentValue() - value1DayAgo);
-            asset.getDeltaValues().put("delta1DayPct", calculateDeltaPct(asset.getCurrentValue(), value1DayAgo));
-
-            Double units1MonthAgo = rootRepository.getSymbolUnitsAtDateTime(accountId, symbol, LocalDateTime.now().minusMonths(1));
-            asset.getHistoricalNrOfUnits().put("units1MonthAgo", units1MonthAgo);
-            Double price1MonthAgo = jdbcCryptoDao.getPriceOnDateTimeBySymbol(symbol, LocalDateTime.now().minusMonths(1));
-            Double value1MonthAgo = price1MonthAgo * units1MonthAgo;
-            asset.getHistoricalValues().put("value1MonthAgo", value1MonthAgo);
-
-            asset.getDeltaValues().put("delta1MonthValue", asset.getCurrentValue() - value1MonthAgo);
-            asset.getDeltaValues().put("delta1MonthPct", calculateDeltaPct(asset.getCurrentValue(), value1MonthAgo));
-
+            Asset asset = rootRepository.getAssetBySymbol(accountId, symbol);
+            asset = calculateValuesNrOfDaysAgo(accountId, asset, symbol, 1);
+            asset = calculateValuesNrOfMonthsAgo(accountId, asset, symbol, 1);
+            asset = calculateValuesNrOfMonthsAgo(accountId, asset, symbol, 3);
+            asset = calculateValuesNrOfMonthsAgo(accountId, asset, symbol, 12);
+            asset = calculateValuesAtDate(accountId, asset, symbol, dateTime);
             portfolioAssets.put(symbol, asset); //asset met current, historical en deltawaarden opslaan in global map
         }
+    }
+
+    private Asset calculateValuesNrOfDaysAgo(int accountId, Asset asset, String symbol, int days) {
+        String xDays = (days == 1) ? "1Day" : (days + "Days");
+        double unitsDaysAgo = rootRepository.getSymbolUnitsAtDateTime(accountId, symbol, LocalDateTime.now().minusDays(days));
+        asset.getHistoricalNrOfUnits().put(("units" + xDays + "Ago"), unitsDaysAgo);
+        double priceDaysAgo = jdbcCryptoDao.getPriceOnDateTimeBySymbol(symbol, LocalDateTime.now().minusDays(days));
+        double valueDaysAgo = priceDaysAgo * unitsDaysAgo;
+        asset.getHistoricalValues().put(("value" + xDays + "Ago"), valueDaysAgo);
+        asset.getDeltaValues().put(("delta" + xDays + "Value"), asset.getCurrentValue() - valueDaysAgo);
+        asset.getDeltaValues().put(("delta" + xDays + "Pct"), calculateDeltaPct(asset.getCurrentValue(), valueDaysAgo));
+        return asset;
+    }
+
+    private Asset calculateValuesNrOfMonthsAgo(int accountId, Asset asset, String symbol, int months) {
+        String xMonths = (months == 1) ? "1Month" : (months + "Months");
+        double unitsMonthsAgo = rootRepository.getSymbolUnitsAtDateTime(accountId, symbol, LocalDateTime.now().minusMonths(months));
+        asset.getHistoricalNrOfUnits().put(("units" + xMonths + "Ago"), unitsMonthsAgo);
+        double priceMonthsAgo = jdbcCryptoDao.getPriceOnDateTimeBySymbol(symbol, LocalDateTime.now().minusMonths(months));
+        double valueMonthsAgo = priceMonthsAgo * unitsMonthsAgo;
+        asset.getHistoricalValues().put(("value" + xMonths + "Ago"), valueMonthsAgo);
+        asset.getDeltaValues().put("delta" + xMonths + "Value", asset.getCurrentValue() - valueMonthsAgo);
+        asset.getDeltaValues().put("delta" + xMonths + "Pct", calculateDeltaPct(asset.getCurrentValue(), valueMonthsAgo));
+        return asset;
+    }
+
+    private Asset calculateValuesAtDate(int accountId, Asset asset, String symbol, LocalDateTime dateTime) {
+        double unitsAtStartDate = rootRepository.getSymbolUnitsAtDateTime(accountId, symbol, dateTime);
+        asset.getHistoricalNrOfUnits().put(("unitsAtStartDate"), unitsAtStartDate);
+        double priceAtStartDate = jdbcCryptoDao.getPriceOnDateTimeBySymbol(symbol, dateTime);
+        double valueAtStartDate = priceAtStartDate * unitsAtStartDate;
+        asset.getHistoricalValues().put(("valueAtStartDate"), valueAtStartDate);
+        asset.getDeltaValues().put(("deltaStartValue"), asset.getCurrentValue() - valueAtStartDate);
+        asset.getDeltaValues().put(("deltaStartPct"), calculateDeltaPct(asset.getCurrentValue(), valueAtStartDate));
+        return asset;
     }
 
     private double calculateDeltaPct(double currentValue, double historicalValue) {

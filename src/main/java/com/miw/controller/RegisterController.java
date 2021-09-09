@@ -7,6 +7,7 @@ package com.miw.controller;
 import com.google.gson.*;
 import com.miw.model.Administrator;
 import com.miw.model.Client;
+import com.miw.model.User;
 import com.miw.service.authentication.HashService;
 import com.miw.service.authentication.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,13 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.Valid;
+import javax.validation.*;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
 
 @RestController
@@ -49,33 +54,39 @@ public class RegisterController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerClient(@RequestBody String client) {
-        //Validatie volledigheid en juiste format van input zijn in de domeinklassen zelf gebouwd.
+    public ResponseEntity<?> registerClient(@RequestBody String clientDetails) {
+        Client client = gson.fromJson(clientDetails, Client.class);
+        //Validatie volledigheid en juiste format van input. Validatie-eisen staan bij de attributen in de domeinklassen zelf.
+        Map<String, String> violationsMap = registrationService.validateUserDetails(client);
+        System.out.println("violations zijn: " + violationsMap);
+        if (!violationsMap.isEmpty()) {
+            return new ResponseEntity<>(violationsMap, HttpStatus.BAD_REQUEST);
+        }
         //Check of klant al bestaat in de database.
-        @Valid Client client1 = gson.fromJson(client, Client.class);
-
-        if (registrationService.checkExistingClientAccount(client1.getEmail())) { // TODO: boolean check toevoegen of bsn al bestaat in db
+        if (registrationService.checkExistingClientAccount(client.getEmail())) { // TODO: boolean check toevoegen of bsn al bestaat in db
             return new ResponseEntity<>("Registration failed. Account already exists.", HttpStatus.CONFLICT);
         }
         //Gebruiker opslaan in database en beginkapitaal toewijzen. Succesmelding geven.
-        client1 = (Client) hashService.hash(client1);
-        registrationService.register(client1);
+        client = (Client) hashService.hash(client);
+        registrationService.register(client);
         return new ResponseEntity<>("User successfully registered. Welcome to Bank Sinatra!", HttpStatus.CREATED);
     }
 
     @PostMapping("/admin/register")
-    public ResponseEntity<?> registerAdmin(@RequestBody String admin) {
+    public ResponseEntity<?> registerAdmin(@RequestBody String adminDetails) {
+        Administrator admin = gson.fromJson(adminDetails, Administrator.class);
+        Map<String, String> violationsMap = registrationService.validateUserDetails(admin);
+        if (!violationsMap.isEmpty()) {
+            return new ResponseEntity<>(violationsMap, HttpStatus.BAD_REQUEST);
+        }
         //Check of admin-account reeds bestaat in de database.
-        @Valid Administrator admin1 = gson.fromJson(admin, Administrator.class);
-
-        if (registrationService.checkExistingClientAccount(admin1.getEmail())) {
+        if (registrationService.checkExistingAdminAccount(admin.getEmail())) {
             return new ResponseEntity<>("Registration failed. Admin account already exists.", HttpStatus.CONFLICT);
         }
         //Admin opslaan in de database met een blocked status.
-        admin1 = (Administrator) hashService.hash(admin1);
-        registrationService.register(admin1);
+        admin = (Administrator) hashService.hash(admin);
+        registrationService.register(admin);
         return new ResponseEntity<>("Your request for an administrator account has been received and is pending " +
                 "further approval. \nFor inquiries, please contact your Manager or IT Supervisor.", HttpStatus.CREATED);
     }
-
 }
