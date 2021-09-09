@@ -1,16 +1,18 @@
 package com.miw.controller;
 
 import com.google.gson.Gson;
+import com.miw.model.Crypto;
 import com.miw.model.Transaction;
 import com.miw.service.TransactionService;
+import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -87,5 +89,15 @@ public class TransactionController {
     private boolean checkSufficientBalance(Transaction transaction){
         return transactionService.checkSufficientBalance(transaction.getSeller(), transaction.getBuyer(),
                 transaction.getTransactionPrice(), transaction.getBankCosts());
+    }
+
+    @GetMapping("/cryptos")
+    public ResponseEntity<?> getCryptoOverview(@RequestHeader("Authorization") String token) {
+        if (!TokenService.validateJWT(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        //TODO: Map in Crypto toevoegen met prijsdeltas
+        List<Crypto> cryptoOverview = transactionService.getCryptoOverview();
+        return ResponseEntity.ok(cryptoOverview);
     }
 }

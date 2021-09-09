@@ -34,9 +34,8 @@ public class PortfolioController {
 
     @GetMapping("/portfolio")
     public ResponseEntity<?> getPortfolioOverview(@RequestHeader("Authorization") String token) {
-        System.out.println("Test, token vooraf is: " + token);
-        int userId = TokenService.getValidUserID(token);
-        if (userId == 0) {
+        Integer userId = TokenService.getValidUserID(token);
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         //PortfolioService aanroepen om de vereiste gegevens te verzamelen en returnen aan frontend

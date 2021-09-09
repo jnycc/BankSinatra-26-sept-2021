@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TransactionService {
 
@@ -93,5 +95,14 @@ public class TransactionService {
             rootRepository.updateBalance(rootRepository.getAccountById(buyer).getBalance() - share, buyer);
             rootRepository.updateBalance(rootRepository.getAccountById(accountBank).getBalance() + bankCosts, accountBank);
         }
+    }
+
+    public List<Crypto> getCryptoOverview() {
+        //Get list of all cryptos
+        //Obtain prices minus 1day/1month/3months/year/start
+        //Calculate delta values. Hiervoor is een map in Crypto nodig.
+        List<Crypto> cryptoOverview = rootRepository.getCryptoOverview();
+
+        return cryptoOverview;
     }
 }

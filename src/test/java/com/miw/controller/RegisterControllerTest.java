@@ -16,13 +16,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -30,7 +34,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(RegisterController.class)
+@AutoConfigureMockMvc
+@SpringBootTest
+//@WebMvcTest(RegisterController.class) //deze annotatie vervangen met bovenste. Werkt nml niet i.c.m. de constructor in BankSinatraApplication
 class RegisterControllerTest {
 
     private final MockMvc mockMvc;
@@ -112,6 +118,9 @@ class RegisterControllerTest {
      * @param testClient A client with one of the required fields as null or with invalid input.
      */
     public void registerTestClient(Client testClient) {
+        //Er wordt niet voldaan aan de validatie-eisen, registrationService returnt dan een map met violation messages.
+        Map<String, String> testMap = new TreeMap<>() {{put("dataField", "violationMessage");}};
+        Mockito.when(registrationService.validateUserDetails(testClient)).thenReturn(testMap);
         try {
             mockMvc.perform(post("/register")
                     .contentType(MediaType.APPLICATION_JSON)

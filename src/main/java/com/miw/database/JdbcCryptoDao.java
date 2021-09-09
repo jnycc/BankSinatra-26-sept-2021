@@ -1,5 +1,6 @@
 package com.miw.database;
 
+import com.miw.model.Asset;
 import com.miw.model.Crypto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 // TODO: id's uit crypto wegwerken, primary key -> symbol
 
@@ -67,7 +69,7 @@ public class JdbcCryptoDao {
     // Vraagt de koers op die het dichtst bij het tijdstip [nu minus X aantal uur in het verleden] is opgeslagen
     public double getPastPriceBySymbol(String symbol, int hoursAgo) {
         String sql = "SELECT cryptoPrice FROM CryptoPrice WHERE symbol = ? " +
-                "ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, (NOW() - INTERVAL ? HOUR))) LIMIT 1;" ;
+                "ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, (NOW() - INTERVAL ? HOUR))) LIMIT 1;";
         try {
             return jdbcTemplate.queryForObject(sql, Double.class, symbol, hoursAgo);
         } catch (EmptyResultDataAccessException e) {
@@ -91,11 +93,31 @@ public class JdbcCryptoDao {
         jdbcTemplate.update(connection -> insertPriceStatement(symbol, price, time, connection));
     }
 
+    public List<Crypto> getAllCryptos() {
+        String sql = "SELECT c.symbol, description, name, cryptoPrice, dateRetrieved " +
+                "FROM Crypto c JOIN CryptoPrice p ON c.symbol = p.symbol " +
+                "WHERE dateRetrieved >= DATE_ADD( " +
+                "   (SELECT dateRetrieved FROM CryptoPrice " +
+                "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1) " +
+                "   , INTERVAL -10 SECOND) " +
+                "   AND " +
+                "   dateRetrieved <= DATE_ADD( " +
+                "   (SELECT dateRetrieved FROM CryptoPrice " +
+                "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1) " +
+                "   , INTERVAL 10 SECOND);";
+        try {
+            return jdbcTemplate.query(sql, new CryptoRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Failed to get past crypto price by symbol");
+            return null;
+        }
+    }
+
     private static class CryptoRowMapper implements RowMapper<Crypto> {
 
         @Override
         public Crypto mapRow(ResultSet resultSet, int i) throws SQLException {
-            String name  = resultSet.getString("name");
+            String name = resultSet.getString("name");
             String symbol = resultSet.getString("symbol");
             String description = resultSet.getString("description");
             Double price = resultSet.getDouble("cryptoPrice");

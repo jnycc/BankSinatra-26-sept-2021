@@ -29,7 +29,7 @@ public class JdbcTransactionDao {
         logger.info("New JdbcTransactionDao");
     }
 
-    private PreparedStatement insertTransactionStatement(Transaction transaction, Connection connection) throws SQLException{
+    private PreparedStatement insertTransactionStatement(Transaction transaction, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO Transaction " +
                 "(date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -44,7 +44,7 @@ public class JdbcTransactionDao {
         return ps;
     }
 
-    public Transaction save(Transaction transaction){
+    public Transaction save(Transaction transaction) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> insertTransactionStatement(transaction, connection), keyHolder);
         int transactionId = keyHolder.getKey().intValue();
@@ -53,7 +53,7 @@ public class JdbcTransactionDao {
         return transaction;
     }
 
-    public double getBankCosts(){
+    public double getBankCosts() {
         String sql = "SELECT * FROM `Bankingfee`";
         return jdbcTemplate.queryForObject(sql, Double.class);
     }
@@ -76,12 +76,14 @@ public class JdbcTransactionDao {
     public List<String> getAllCryptosOwned(int accountId) {
         String sql = "(SELECT symbol FROM `Transaction` WHERE accountID_buyer = ? OR accountID_seller = ? " +
                 "GROUP BY symbol) UNION (SELECT symbol FROM Asset WHERE accountID = ?);";
-        return jdbcTemplate.query(sql, new RowMapper<String>() {
-            @Override
-            public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                return resultSet.getString("symbol");
-            }
-        }, accountId, accountId, accountId);
+        return jdbcTemplate.query(sql, (resultSet, i) -> resultSet.getString("symbol"),
+                accountId, accountId, accountId);
+    }
+
+    public LocalDateTime getDateTimeOfFirstTransaction(int accountId) {
+        String sql = "SELECT MIN(date) FROM `Transaction` WHERE accountID_buyer = ? OR accountID_seller = ?;";
+        LocalDateTime datetime = jdbcTemplate.queryForObject(sql, LocalDateTime.class, accountId, accountId);
+        return datetime;
     }
 
     // TODO: beetje gaar, maar volgens mij retourneert ie nu een lijst transactionId's. Omzetten naar List<Transaction> als LocalDateTime werkt
@@ -112,36 +114,4 @@ public class JdbcTransactionDao {
             return transaction;
         }
     }*/
-
-//    public Map<String, Double> getSumOfAllTransactions(int accountId, LocalDateTime dateTime) {
-//        String sql = "SELECT symbol, " +
-//                "(SELECT SUM(units) FROM `Transaction` " +
-//                "WHERE accountID_buyer = ? AND date BETWEEN ? AND current_timestamp()) " +
-//                "-" +
-//                "(SELECT SUM(units) " +
-//                "FROM `Transaction` " +
-//                "WHERE accountID_seller = ? AND date BETWEEN ? AND current_timestamp())" +
-//                "AS sumOfUnitsPurchasedAndSold " +
-//                "FROM `Transaction` GROUP BY symbol;";
-//        try {
-//            return jdbcTemplate.query(sql, new TransactionResultSetExtractor(), accountId, dateTime, accountId, dateTime);
-//        } catch (NullPointerException e) {
-//            return null;
-//        }
-//    }
-//
-//
-//    private static class TransactionResultSetExtractor implements ResultSetExtractor<Map<String, Double>> {
-//
-//        @Override
-//        public Map<String, Double> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-//            Map<String, Double> cryptosPurchasedAndSold = new TreeMap<>();
-//            while(resultSet.next()) {
-//                String symbol = resultSet.getString("symbol");
-//                double sumOfUnitsPurchasedAndSold = resultSet.getDouble("sumOfUnitsPurchasedAndSold");
-//                cryptosPurchasedAndSold.put(symbol, sumOfUnitsPurchasedAndSold);
-//            }
-//            return cryptosPurchasedAndSold;
-//        }
-//    }
 }
