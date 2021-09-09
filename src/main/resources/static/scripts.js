@@ -114,6 +114,8 @@ function doLogin(currentLogin){
         .then(res => {
             if (res.status === 200) {
                 window.location.replace("http://localhost:8080/dashboard.html")
+                getBalance()
+                getPortfolioValue()
             } else if (res.status === 401) {
                 alert("Incorrect login details");
                 return;
