@@ -30,16 +30,15 @@ import java.util.List;
 public class CryptoPriceService {
 
     private final Logger logger = LoggerFactory.getLogger(RegistrationService.class);
+
     private final String apiKey = "89b44b8d-1f46-4e3c-9b3b-d4c9a84d80d6"; // dit is ook top secret! :)
     private final String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest";
-
-    private final int TIMEZONE_OFFSET = 2;
-    private final int INTERVAL = 30 * 60 * 1000; // 30 minutes
-    private final int DELAY = 10 * 60 * 1000; // 10 minutes
     private final String CMC_CRYPTO_IDS = "1,1027,2010,1839,825,52,5426,74,6636,3408,7083,1975,2,1831,4172,4687,8916,3077,3890,3717";
     // Coinmarketcap ids of: btc,eth,ada,bnb,usdt,xrp,sol,doge,dot,usdc,uni,link,ltc,bch,luna,busd,icp,vet,matic,wbtc
 
-    // TODO: magic numbers wegwerken
+    private final int TIMEZONE_OFFSET   = 2;
+    private final int CALL_FREQUENCY    = 30 * 60 * 1000; // in milliseconds, i.e. 30 minutes
+    private final int INITIAL_DELAY     = 10 * 60 * 1000; // i.e. 10 minutes (delay before first call after app launch)
 
     private JdbcCryptoDao jdbcCryptoDao;
 
@@ -48,13 +47,11 @@ public class CryptoPriceService {
         this.jdbcCryptoDao = jdbcCryptoDao;
     }
 
-    // kleine delay om te voorkomen dat bij elke keer opstarten er meteen een api-call gemaakt wordt, ook tijdens dev ...
-    @Scheduled(fixedRate = (INTERVAL), initialDelay = (DELAY))
+    @Scheduled(fixedRate = CALL_FREQUENCY, initialDelay = INITIAL_DELAY)
     private void updatePrices() {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("id", CMC_CRYPTO_IDS)); // string bevat specifieke crypto-ids (CMC-ids != onze ids!)
-        params.add(new BasicNameValuePair("convert","EUR")); // we willen de waarde in principe in euro's
+        params.add(new BasicNameValuePair("id", CMC_CRYPTO_IDS)); // string contains specific crypto-ids (CMC-ids != our ids!!)
 
         try {
             parseAndSave(makeAPICall(uri, params));
@@ -67,7 +64,6 @@ public class CryptoPriceService {
     }
 
     private void parseAndSave(String responseContent) throws IOException {
-
         // String omzetten in een JsonObject, en daaruit een JsonArray halen waarin de relevante koersdata zit
         JsonObject convertedObject = new Gson().fromJson(responseContent, JsonObject.class);
         JsonArray cryptos = new JsonArray();
@@ -80,7 +76,7 @@ public class CryptoPriceService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String timestampRaw = (convertedObject.get("status").getAsJsonObject().get("timestamp").toString());
         String timestamp = (timestampRaw.substring(1, 11) + " " + timestampRaw.substring(12, 20)); // verwijder "T" uit midden string
-        LocalDateTime time = LocalDateTime.parse(timestamp, formatter).plusHours(TIMEZONE_OFFSET); // lelijke adjustment voor timezone
+        LocalDateTime time = LocalDateTime.parse(timestamp, formatter).plusHours(TIMEZONE_OFFSET); // ad-hoc adjustment voor timezone
 
         // parsen van de prijs per crypto in de JsonArray, en doorsturen naar de dao
         for (JsonElement crypto : cryptos) {
@@ -88,8 +84,8 @@ public class CryptoPriceService {
             String symbol = symbolRaw.substring(1, (symbolRaw.length() - 1)); // opruimen overbodige aanhalingstekens uit json
             double price =  crypto.getAsJsonObject()
                     .get("quote").getAsJsonObject() // prijs bevindt zich diep in de json, onder "quote" ...
-                    .get("EUR").getAsJsonObject()  // ... binnen "quote" moeten we naar de sectie "eur" ...
-                    .get("price").getAsDouble(); // ... en binnen "eur" bereiken we pas de property "price".
+                    .get("USD").getAsJsonObject()  // ... binnen "quote" moeten we naar de sectie "usd" ...
+                    .get("price").getAsDouble(); // ... en binnen "usd" bereiken we pas de property "price".
             jdbcCryptoDao.saveCryptoPriceBySymbol(symbol, price, time);
         }
     }
