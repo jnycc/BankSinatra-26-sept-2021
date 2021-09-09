@@ -1,10 +1,7 @@
 package com.miw;
 
 import com.miw.database.RootRepository;
-import com.miw.model.Account;
-import com.miw.model.Asset;
-import com.miw.model.Bank;
-import com.miw.model.Crypto;
+import com.miw.model.*;
 import com.miw.service.CryptoPriceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -13,6 +13,18 @@ public class Transaction {
     private double transactionPrice;
     private double bankCosts;
 
+    // TODO: all-args constructor, transactionDate ontbreekt tot er een oplossing is een LocalDateTime in een sql resultset te krijgen
+    // als dat gefixt is: all args is nodig in innerclass RowMapper tbv getTransactionsByUserId, daar dus ook aanpassen
+    public Transaction(int transactionId, double units, int buyer, int seller, Crypto crypto, double transactionPrice, double bankCosts) {
+        this.transactionId = transactionId;
+        this.buyer = buyer;
+        this.seller = seller;
+        this.crypto = crypto;
+        this.units = units;
+        this.transactionPrice = transactionPrice;
+        this.bankCosts = bankCosts;
+    }
+
     // price based on units
     public Transaction(int buyer, int seller, Crypto crypto, double units) {
         this.buyer = buyer;
@@ -37,6 +49,7 @@ public class Transaction {
     public Transaction(){
         this.transactionDate = LocalDateTime.now();
     }
+
 
     private double calculatePrice() {
         return units * crypto.getCryptoPrice();
