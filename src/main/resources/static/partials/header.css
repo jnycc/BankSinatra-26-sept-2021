@@ -1,0 +1,87 @@
+#stylesheet
+
+@font-face {font-family: "Sinatra";
+    src: url("/fonts/Sinatra.woff") format('woff');
+    font-weight: normal;
+    font-style: oblique;
+}
+@font-face {font-family: "Paradise";
+    src: url("/fonts/Paradise.woff") format('woff');
+    font-weight: normal;
+    font-style: oblique;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+}
+
+.header {
+    height: 120px;
+    width: 100%;
+    display: block;
+    background: #002932;
+}
+
+.innerHeader {
+    height: 100%;
+    width: 1200px;
+    display: block;
+    margin: 0 auto;
+    background: #002932;
+    color: #BABAD1;
+    font-family: "Sinatra", monospace;
+    font-size: 50px;
+    align-content: center;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.logoContainer {
+    height: 100%;
+    display: table;
+    float: left;
+    font-size: 30px;
+}
+
+.logoContainer h1 {
+    color: #BABAD1;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    font-family: "Paradise", monospace;
+    font-weight: 200;
+}
+
+.logoContainer h1 span {
+    font-weight: 800;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    font-family: "Paradise", monospace;
+}
+
+.navigation {
+    float: right;
+    height: 100%;
+    font-size: 20px;
+}
+
+.navigation a {
+    height: 100%;
+    display: table;
+    float: left;
+    padding: 2px 20px;
+}
+
+.navigation a li{
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    float: left;
+    padding: 2px 20px;
+    font-family: "Paradise", monospace;
+    color: #BABAD1;
+}
