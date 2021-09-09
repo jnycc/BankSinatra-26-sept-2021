@@ -2,9 +2,7 @@ package com.miw.database;
 
 import com.miw.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -15,10 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 @Repository
 public class JdbcTransactionDao {
@@ -88,6 +83,35 @@ public class JdbcTransactionDao {
             }
         }, accountId, accountId, accountId);
     }
+
+    // TODO: beetje gaar, maar volgens mij retourneert ie nu een lijst transactionId's. Omzetten naar List<Transaction> als LocalDateTime werkt
+    public List<Integer> getTransactionsByUserId (int userId) {
+        String sql = "SELECT transactionID FROM Transaction WHERE accountID_buyer = (SELECT accountID FROM Account WHERE userID = ?) " +
+                "OR accountID_seller = (SELECT accountID FROM Account WHERE userID = ?)";
+        return jdbcTemplate.query(sql, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("transactionID");
+            }
+        }, userId, userId);
+    }
+
+    //TODO: RowMapper afmaken als er een oplossing is voor LocalDateTime
+/*    private static class TransactionRowMapper implements RowMapper<Transaction> {
+
+        @Override
+        public Transaction mapRow(ResultSet resultSet, int i) throws SQLException {
+            int transactionId = resultSet.getInt("transactionID");
+            int buyer = resultSet.getInt("accountID_buyer");
+            int seller = resultSet.getInt("accountID_seller");
+            Crypto crypto = new Crypto();
+            double units = resultSet.getDouble("units");
+            double transactionPrice = resultSet.getDouble("cryptoPrice");
+            double bankCosts = resultSet.getDouble("bankingFee");
+            Transaction transaction = new Transaction(transactionId, units, buyer, seller, crypto, transactionPrice, bankCosts);
+            return transaction;
+        }
+    }*/
 
 //    public Map<String, Double> getSumOfAllTransactions(int accountId, LocalDateTime dateTime) {
 //        String sql = "SELECT symbol, " +
