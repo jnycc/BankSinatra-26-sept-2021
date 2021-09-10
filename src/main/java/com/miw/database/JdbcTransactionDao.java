@@ -2,6 +2,7 @@ package com.miw.database;
 
 import com.miw.model.Crypto;
 import com.miw.model.Transaction;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -34,8 +35,7 @@ public class JdbcTransactionDao {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO Transaction " +
                 "(date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-        ps.setDate(1, new java.sql.Date(transaction.getTransactionDate()
-                .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+        ps.setObject(1, transaction.getTransactionDate());
         ps.setDouble(2, transaction.getUnits());
         ps.setDouble(3, transaction.getCrypto().getCryptoPrice());
         ps.setDouble(4, transaction.getBankCosts());
@@ -107,7 +107,7 @@ public class JdbcTransactionDao {
             double units = resultSet.getDouble("units");
             double transactionPrice = resultSet.getDouble("cryptoPrice");
             double bankCosts = resultSet.getDouble("bankingFee");
-            LocalDateTime transactionDate = resultSet.getDate("date").toLocalDate().atStartOfDay();
+            LocalDateTime transactionDate = resultSet.getObject("date", LocalDateTime.class);
             Transaction transaction = new Transaction(transactionId, units, buyer, seller, crypto, transactionPrice,
                     bankCosts, transactionDate);
             return transaction;
