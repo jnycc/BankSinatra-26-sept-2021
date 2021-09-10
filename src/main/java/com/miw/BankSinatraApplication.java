@@ -1,11 +1,7 @@
 package com.miw;
 
 import com.miw.database.RootRepository;
-import com.miw.model.Account;
-import com.miw.model.Asset;
-import com.miw.model.Bank;
-import com.miw.model.Crypto;
-import com.miw.service.CryptoPriceService;
+import com.miw.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +17,11 @@ public class BankSinatraApplication {
 
     private Logger logger = LoggerFactory.getLogger(BankSinatraApplication.class);
     public static final int BANK_ID = 1;
+    private RootRepository repository;
 
     @Autowired
     public BankSinatraApplication(RootRepository repository) {
+        this.repository = repository;
         Bank.getBankSinatra();
         Map<Crypto, Double> portfolio = new TreeMap<>();
         Account bankSinatra = repository.getAccountById(BANK_ID);

@@ -104,7 +104,6 @@ public class JdbcAssetDao {
         jdbcTemplate.update(updateQuery, newUnits, symbol, accountId);
     }
 
-    // TODO: deleteAsset method
     public void deleteAsset(String symbol, int accountId){
         String deleteQuery = "DELETE FROM Asset WHERE symbol = ? AND accountID =?";
         jdbcTemplate.update(deleteQuery, symbol, accountId);

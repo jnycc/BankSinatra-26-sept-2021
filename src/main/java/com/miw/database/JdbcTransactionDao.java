@@ -1,10 +1,9 @@
 package com.miw.database;
 
+import com.miw.model.Crypto;
 import com.miw.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -15,10 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 @Repository
 public class JdbcTransactionDao {
@@ -34,12 +30,12 @@ public class JdbcTransactionDao {
         logger.info("New JdbcTransactionDao");
     }
 
-    private PreparedStatement insertTransactionStatement(Transaction transaction, Connection connection) throws SQLException{
+    private PreparedStatement insertTransactionStatement(Transaction transaction, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO Transaction " +
                 "(date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-        //TODO: Hoera, wat een draak van een statement. Slaat op dit moment alleen datum op, niet tijd. LocalDateTime omzetten naar SQL.Date is een hel, blijkbaar. Andere oplossing voor vinden?
-        ps.setDate(1, new java.sql.Date(transaction.getTransactionDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+        ps.setDate(1, new java.sql.Date(transaction.getTransactionDate()
+                .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
         ps.setDouble(2, transaction.getUnits());
         ps.setDouble(3, transaction.getCrypto().getCryptoPrice());
         ps.setDouble(4, transaction.getBankCosts());
@@ -49,7 +45,7 @@ public class JdbcTransactionDao {
         return ps;
     }
 
-    public Transaction save(Transaction transaction){
+    public Transaction save(Transaction transaction) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> insertTransactionStatement(transaction, connection), keyHolder);
         int transactionId = keyHolder.getKey().intValue();
@@ -58,7 +54,7 @@ public class JdbcTransactionDao {
         return transaction;
     }
 
-    public double getBankCosts(){
+    public double getBankCosts() {
         String sql = "SELECT * FROM `Bankingfee`";
         return jdbcTemplate.queryForObject(sql, Double.class);
     }
@@ -81,43 +77,40 @@ public class JdbcTransactionDao {
     public List<String> getAllCryptosOwned(int accountId) {
         String sql = "(SELECT symbol FROM `Transaction` WHERE accountID_buyer = ? OR accountID_seller = ? " +
                 "GROUP BY symbol) UNION (SELECT symbol FROM Asset WHERE accountID = ?);";
-        return jdbcTemplate.query(sql, new RowMapper<String>() {
-            @Override
-            public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                return resultSet.getString("symbol");
-            }
-        }, accountId, accountId, accountId);
+        return jdbcTemplate.query(sql, (resultSet, i) -> resultSet.getString("symbol"),
+                accountId, accountId, accountId);
     }
 
-//    public Map<String, Double> getSumOfAllTransactions(int accountId, LocalDateTime dateTime) {
-//        String sql = "SELECT symbol, " +
-//                "(SELECT SUM(units) FROM `Transaction` " +
-//                "WHERE accountID_buyer = ? AND date BETWEEN ? AND current_timestamp()) " +
-//                "-" +
-//                "(SELECT SUM(units) " +
-//                "FROM `Transaction` " +
-//                "WHERE accountID_seller = ? AND date BETWEEN ? AND current_timestamp())" +
-//                "AS sumOfUnitsPurchasedAndSold " +
-//                "FROM `Transaction` GROUP BY symbol;";
-//        try {
-//            return jdbcTemplate.query(sql, new TransactionResultSetExtractor(), accountId, dateTime, accountId, dateTime);
-//        } catch (NullPointerException e) {
-//            return null;
-//        }
-//    }
-//
-//
-//    private static class TransactionResultSetExtractor implements ResultSetExtractor<Map<String, Double>> {
-//
-//        @Override
-//        public Map<String, Double> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-//            Map<String, Double> cryptosPurchasedAndSold = new TreeMap<>();
-//            while(resultSet.next()) {
-//                String symbol = resultSet.getString("symbol");
-//                double sumOfUnitsPurchasedAndSold = resultSet.getDouble("sumOfUnitsPurchasedAndSold");
-//                cryptosPurchasedAndSold.put(symbol, sumOfUnitsPurchasedAndSold);
-//            }
-//            return cryptosPurchasedAndSold;
-//        }
-//    }
+    public LocalDateTime getDateTimeOfFirstTransaction(int accountId) {
+        String sql = "SELECT MIN(date) FROM `Transaction` WHERE accountID_buyer = ? OR accountID_seller = ?;";
+        LocalDateTime datetime = jdbcTemplate.queryForObject(sql, LocalDateTime.class, accountId, accountId);
+        return datetime;
+    }
+
+    // TODO: beetje gaar, maar volgens mij retourneert ie nu een lijst transactionId's. Omzetten naar List<Transaction> als LocalDateTime werkt
+    public List<Integer> getTransactionsByUserId (int userId) {
+        String sql = "SELECT transactionID FROM Transaction WHERE accountID_buyer = (SELECT accountID FROM Account WHERE userID = ?) " +
+                "OR accountID_seller = (SELECT accountID FROM Account WHERE userID = ?)";
+        return jdbcTemplate.query(sql, (resultSet, i) -> resultSet.getInt("transactionID"), userId, userId);
+    }
+
+    //TODO: RowMapper afmaken als er een oplossing is voor LocalDateTime
+    //TODO: tijdelijke oplossing: LocalDate().atStartOfDay();
+    private static class TransactionRowMapper implements RowMapper<Transaction> {
+
+        @Override
+        public Transaction mapRow(ResultSet resultSet, int i) throws SQLException {
+            int transactionId = resultSet.getInt("transactionID");
+            int buyer = resultSet.getInt("accountID_buyer");
+            int seller = resultSet.getInt("accountID_seller");
+            Crypto crypto = new Crypto();
+            double units = resultSet.getDouble("units");
+            double transactionPrice = resultSet.getDouble("cryptoPrice");
+            double bankCosts = resultSet.getDouble("bankingFee");
+            LocalDateTime transactionDate = resultSet.getDate("date").toLocalDate().atStartOfDay();
+            Transaction transaction = new Transaction(transactionId, units, buyer, seller, crypto, transactionPrice,
+                    bankCosts, transactionDate);
+            return transaction;
+        }
+    }
 }

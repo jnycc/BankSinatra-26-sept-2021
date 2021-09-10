@@ -1,5 +1,7 @@
 package com.miw.database;
 
+import org.springframework.jdbc.core.RowMapper;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,13 +12,11 @@ public interface Dao<T> {
 
     List<T> list();
 
-    void create (T t);
-
-    // an optional allows for an empty <T> to be returned when is doesn't exist instead of an exception
-    Optional<T> get(int id);
+    void save (T t);
 
     void update (T t, int id);
 
-    void delete (int id);
+/*  TODO: kan je een RowMapper methode via een interface implementeren?
+     void RowMapper<T>;*/
 
 }

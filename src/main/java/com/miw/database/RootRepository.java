@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class RootRepository {
@@ -94,6 +95,10 @@ public class RootRepository {
         return jdbcTransactionDao.getAllCryptosOwned(accountId);
     }
 
+    public LocalDateTime getDateTimeOfFirstTransaction(int accountId) {
+        return jdbcTransactionDao.getDateTimeOfFirstTransaction(accountId);
+    }
+
     public Double getSymbolUnitsAtDateTime(int accountId, String symbol, LocalDateTime dateTime) {
         return jdbcAssetDao.getSymbolUnitsAtDateTime(accountId, symbol, dateTime);
     }
@@ -127,4 +132,7 @@ public class RootRepository {
     }
 
 
+    public List<Crypto> getCryptoOverview() {
+        return jdbcCryptoDao.getAllCryptos();
+    }
 }
