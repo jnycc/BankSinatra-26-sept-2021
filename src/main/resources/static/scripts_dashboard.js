@@ -17,8 +17,8 @@ function authenticate() {
 }
 
 
-// document.getElementById("balanceValue").innerHTML = getBalance();
-
+const balance = document.querySelector("#balanceValue")
+window.addEventListener("DOMContentLoaded", getBalance)
 
 //TODO: omzetten in return statement?
 function getBalance(){
@@ -28,42 +28,45 @@ function getBalance(){
     })
         .then(res => res.text())
         .then(it => {
-            balancevalue.innerHTML = it
+            balance.innerHTML = it
         })
 }
 
+// TODO: Json string ophalen en omzetten in html
 // const portfolioData = '{"voorbeelddata":"hierkomt crypto", "date":"1986-12-14", "city":"New York"}';
 // const portfolioString = JSON.parse(portfolioData);
 // portfolioString.date = new Date(portfolioString.date);
 // document.getElementById("portfolioValue").innerHTML = portfolioString.name + ", " + portfolioString.date;
-//
-// //TODO: omzetten in return statement?
+
+//TODO: omzetten in return statement?
 // const portfolioValue = document.querySelector("#portfolioValue")
-// portfolioValue.addEventListener("click", getPortfolioValue)
-//
-// function getPortfolioValue(){
-//     fetch(`http://localhost:8080/portfolio`, {
-//         method: 'POST',
-//         body: `${localStorage.getItem('token')}`
-//     })
-//         .then(res => res.text())
-//         .then(it => {
-//             portfolioValue.innerHTML = it
-//         })
-// }
-//
-// // Uitprobeersel met hele portfolio opphalen als json string
-// //TODO: hoe door te geven aan html/forntend??? via const??
-// function getPortfolio(){
-//     fetch(`http://localhost:8080/getPortfolio`, {
-//         method: 'POST',
-//         body: `${localStorage.getItem('token')}`
-//     })
-//         .then(res => res.text())
-//         .then(it => {
-//             const portfolio = it
-//         })
-// }
+// window.addEventListener("DOMContentLoaded", getPortfolioValue)
+
+function getPortfolioValue(){
+    fetch(`http://localhost:8080/portfolio`, {
+        method: 'POST',
+        body: `${localStorage.getItem('token')}`
+    })
+        .then(res => res.text())
+        .then(it => {
+            portfolioValue.innerHTML = it
+        })
+}
+
+
+
+// Uitprobeersel met hele portfolio opphalen als json string
+//TODO: hoe door te geven aan html/forntend??? via const??
+function getPortfolio(){
+    fetch(`http://localhost:8080/getPortfolio`, {
+        method: 'POST',
+        body: `${localStorage.getItem('token')}`
+    })
+        .then(res => res.text())
+        .then(it => {
+            const portfolio = it
+        })
+}
 
 
 

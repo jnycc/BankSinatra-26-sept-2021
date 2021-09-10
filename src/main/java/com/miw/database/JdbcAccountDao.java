@@ -48,7 +48,12 @@ public class JdbcAccountDao {
 
     public Account getAccountByUserID(int accountId){
         String sql = "SELECT * FROM Account WHERE accountID = ?;";
-        return jdbcTemplate.queryForObject(sql, new JdbcAccountDao.AccountRowMapper(), accountId);
+        try {
+            return jdbcTemplate.queryForObject(sql, new JdbcAccountDao.AccountRowMapper(), accountId);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Account does not exist in the database");
+            return null;
+        }
     }
 
     public Account getAccountByEmail(String email) {
