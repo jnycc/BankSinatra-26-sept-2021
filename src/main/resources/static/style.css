@@ -78,14 +78,17 @@
     padding: 2px 20px;
 }
 
-.navigation a li{
-    height: 100%;
+.navigation a button{
+    height: 90%;
     display: table-cell;
     vertical-align: middle;
     float: left;
-    padding: 2px 20px;
     font-family: "Paradise", "Bookman Old Style", monospace;
-    color: #BABAD1;
+    font-size: large;
+    padding: 0;
+    border: none;
+    background: none;
+    color: lightgray;
 }
 
 .page {
@@ -94,7 +97,6 @@
     top: 120px;
     display: block;
     margin-left: 50px;
-    background: #BABAD1;
     color: #001d23;
     font-family: "Paradise", "Bookman Old Style", monospace;
     font-size: 30px;

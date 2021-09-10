@@ -1,12 +1,12 @@
 #stylesheet
 
 @font-face {font-family: "Sinatra";
-    src: url("/fonts/Sinatra.woff") format('woff');
+    src: url("/static/fonts/Sinatra.woff") format('woff');
     font-weight: normal;
     font-style: oblique;
 }
 @font-face {font-family: "Paradise";
-    src: url("/fonts/Paradise.woff") format('woff');
+    src: url("/static/fonts/Paradise.woff") format('woff');
     font-weight: normal;
     font-style: oblique;
 }
@@ -76,12 +76,15 @@
     padding: 2px 20px;
 }
 
-.navigation a li{
-    height: 100%;
+.navigation a button{
+    height: 90%;
     display: table-cell;
     vertical-align: middle;
     float: left;
-    padding: 2px 20px;
-    font-family: "Paradise", monospace;
-    color: #BABAD1;
+    font-family: "Paradise", "Bookman Old Style", monospace;
+    font-size: large;
+    padding: 0;
+    border: none;
+    background: none;
+    color: lightgray;
 }
