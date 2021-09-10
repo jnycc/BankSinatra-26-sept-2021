@@ -1,6 +1,6 @@
 package com.miw.controller;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.miw.model.Crypto;
 import com.miw.model.Transaction;
 import com.miw.service.TransactionService;
@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -24,10 +27,15 @@ public class TransactionController {
     private final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
     @Autowired
-    public TransactionController(TransactionService transactionService, Gson gson){
+    public TransactionController(TransactionService transactionService){
         super();
         this.transactionService = transactionService;
-        this.gson = gson;
+        gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
+            @Override
+            public LocalDateTime deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                return LocalDateTime.parse(jsonElement.getAsJsonPrimitive().getAsString());
+            }
+        }).create();
         logger.info("New TransactionController-object created");
     }
 
