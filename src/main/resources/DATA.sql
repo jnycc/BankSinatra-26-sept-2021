@@ -30,6 +30,20 @@ INSERT INTO `Asset` VALUES (1,'ADA',3617.10729350),(1,'BCH',3237.97825746),(1,'B
 
 INSERT INTO BankingFee (percentage) VALUES (0.01);
 
+-- Add crypto base prices
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('BTC', 43516.86, current_timestamp());
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('BTC', 42162.03, DATE_ADD(current_timestamp, INTERVAL -1 HOUR));
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('BTC', 42100.03, DATE_ADD(current_timestamp, INTERVAL -1 DAY));
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('BTC', 34100.01, DATE_ADD(current_timestamp, INTERVAL -1 MONTH));
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('ETH', 3184.29, current_timestamp());
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('ETH', 3500.68, DATE_ADD(current_timestamp, INTERVAL -1 HOUR));
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('ETH', 3400.90, DATE_ADD(current_timestamp, INTERVAL -1 DAY));
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('ETH', 2900.25, DATE_ADD(current_timestamp, INTERVAL -1 MONTH));
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('ADA', 2.56, current_timestamp());
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('ADA', 2.00, DATE_ADD(current_timestamp, INTERVAL -1 HOUR));
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('ADA', 1.99, DATE_ADD(current_timestamp, INTERVAL -1 DAY));
+INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('ADA', 1.78, DATE_ADD(current_timestamp, INTERVAL -1 MONTH));
+
 -- Create two dummy clients and accounts
 INSERT INTO User (email, password, salt, userRole, isBlocked, firstName, prefix, lastName, street, houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth)
 VALUES ('test1@test.com', 'e4e58a62d41c2bb6688470bcb8cac026dcb51fab3ba9c94f999b36a30ebff523', 'e9442010705a4ae29d3d57f83810fe40', 'client', '0', 'Abra', 'van', 'Cadabra', 'Bibbedie', '10', 'E', '1102AB', 'Amsterdam', '123456782', '2000-08-11');
