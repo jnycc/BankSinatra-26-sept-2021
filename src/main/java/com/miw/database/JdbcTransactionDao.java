@@ -87,14 +87,13 @@ public class JdbcTransactionDao {
         return datetime;
     }
 
-    // TODO: beetje gaar, maar volgens mij retourneert ie nu een lijst transactionId's. Omzetten naar List<Transaction> als LocalDateTime werkt
-    public List<Integer> getTransactionsByUserId (int userId) {
-        String sql = "SELECT transactionID FROM Transaction WHERE accountID_buyer = (SELECT accountID FROM Account WHERE userID = ?) " +
+    // TODO: nog testen of dit werkt
+    public List<Transaction> getTransactionsByUserId (int userId) {
+        String sql = "SELECT * FROM Transaction WHERE accountID_buyer = (SELECT accountID FROM Account WHERE userID = ?) " +
                 "OR accountID_seller = (SELECT accountID FROM Account WHERE userID = ?)";
-        return jdbcTemplate.query(sql, (resultSet, i) -> resultSet.getInt("transactionID"), userId, userId);
+        return jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper(), userId);
     }
 
-    //TODO: RowMapper afmaken als er een oplossing is voor LocalDateTime
     //TODO: tijdelijke oplossing: LocalDate().atStartOfDay();
     private static class TransactionRowMapper implements RowMapper<Transaction> {
 
