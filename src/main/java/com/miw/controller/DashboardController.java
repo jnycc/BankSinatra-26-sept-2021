@@ -36,6 +36,7 @@ public class DashboardController {
         return jdbcAccountDao.getAccountByUserID(ID).getBalance();
     }
 
+    //TODO: aanpassen naar ophalen en doorgeven Json string
     @PostMapping("/getPortfolioValue")
     public double getPortfolioValue(@RequestBody String token) {
         int ID = TokenService.getValidUserID(token);

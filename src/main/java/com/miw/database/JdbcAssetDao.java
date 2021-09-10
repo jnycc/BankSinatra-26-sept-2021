@@ -9,6 +9,7 @@ import com.miw.model.Crypto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
@@ -74,7 +75,12 @@ public class JdbcAssetDao {
                 "   (SELECT dateRetrieved FROM CryptoPrice " +
                 "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1)" +
                 "   , INTERVAL 10 SECOND);";
-        return jdbcTemplate.query(sql, new AssetRowMapper(), accountId);
+        try {
+            return jdbcTemplate.query(sql, new AssetRowMapper(), accountId);
+        } catch (EmptyResultDataAccessException e){
+            logger.info("No data available");
+            return null;
+        }
     }
 
     public Double getSymbolUnitsAtDateTime(int accountId, String symbol, LocalDateTime dateTime) {

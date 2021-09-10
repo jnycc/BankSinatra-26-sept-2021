@@ -16,11 +16,11 @@ public class AccountController {
         this.jdbcTransactionDao = jdbcTransactionDao;
     }
 
-//    @PostMapping("/getTransactions")
-//    public ResponseEntity<?> getTransactions(@RequestBody String token) {
-//        int ID = TokenService.getValidUserID(token);
-//        return jdbcTransactionDao.getTransactionsBYUserID(ID);
-//    }
+    @PostMapping("/getTransactions")
+    public ResponseEntity<?> getTransactions(@RequestBody String token) {
+        int ID = TokenService.getValidUserID(token);
+        return (ResponseEntity<?>) jdbcTransactionDao.getTransactionsByUserId(ID);
+    }
 
 
     //TODO: endPoint getBalance hiernaar verplaatsen
