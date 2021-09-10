@@ -1,6 +1,4 @@
-
 const settings = document.querySelector("#settings")
-
 settings.addEventListener("click", authenticate)
 
 function authenticate() {
@@ -19,7 +17,8 @@ function authenticate() {
 }
 
 
-const balancevalue = document.querySelector("#balanceValue")
+// document.getElementById("balanceValue").innerHTML = getBalance();
+
 
 //TODO: omzetten in return statement?
 function getBalance(){
@@ -33,17 +32,95 @@ function getBalance(){
         })
 }
 
-//TODO: omzetten in return statement?
-const portfolioValue = document.querySelector("#portfolioValue")
-portfolioValue.addEventListener("click", getPortfolioValue)
+// const portfolioData = '{"voorbeelddata":"hierkomt crypto", "date":"1986-12-14", "city":"New York"}';
+// const portfolioString = JSON.parse(portfolioData);
+// portfolioString.date = new Date(portfolioString.date);
+// document.getElementById("portfolioValue").innerHTML = portfolioString.name + ", " + portfolioString.date;
+//
+// //TODO: omzetten in return statement?
+// const portfolioValue = document.querySelector("#portfolioValue")
+// portfolioValue.addEventListener("click", getPortfolioValue)
+//
+// function getPortfolioValue(){
+//     fetch(`http://localhost:8080/portfolio`, {
+//         method: 'POST',
+//         body: `${localStorage.getItem('token')}`
+//     })
+//         .then(res => res.text())
+//         .then(it => {
+//             portfolioValue.innerHTML = it
+//         })
+// }
+//
+// // Uitprobeersel met hele portfolio opphalen als json string
+// //TODO: hoe door te geven aan html/forntend??? via const??
+// function getPortfolio(){
+//     fetch(`http://localhost:8080/getPortfolio`, {
+//         method: 'POST',
+//         body: `${localStorage.getItem('token')}`
+//     })
+//         .then(res => res.text())
+//         .then(it => {
+//             const portfolio = it
+//         })
+// }
 
-function getPortfolioValue(){
-    fetch(`http://localhost:8080/getPortfolioValue`, {
+
+
+
+// Navigation script aanmaken voor alle navigation functies hieronder???
+
+const home = document.querySelector("#home")
+// const settings = document.querySelector("#settings")
+const account = document.querySelector("#account")
+const portfolio = document.querySelector("#portfolio")
+const marketplace = document.querySelector("#transactions")
+const logout = document.querySelector("#logout")
+
+
+home.addEventListener("click", goHome)
+// settings.addEventListener("click", goToSettings)
+account.addEventListener("click", goToAccount)
+portfolio.addEventListener("click", goToPortfolio)
+marketplace.addEventListener("click", goToMarketplace)
+// logout.addEventListener("click", doLogout)
+
+
+function goHome(){
+    fetch(`http://localhost:8080/validateClient`, {
         method: 'POST',
         body: `${localStorage.getItem('token')}`
     })
-        .then(res => res.text())
+        .then(res => res)
         .then(it => {
-            portfolioValue.innerHTML = it
+            if (it.status === 200) {
+                window.location.replace("http://localhost:8080/dashboard.html")
+            }
         })
 }
+
+
+function goToSettings(){
+}
+
+function goToAccount(){
+}
+
+function goToPortfolio(){
+}
+
+
+function goToMarketplace(){
+        fetch(`http://localhost:8080/validateClient`, {
+            method: 'POST',
+            body: `${localStorage.getItem('token')}`
+        })
+            .then(res => res)
+            .then(it => {
+                if (it.status === 200) {
+                    window.location.replace("http://localhost:8080/marketplace.html")
+                }
+            })
+}
+
+
