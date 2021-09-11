@@ -16,6 +16,20 @@ public class Administrator extends User {
     }
 
     // METHODS
+    @Override
+    public void setBlocked(boolean blocked) {
+        super.setBlocked(blocked);
+    }
 
-
+    @Override
+    public String toString() {
+        return "Administrator{" +
+                "userId=" + userId +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", prefix='" + prefix + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", isBlocked=" + isBlocked +
+                '}';
+    }
 }

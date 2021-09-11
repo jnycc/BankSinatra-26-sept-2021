@@ -24,9 +24,6 @@ class AuthenticationServiceTest {
     @Test
     void integrationTest() {
         assertThat(authenticationService.getHashService()).isNotNull();
-        assertThat(authenticationService.getTokenService()).isNotNull();
-        assertThat(authenticationService.getClientDao()).isNotNull();
-        assertThat(authenticationService.getJdbcTokenDao()).isNotNull();
     }
 
     @Test

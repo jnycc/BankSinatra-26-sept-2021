@@ -1,109 +1,59 @@
 package com.miw.service.authentication;
-/**
- * @Author: Nijad Nazarli
- * @Description: This service class authenticates the user
- *               based on the details entered while logging in
- */
-import com.miw.database.JdbcAdminDao;
-import com.miw.database.JdbcTokenDao;
-import com.miw.database.JdbcClientDao;
-import com.miw.database.JdbcUserDao;
+import com.miw.database.*;
 import com.miw.model.Administrator;
 import com.miw.model.Client;
 import com.miw.model.Credentials;
+import com.miw.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+/**
+ * @author  Nijad Nazarli
+ * @apiNote This service class authenticates the user
+ *               based on the details entered while logging in
+ */
 @Service
 public class AuthenticationService {
 
     private HashService hashService;
-    private JdbcClientDao clientDao;
-    private TokenService tokenService;
-    private JdbcTokenDao jdbcTokenDao;
-    private JdbcUserDao jdbcUserDao;
-    private JdbcAdminDao adminDao;
+    private RootRepository rootRepository;
     private final String INVALID_CREDENTIALS = "Invalid credentials";
-    private final String BLOCKED_USER = "User is blocked";
-
+    private final String BLOCKED_USER = "User is blocked. Please contact administrator";
+    private final int JWT_VALIDITY_TIME = 7400000; //2 uur geldig
     private final Logger logger = LoggerFactory.getLogger(RegistrationService.class);
 
     @Autowired
-    public AuthenticationService(HashService hs, JdbcClientDao clientDao, TokenService tokenService,
-                                 JdbcTokenDao jdbcTokenDao, JdbcUserDao jdbcUserDao, JdbcAdminDao adminDao) {
+    public AuthenticationService(HashService hs, RootRepository rootRepository) {
         super();
         this.hashService = hs;
-        this.clientDao = clientDao;
-        this.tokenService = tokenService;
-        this.jdbcTokenDao = jdbcTokenDao;
-        this.jdbcUserDao = jdbcUserDao;
-        this.adminDao = adminDao;
+        this.rootRepository = rootRepository;
         logger.info("New AuthenticationService created");
     }
 
     public String authenticate(Credentials credentials) {
-        String email = credentials.getEmail();
-        Client clientDatabase = clientDao.findByEmail(email);
-        Client clientLogIn = new Client(email, credentials.getPassword());
-        int jwtExpTime = 7400000; //2 uur geldig
+        User userDatabase = rootRepository.getUserByEmail(credentials.getEmail());
+        User userLoggingIn;
 
+        if (userDatabase != null) {
+            if (userDatabase instanceof Client) {
+                userLoggingIn = new Client(credentials.getEmail(), credentials.getPassword());
+            } else {
+                userLoggingIn = new Administrator(credentials.getEmail(), credentials.getPassword());
+            }
+            userLoggingIn.setSalt(userDatabase.getSalt());
+            String hash = hashService.hashForAuthenticate(userLoggingIn).getPassword();
 
-        if (clientDatabase != null) {
-            clientLogIn.setSalt(clientDatabase.getSalt());
-            String hash = hashService.hashForAuthenticate(clientLogIn).getPassword();
-
-            if (clientDatabase.getPassword().equals(hash)) {
-                if (clientDatabase.isBlocked()) {
+            if (userDatabase.getPassword().equals(hash)) {
+                if (userDatabase.isBlocked()) {
                     return BLOCKED_USER;
                 }
-                //TODO: rol halen
-                return TokenService.jwtBuilder(jdbcUserDao.getIDByEmail(email),
-                        jdbcUserDao.getRoleByEmail(email), jwtExpTime);
+                return TokenService.jwtBuilder(userDatabase.getUserId(),
+                        userLoggingIn instanceof Client ? "client" : "admin", JWT_VALIDITY_TIME);
             }
             return INVALID_CREDENTIALS;
         }
         return INVALID_CREDENTIALS;
-    }
-
-    public String authenticateAdmin(Credentials credentials) {
-        Administrator adminDatabase = adminDao.findByEmail(credentials.getEmail());
-        Administrator adminLogIn = new Administrator(credentials.getEmail(), credentials.getPassword());
-        int jwtExpTime = 7400000; //2 uur geldig
-        String email = credentials.getEmail();
-
-        if (adminDatabase != null) {
-            adminLogIn.setSalt(adminDatabase.getSalt());
-            String hash = hashService.hashForAuthenticate(adminLogIn).getPassword();
-
-            if (adminDatabase.getPassword().equals(hash)) {
-                if (adminDatabase.isBlocked()) {
-                    return BLOCKED_USER;
-                }
-                // TODO: role ophalen via de database
-                return TokenService.jwtBuilder(jdbcUserDao.getIDByEmail(email),
-                        jdbcUserDao.getRoleByEmail(email), jwtExpTime); //2 uur geldig
-            }
-            return INVALID_CREDENTIALS;
-        }
-        return INVALID_CREDENTIALS;
-    }
-
-    public HashService getHashService() {
-        return hashService;
-    }
-
-    public JdbcClientDao getClientDao() {
-        return clientDao;
-    }
-
-    public TokenService getTokenService() {
-        return tokenService;
-    }
-
-    public JdbcTokenDao getJdbcTokenDao() {
-        return jdbcTokenDao;
     }
 
     public String getINVALID_CREDENTIALS() {
@@ -112,5 +62,9 @@ public class AuthenticationService {
 
     public String getBLOCKED_USER() {
         return BLOCKED_USER;
+    }
+
+    public HashService getHashService() {
+        return hashService;
     }
 }

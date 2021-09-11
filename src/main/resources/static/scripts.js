@@ -8,12 +8,11 @@ const adminBtn = document.querySelector("#admin")
 const clientBtn = document.querySelector("#client")
 
 let url = new URL(window.location.href)
-const userLogin = `${url.origin}/login`;
-const adminLogin = `${url.origin}/admin/login`;
 const userRegister = `${url.origin}/register`;
 const adminRegister = `${url.origin}/admin/register`;
 let currentLogin = `${url.origin}/login`;
 let currentRegister = `${url.origin}/register`;
+let userDashBoardUrl = `${url.origin}/dashboard.html`
 
 btnRegister.addEventListener('click', toggleOverlay);
 closeOverlayBtn.addEventListener('click', closeOverlay);
@@ -22,7 +21,7 @@ clientBtn.addEventListener('click', switchToClient);
 loginForm.addEventListener('submit', function(e) {
     if(loginForm.children.namedItem("email").validity.valid && loginForm.children.namedItem("password").validity.valid) {
         e.preventDefault();
-        doLogin(currentLogin);
+        doLogin();
     }
 });
 registerForm.addEventListener('submit', function (e) {
@@ -38,19 +37,6 @@ function toggleOverlay() {
 // TODO invulvelden leeg maken ?
 function closeOverlay() {
     overlay.style.display = 'none';
-}
-
-// TODO haal deze uit
-function showWelcomeScreen() {
-    document.body.removeChild(document.querySelector("#loginForm"));
-    document.body.removeChild(document.querySelector("#slogan"));
-
-    const h1 = document.createElement("h1");
-    h1.id = "new-header";
-    h1.value = "new header";
-    h1.innerHTML = "Welcome to Bank Sinatra"
-
-    document.body.appendChild(h1);
 }
 
 function doRegister(currentRegister) {
@@ -98,7 +84,7 @@ function doRegister(currentRegister) {
         .catch()
 }
 
-function doLogin(currentLogin){
+function doLogin(){
     let payload =
         {email: `${document.querySelector("#email").value}`,
         password: `${ document.querySelector("#password").value}`}
@@ -110,32 +96,27 @@ function doLogin(currentLogin){
             method: 'POST',
             header: { "Content-Type": "application/json" },
             body: jsonString
-        })
-        .then(res => {
+        }).then(res => {
             if (res.status === 200) {
-                window.location.replace("http://localhost:8080/dashboard.html")
-            } else if (res.status === 401) {
-                alert("Incorrect login details");
+                res.json().then(it => {
+                    redirectUserAfterLogin(it.userRole);
+                    localStorage.setItem('token', it.token);
+                    localStorage.setItem('role', it.userRole);
+                });
                 return;
             } else {
-                alert("Your account is blocked. Contact administrator");
-                return;
+                res.json().then(it => {
+                    alert(it.message);
+                })
             }
-            return res.text();
         })
-        .then(it => {
-            localStorage.setItem('token', it)
-        })
-        .catch()
 }
 
 function switchToAdmin(){
-    currentLogin = adminLogin;
     currentRegister = adminRegister;
 }
 
 function switchToClient(){
-    currentLogin = userLogin;
     currentRegister = userRegister;
 }
 
@@ -153,17 +134,11 @@ function checkRegistrationFields() {
     && registerForm.children.namedItem("extension-reg").validity.valid
 }
 
-/*btnRegister.addEventListener("click", () => {
-    console.log("clicked register")
-    let email = document.querySelector("#email").value;
-    fetch(`http://localhost:8080/gegevens/${email}`, {
-        method: 'GET',
-        headers: {'Authorization':`${localStorage.getItem('token')}`},
-    })
-        .then(res => res.json())
-        .then(it => {
-            document.querySelector("h1").innerHTML = `Welcome, ${it.firstName}`
-        })
-        .catch(console.log('oeps'))
-
-})*/
+// TODO voeg admin redirect linkje toe
+function redirectUserAfterLogin(role) {
+    if (role === 'client') {
+        window.location.replace(userDashBoardUrl)
+    } else {
+        window.location.replace("http://localhost8080/marketplace.html")
+    }
+}

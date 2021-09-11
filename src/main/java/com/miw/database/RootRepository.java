@@ -27,9 +27,13 @@ public class RootRepository {
     private JdbcAssetDao jdbcAssetDao;
     private JdbcTransactionDao jdbcTransactionDao; //TODO: interface aanroepen ipv JdbcTransactionDao zelf
     private JdbcCryptoDao jdbcCryptoDao;
+    private JdbcUserDao jdbcUserDao;
 
     @Autowired
-    public RootRepository(ClientDao clientDAO, JdbcAccountDao jdbcAccountDao, JdbcAdminDao jdbcAdminDao, JdbcAssetDao jdbcAssetDao, JdbcTransactionDao jdbcTransactionDao, JdbcCryptoDao jdbcCryptoDao) { // TODO: interface aanroepen ipv jdbcAccountDao, jdbcAdminDao en jdbcTransactionDao zelf
+    public RootRepository(ClientDao clientDAO, JdbcAccountDao jdbcAccountDao,
+                          JdbcAdminDao jdbcAdminDao, JdbcAssetDao jdbcAssetDao,
+                          JdbcTransactionDao jdbcTransactionDao, JdbcCryptoDao jdbcCryptoDao,
+                          JdbcUserDao jdbcUserDao) { // TODO: interface aanroepen ipv jdbcAccountDao, jdbcAdminDao en jdbcTransactionDao zelf
         super();
         this.clientDAO = clientDAO;
         this.jdbcAccountDao = jdbcAccountDao;
@@ -37,6 +41,7 @@ public class RootRepository {
         this.jdbcAssetDao = jdbcAssetDao;
         this.jdbcTransactionDao = jdbcTransactionDao;
         this.jdbcCryptoDao = jdbcCryptoDao;
+        this.jdbcUserDao = jdbcUserDao;
         logger.info("New RootRepository-object created");
     }
 
@@ -134,5 +139,17 @@ public class RootRepository {
 
     public List<Crypto> getCryptoOverview() {
         return jdbcCryptoDao.getAllCryptos();
+    }
+
+    public int getUserIDbyEmail(String email) {
+        return jdbcUserDao.getIDByEmail(email);
+    }
+
+    public String getUserRoleByEmail(String email) {
+        return jdbcUserDao.getRoleByEmail(email);
+    }
+
+    public User getUserByEmail(String email) {
+        return jdbcUserDao.getUserByEmail(email);
     }
 }

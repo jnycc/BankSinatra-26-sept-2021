@@ -37,7 +37,7 @@
         <input id="zipcode" type="text" name="zipcode-reg" placeholder="Zipcode" required pattern="^[1-9][0-9]{3} ?(?!sa|sd|ss|SA|SD|SS)[A-Za-z]{2}$"><br><br>
         <input id="street" type="text" name="street-reg" placeholder="Street" required pattern="^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z0-9\u0080-\u024F]*$">
         <input id="houseNumber" type="number" name="housenumber-reg" placeholder="House number" required>
-        <input id="hNrE" type="text" name="extension-reg" placeholder="extension"><br><br>
+        <input id="hNrE" type="text" name="extension-reg" placeholder="extension" pattern="[a-zA-Z]*[0-9]*-?/?[a-zA-Z]*[0-9]*"><br><br>
         <input id="submitReg" type="submit" value="Submit">
     </form>
 </div>
