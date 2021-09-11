@@ -1,25 +1,32 @@
 package com.miw.controller;
 
 import com.miw.database.JdbcTransactionDao;
+import com.miw.model.Transaction;
 import com.miw.service.authentication.TokenService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
-
+@RestController
 public class AccountController {
 
     private JdbcTransactionDao jdbcTransactionDao;
 
+    @Autowired
     public AccountController(JdbcTransactionDao jdbcTransactionDao) {
         this.jdbcTransactionDao = jdbcTransactionDao;
     }
 
-    @PostMapping("/getTransactions")
+    @GetMapping("/getTransactions")
     public ResponseEntity<?> getTransactions(@RequestBody String token) {
         int ID = TokenService.getValidUserID(token);
-        return (ResponseEntity<?>) jdbcTransactionDao.getTransactionsByUserId(ID);
+        List<Transaction> transactions =  jdbcTransactionDao.getTransactionsByUserId(ID);
+        return ResponseEntity.ok(transactions);
     }
 
 

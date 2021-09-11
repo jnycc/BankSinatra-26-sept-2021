@@ -81,7 +81,7 @@
 .navigation a button{
     height: 90%;
     display: table-cell;
-    vertical-align: middle;
+    vertical-align: top;
     float: left;
     font-family: "Paradise", "Bookman Old Style", monospace;
     font-size: large;
@@ -98,7 +98,7 @@
     display: block;
     margin-left: 50px;
     color: #001d23;
-    font-family: "Paradise", "Bookman Old Style", monospace;
+    font-family:  "Bookman Old Style", monospace;
     font-size: 30px;
 }
 .leftpage {

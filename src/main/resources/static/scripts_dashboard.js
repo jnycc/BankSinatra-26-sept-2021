@@ -1,8 +1,39 @@
-const settings = document.querySelector("#settings")
-settings.addEventListener("click", authenticate)
+// checking valid token (with userrole) and loading data)
+window.addEventListener("DOMContentLoaded", validateClient)
+window.addEventListener("DOMContentLoaded", getBalance)
+//window.addEventListener("DOMContentLoaded", getPortfolio)
 
-function authenticate() {
-    fetch(`http://localhost:8080/authenticate`, {
+
+
+
+// Navigation script aanmaken voor alle navigation functies hieronder???
+
+const balance = document.querySelector("#balanceValue")
+const portfolioValue = document.querySelector("#portfolioValue")
+
+// Identifying navigation buttons
+const home = document.querySelector("#home")
+const settings = document.querySelector("#settings")
+const account = document.querySelector("#account")
+const portfolio = document.querySelector("#portfolio")
+const marketplace = document.querySelector("#transactions")
+const logout = document.querySelector("#logout")
+
+
+// Adding functions to navigation buttons
+home.addEventListener("click", goHome)
+settings.addEventListener("click", goToSettings)
+account.addEventListener("click", goToAccount)
+portfolio.addEventListener("click", goToPortfolio)
+marketplace.addEventListener("click", goToMarketplace)
+logout.addEventListener("click", doLogOut)
+
+
+// FUNCTIONS:
+
+// specific validation of jwt and userrole
+function validateClient(){
+    fetch(`http://localhost:8080/validateClient`, {
         method: 'POST',
         body: `${localStorage.getItem('token')}`
     })
@@ -17,10 +48,6 @@ function authenticate() {
 }
 
 
-const balance = document.querySelector("#balanceValue")
-window.addEventListener("DOMContentLoaded", getBalance)
-
-//TODO: omzetten in return statement?
 function getBalance(){
     fetch(`http://localhost:8080/getBalance`, {
         method: 'POST',
@@ -38,11 +65,10 @@ function getBalance(){
 // portfolioString.date = new Date(portfolioString.date);
 // document.getElementById("portfolioValue").innerHTML = portfolioString.name + ", " + portfolioString.date;
 
-//TODO: omzetten in return statement?
-// const portfolioValue = document.querySelector("#portfolioValue")
-// window.addEventListener("DOMContentLoaded", getPortfolioValue)
 
-function getPortfolioValue(){
+
+// // TODO: totaalwaarde uit Json string halen
+function getPortfolio(){
     fetch(`http://localhost:8080/portfolio`, {
         method: 'POST',
         body: `${localStorage.getItem('token')}`
@@ -55,39 +81,22 @@ function getPortfolioValue(){
 
 
 
-// Uitprobeersel met hele portfolio opphalen als json string
-//TODO: hoe door te geven aan html/forntend??? via const??
-function getPortfolio(){
-    fetch(`http://localhost:8080/getPortfolio`, {
-        method: 'POST',
-        body: `${localStorage.getItem('token')}`
-    })
-        .then(res => res.text())
-        .then(it => {
-            const portfolio = it
-        })
-}
+
+// function getPortfolioValue(){
+//     fetch(`http://localhost:8080/getPortfolio`, {
+//         method: 'POST',
+//         body: `${localStorage.getItem('token')}`
+//     })
+//         .then(res => res.text())
+//         .then(it => {
+//             const portfolio = it
+//         })
+// }
 
 
 
-
-// Navigation script aanmaken voor alle navigation functies hieronder???
-
-const home = document.querySelector("#home")
-// const settings = document.querySelector("#settings")
-const account = document.querySelector("#account")
-const portfolio = document.querySelector("#portfolio")
-const marketplace = document.querySelector("#transactions")
-const logout = document.querySelector("#logout")
-
-
-home.addEventListener("click", goHome)
-// settings.addEventListener("click", goToSettings)
-account.addEventListener("click", goToAccount)
-portfolio.addEventListener("click", goToPortfolio)
-marketplace.addEventListener("click", goToMarketplace)
-// logout.addEventListener("click", doLogout)
-
+// NAVIGATION FUNCTIONS
+// TODO: naar aparte navigation js file?
 
 function goHome(){
     fetch(`http://localhost:8080/validateClient`, {
@@ -99,17 +108,65 @@ function goHome(){
             if (it.status === 200) {
                 window.location.replace("http://localhost:8080/dashboard.html")
             }
+            else {
+                console.log("your token is bad and you should feel bad")
+                window.location.replace("/index.html");
+            }
         })
 }
 
 
 function goToSettings(){
+    fetch(`http://localhost:8080/validateClient`, {
+        method: 'POST',
+        body: `${localStorage.getItem('token')}`
+    })
+        .then(res => res)
+        .then(it => {
+            if (it.status === 200) {
+                window.location.replace("http://localhost:8080/Settings.html")
+            }
+            else{
+                console.log("your token is bad and you should feel bad")
+                window.location.replace("/index.html");
+            }
+        })
 }
 
 function goToAccount(){
+    fetch(`http://localhost:8080/validateClient`, {
+        method: 'POST',
+        body: `${localStorage.getItem('token')}`
+    })
+        .then(res => res)
+        .then(it => {
+            if (it.status === 200) {
+                window.location.replace("http://localhost:8080/Account.html")
+            }
+            else {
+                console.log("your token is bad and you should feel bad")
+                window.location.replace("/index.html");
+            }
+
+        })
 }
 
 function goToPortfolio(){
+    fetch(`http://localhost:8080/validateClient`, {
+        method: 'POST',
+        body: `${localStorage.getItem('token')}`
+    })
+        .then(res => res)
+        .then(it => {
+            if (it.status === 200) {
+                window.location.replace("http://localhost:8080/Portfolio.html")
+            }
+            else {
+                console.log("your token is bad and you should feel bad")
+                window.location.replace("/index.html");
+            }
+
+        })
 }
 
 
@@ -123,7 +180,16 @@ function goToMarketplace(){
                 if (it.status === 200) {
                     window.location.replace("http://localhost:8080/marketplace.html")
                 }
+                else {
+                    console.log("your token is bad and you should feel bad")
+                    window.location.replace("/index.html");
+                }
             })
+}
+
+function doLogOut(){
+    window.localStorage.clear();
+    window.location.replace("/index.html");
 }
 
 

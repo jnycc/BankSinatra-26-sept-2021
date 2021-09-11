@@ -2,14 +2,12 @@ package com.miw.controller;
 
 import com.miw.database.JdbcAccountDao;
 import com.miw.database.JdbcAssetDao;
-import com.miw.model.Asset;
 import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 
 @RestController
@@ -36,17 +34,17 @@ public class DashboardController {
         return jdbcAccountDao.getAccountByUserID(ID).getBalance();
     }
 
-    //TODO: aanpassen naar ophalen en doorgeven Json string
-    @PostMapping("/getPortfolioValue")
-    public double getPortfolioValue(@RequestBody String token) {
-        int ID = TokenService.getValidUserID(token);
-        List<Asset> clientAssets = jdbcAssetDao.getAssets(ID);
-        double totalValue = 0.00;
-        for (Asset asset: clientAssets) {
-            totalValue += asset.getUnits() * asset.getCurrentValue();
-        }
-        return totalValue;
-    }
+
+//    @PostMapping("/getPortfolioValue")
+//    public double getPortfolioValue(@RequestBody String token) {
+//        int ID = TokenService.getValidUserID(token);
+//        List<Asset> clientAssets = jdbcAssetDao.getAssets(ID);
+//        double totalValue = 0.00;
+//        for (Asset asset: clientAssets) {
+//            totalValue += asset.getUnits() * asset.getCurrentValue();
+//        }
+//        return totalValue;
+//    }
 
 
 
