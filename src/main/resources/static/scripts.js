@@ -139,6 +139,7 @@ function redirectUserAfterLogin(role) {
     if (role === 'client') {
         window.location.replace(userDashBoardUrl)
     } else {
-        window.location.replace("http://localhost8080/marketplace.html")
+        window.location.replace(`${url.origin}/marketplace.html`)
     }
 }
+

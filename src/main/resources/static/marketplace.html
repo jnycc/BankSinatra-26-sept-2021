@@ -3,24 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Marketplace</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="partials/header.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="marketplace.js" defer></script>
 </head>
 <body>
 <div id="header"></div>
-<script>
-    async function fetchHtmlAsText(url) {
-        return await (await fetch(url)).text();
-    }
-    async function loadHTMLToElementParsed(targetQuerySelector, url, sourceQuerySelector) {
-        const contentDiv = document.querySelector(targetQuerySelector);
-        const parser = new DOMParser();
-        let parsed = parser.parseFromString(await fetchHtmlAsText(url), 'text/html')
-        let navigationBar = parsed.querySelector(sourceQuerySelector).querySelector("div");
-        contentDiv.appendChild(navigationBar);
-    }
-    let url = new URL(window.location.href)
-    loadHTMLToElementParsed("#header", `${url.origin}/partials/header.html`, "body")
-</script>
 
 </body>
 </html>
