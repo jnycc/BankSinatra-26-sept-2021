@@ -39,9 +39,14 @@ public class TransactionController {
         logger.info("New TransactionController-object created");
     }
 
-    //TODO: deze methode is te lang, dus nog een keer opbreken in kleinere methodes
+    //TODO: Authorization zo instellen dat een ingelogde gebruiker niet als een andere gebruiker kan kopen
+    //TODO: methode verder opschonen?
     @PostMapping("/buy") //TODO: URL aanpassen zeer waarschijnlijk
-    public ResponseEntity<?> doTransaction(@RequestBody String transactionAsJson){
+    public ResponseEntity<?> doTransaction(@RequestHeader("Authorization") String token, @RequestBody String transactionAsJson){
+        if (!TokenService.validateJWT(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         Transaction transaction = gson.fromJson(transactionAsJson, Transaction.class);
 
         if(transaction.getUnits() < 0){
