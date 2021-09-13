@@ -40,14 +40,20 @@ public class TransactionController {
     }
 
     //TODO: Authorization zo instellen dat een ingelogde gebruiker niet als een andere gebruiker kan kopen
-    //TODO: methode verder opschonen?
-    @PostMapping("/buy") //TODO: URL aanpassen zeer waarschijnlijk
+    //TODO: Methode verder opschonen
+    @PostMapping("/buy") //TODO: URL aanpassen naar marketplace?
     public ResponseEntity<?> doTransaction(@RequestHeader("Authorization") String token, @RequestBody String transactionAsJson){
         if (!TokenService.validateJWT(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return new ResponseEntity<>("Invalid login credentials, try again", HttpStatus.UNAUTHORIZED);
         }
 
         Transaction transaction = gson.fromJson(transactionAsJson, Transaction.class);
+        int userId = TokenService.getValidUserID(token);
+
+        if(userId != transaction.getBuyer()){
+            return new ResponseEntity<>("You are not authorized to purchase assets for another client," +
+                    " stop it", HttpStatus.CONFLICT); //TODO: is dit de juiste statuscode?
+        }
 
         if(transaction.getUnits() < 0){
             return new ResponseEntity<>("Buyer cannot purchase negative asssets. " +
