@@ -10,13 +10,14 @@ public class Account {
     private int accountId;
     private String iban;
     private double balance;
+    private final String BANKCODE = "BSIN";
 
     public Account() {
         this(10000);
     }
 
     public Account(double balance) {
-        this.iban = Iban.random(CountryCode.NL).toString();
+        this.iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode(BANKCODE).buildRandom().toString();
         this.balance = balance;
     }
 

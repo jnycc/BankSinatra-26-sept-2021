@@ -31,8 +31,9 @@ public class TransactionService {
     }
 
     public Transaction setTransactionPrice(Transaction transaction){
-        transaction.getCrypto().setCryptoPrice(rootRepository.getLatestPriceBySymbol(transaction.getCrypto().getSymbol()));
-        transaction.setTransactionPrice(transaction.getCrypto().getCryptoPrice() * transaction.getUnits());
+        double salePrice = rootRepository.getAssetBySymbol(transaction.getSeller(),
+                transaction.getCrypto().getSymbol()).getSalePrice();
+        transaction.setTransactionPrice(salePrice * transaction.getUnits());
         return transaction;
     }
 
@@ -53,7 +54,7 @@ public class TransactionService {
     }
 
     public boolean checkSufficientCrypto(int seller, Crypto crypto, double units){
-        return rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() >= units;
+        return rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnitsForSale() >= units;
     }
 
     public void transferBalance(int seller, int buyer, double transactionPrice){
@@ -62,13 +63,16 @@ public class TransactionService {
     }
 
     public void transferCrypto(int seller, int buyer, Crypto crypto, double units){
-        double newSellerAsset = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() - units;
+       double newAssetsForSale = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnitsForSale() - units;
+       double newTotalAssets = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() - units;
 
-        if (!(newSellerAsset == 0)) { // seller still has units of this crypto
-            rootRepository.updateAsset(newSellerAsset, crypto.getSymbol(), seller);
-        } else { // seller has no units of this crypto anymore
-            rootRepository.deleteAsset(crypto.getSymbol(), seller);
-        }
+       //TODO: hiero assetsForSale updaten zodra methode er is
+
+       if (!(newTotalAssets == 0)){ //seller still has some of this crypto left
+           rootRepository.updateAsset(newTotalAssets, crypto.getSymbol(), seller);
+       } else { //seller doesn't have this crypto anymore
+           rootRepository.deleteAsset(crypto.getSymbol(), seller);
+       }
 
         if (rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()) != null) { // buyer already has this crypto
             double newBuyerAsset = rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()).getUnits() + units;
