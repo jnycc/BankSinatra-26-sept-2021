@@ -13,6 +13,7 @@ const adminRegister = `${url.origin}/admin/register`;
 let currentLogin = `${url.origin}/login`;
 let currentRegister = `${url.origin}/register`;
 let userDashBoardUrl = `${url.origin}/dashboard.html`
+let adminDashBoardUrl = `${url.origin}/admin.html`
 
 adminBtn.addEventListener('click', switchToAdmin);
 clientBtn.addEventListener('click', switchToClient);
@@ -124,12 +125,11 @@ function checkRegistrationFields() {
     && registerForm.children.namedItem("extension-reg").validity.valid
 }
 
-// TODO voeg admin redirect linkje toe
 function redirectUserAfterLogin(role) {
     if (role === 'client') {
         window.location.replace(userDashBoardUrl)
     } else {
-        window.location.replace(`${url.origin}/marketplace.html`)
+        window.location.replace(adminDashBoardUrl)
     }
 }
 

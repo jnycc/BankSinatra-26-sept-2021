@@ -59,6 +59,11 @@ public class JdbcTransactionDao {
         return jdbcTemplate.queryForObject(sql, Double.class);
     }
 
+    public void updateBankCosts(double fee) {
+        String sql = "UPDATE BankingFee SET percentage = ?";
+        jdbcTemplate.update(sql, fee);
+    }
+
     public double getSumOfUnitsPurchasedAndSold(int accountId, LocalDateTime dateTime, String symbol) {
         String sql = "SELECT " +
                 "(SELECT IFNULL(SUM(units), 0) FROM `Transaction` " +
