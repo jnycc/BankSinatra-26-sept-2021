@@ -66,6 +66,16 @@ public class JdbcAccountDao {
         }
     }
 
+    public Account getAccountByBsn (int bsn){
+        String sql = "SELECT * FROM Account WHERE userID = ( SELECT userID FROM user WHERE bsn = ?);";
+        try{
+            return jdbcTemplate.queryForObject(sql, new JdbcAccountDao.AccountRowMapper(), bsn);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Account does not exist in the database");
+            return null;
+        }
+    }
+
     public double getBalanceByEmail(String email) {
         String sql = "SELECT balance FROM Account WHERE userID = ( SELECT userID FROM user WHERE email = ?);";
         try {

@@ -6,4 +6,5 @@ public interface ClientDao {
 
   Client save(Client client);
   Client findByEmail(String email);
+  Client findByBsn(int bsn);
 }

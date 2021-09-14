@@ -53,8 +53,8 @@ public class RegistrationService {
         return violationsMap;
     }
 
-    public boolean checkExistingClientAccount(String email) {
-        return rootRepository.findClientByEmail(email) != null;
+    public boolean checkExistingClientAccount(String email, int bsn) {
+        return rootRepository.findClientByEmail(email) != null || rootRepository.findClientByBsn(bsn) != null;
     }
 
     public boolean checkExistingAdminAccount(String email) {

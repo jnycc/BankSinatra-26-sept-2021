@@ -63,7 +63,7 @@ public class RegisterController {
             return new ResponseEntity<>(violationsMap, HttpStatus.BAD_REQUEST);
         }
         //Check of klant al bestaat in de database.
-        if (registrationService.checkExistingClientAccount(client.getEmail())) { // TODO: boolean check toevoegen of bsn al bestaat in db
+        if (registrationService.checkExistingClientAccount(client.getEmail(), client.getBsn())) {
             return new ResponseEntity<>("Registration failed. Account already exists.", HttpStatus.CONFLICT);
         }
         //Gebruiker opslaan in database en beginkapitaal toewijzen. Succesmelding geven.

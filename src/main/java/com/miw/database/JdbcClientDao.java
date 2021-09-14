@@ -70,6 +70,17 @@ public class JdbcClientDao implements ClientDao {
     }
   }
 
+  @Override
+  public Client findByBsn(int bsn){
+    String sql = "SELECT * FROM `User` WHERE bsn = ?";
+    try{
+      return jdbcTemplate.queryForObject(sql, new ClientRowMapper(), bsn);
+    }catch (EmptyResultDataAccessException e) {
+      logger.info("User does not exist in the database");
+      return null;
+    }
+  }
+
   private static class ClientRowMapper implements RowMapper<Client> {
 
     @Override
