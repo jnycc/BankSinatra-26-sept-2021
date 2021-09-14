@@ -115,6 +115,16 @@ public class JdbcAssetDao {
         }
     }
 
+    public void updateAssetForSale(double newUnits, String symbol, int accountId){
+        String updateQuery = "UPDATE Asset set unitsForSale = ? WHERE symbol = ? AND accountID = ?;";
+        try {
+            jdbcTemplate.update(updateQuery, newUnits, symbol, accountId);
+        } catch (Exception e){
+            e.printStackTrace();
+            logger.warn("Unable to update assets for sale");
+        }
+    }
+
     public void deleteAsset(String symbol, int accountId){
         String deleteQuery = "DELETE FROM Asset WHERE symbol = ? AND accountID =?";
         jdbcTemplate.update(deleteQuery, symbol, accountId);

@@ -66,7 +66,7 @@ public class TransactionService {
        double newAssetsForSale = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnitsForSale() - units;
        double newTotalAssets = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() - units;
 
-       //TODO: hiero assetsForSale updaten zodra methode er is
+       rootRepository.updateAssetForSale(newAssetsForSale, crypto.getSymbol(), seller);
 
        if (!(newTotalAssets == 0)){ //seller still has some of this crypto left
            rootRepository.updateAsset(newTotalAssets, crypto.getSymbol(), seller);

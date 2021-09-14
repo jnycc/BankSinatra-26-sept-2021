@@ -170,7 +170,7 @@ INSERT INTO Role VALUES('bank');
 INSERT INTO User(email, password, salt, userRole, isBlocked, firstName, prefix, lastName,
                  street, houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth)
 VALUES ('', '', '', 'bank', 0, 'Bank', '', 'Sinatra', '', 0, '', '', '', 0, '2021-09-01');
-INSERT INTO Account VALUES (1,'NL91NODX9826496343',5000000.00,1);
+INSERT INTO Account VALUES (1,'NL91BSIN9826496343',5000000.00,1);
 
 
 -- Gebruiker definiëren en toegang verlenen

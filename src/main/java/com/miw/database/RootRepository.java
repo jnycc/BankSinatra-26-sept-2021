@@ -124,6 +124,10 @@ public class RootRepository {
         jdbcAssetDao.updateAsset(newUnits, symbol, accountId);
     }
 
+    public void updateAssetForSale(double newUnits, String symbol, int accountId){
+        jdbcAssetDao.updateAssetForSale(newUnits, symbol, accountId);
+    }
+
     public void saveAsset(int buyer, String symbol, double units){
         jdbcAssetDao.saveAsset(buyer, symbol, units);
     }

@@ -47,10 +47,10 @@ INSERT INTO CryptoPrice (symbol, cryptoPrice, dateRetrieved) VALUES ('ADA', 1.78
 -- Create two dummy clients and accounts
 INSERT INTO User (email, password, salt, userRole, isBlocked, firstName, prefix, lastName, street, houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth)
 VALUES ('test1@test.com', 'e4e58a62d41c2bb6688470bcb8cac026dcb51fab3ba9c94f999b36a30ebff523', 'e9442010705a4ae29d3d57f83810fe40', 'client', '0', 'Abra', 'van', 'Cadabra', 'Bibbedie', '10', 'E', '1102AB', 'Amsterdam', '123456782', '2000-08-11');
-INSERT INTO Account (accountID, IBAN, balance, userID) VALUES ('2','NL67EQVL3890518477','10000.00','2');
+INSERT INTO Account (accountID, IBAN, balance, userID) VALUES ('2','NL67BSIN3890518477','10000.00','2');
 INSERT INTO User (email, password, salt, userRole, isBlocked, firstName, prefix, lastName, street, houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth)
 VALUES ('test2@test.com', '7f69c1d1c98be26fd9acf05acb7faa06bdb1aaefc976c29a3fffe8d309f690fe', '484a083720c3bd538100669378d5460d', 'client', '0', 'lala', 'van', 'BoB', 'plein 1945', '10', 'E', '1107AW', 'Amsterdam', '405886408', '2000-08-11');
-INSERT INTO Account (accountID, IBAN, balance, userID) VALUES ('3', 'NL24RBGO5459628412', '10000.00', '3');
+INSERT INTO Account (accountID, IBAN, balance, userID) VALUES ('3', 'NL24BSIN5459628412', '10000.00', '3');
 
 -- Give dummy client some assets to test
 INSERT INTO Asset VALUES (2, 'ADA', 1000, 0, 0);
