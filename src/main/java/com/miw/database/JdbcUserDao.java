@@ -29,7 +29,7 @@ public class JdbcUserDao {
     //public String getClientAdminByID()
 
     public String getRoleByEmail(String email) {
-        String sql = "SELECT userRole FROM user WHERE email = ?;";
+        String sql = "SELECT userRole FROM User WHERE email = ?;";
         try {
             return jdbcTemplate.queryForObject(sql, String.class, email);
         } catch (EmptyResultDataAccessException e) {
@@ -39,7 +39,7 @@ public class JdbcUserDao {
     }
 
     public String getRoleByID(int userID) {
-        String sql = "SELECT userRole FROM user WHERE userID= ?;";
+        String sql = "SELECT userRole FROM User WHERE userID= ?;";
         try {
             return jdbcTemplate.queryForObject(sql, String.class, userID);
         } catch (EmptyResultDataAccessException e) {
@@ -49,7 +49,7 @@ public class JdbcUserDao {
     }
 
     public int getIDByEmail(String email) {
-        String sql = "SELECT userID FROM user WHERE email= ?;";
+        String sql = "SELECT userID FROM User WHERE email= ?;";
         try {
             return jdbcTemplate.queryForObject(sql, Integer.class, email);
         } catch (EmptyResultDataAccessException e) {
@@ -59,7 +59,7 @@ public class JdbcUserDao {
     }
 
     public User getUserByEmail(String email){
-        String sql = "SELECT * FROM user WHERE email = ?;";
+        String sql = "SELECT * FROM User WHERE email = ?;";
         try {
             return jdbcTemplate.queryForObject(sql, new UserRowMapper(), email);
         } catch (EmptyResultDataAccessException exception) {
