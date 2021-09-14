@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -71,7 +70,7 @@ class RegisterControllerTest {
     @Test
     void registerNewClientTest() {
         //Met Mockito door validatiecheck slagen: klant bestaat niet, nieuwe klant mag dan geregistreerd worden
-        Mockito.when(registrationService.checkExistingClientAccount(testClient.getEmail(), testClient.getBsn())).thenReturn(false);
+        Mockito.when(registrationService.checkExistingClientAccountEmail(testClient.getEmail())).thenReturn(false);
 
         //Test 1: de register endpoint uitvoeren waarna http-status code 201-Created verwacht wordt.
         try {
@@ -98,7 +97,7 @@ class RegisterControllerTest {
     @Test
     void registerExistingClientTest() {
         //Klant bestaat al in database (=true). Mockito db geeft dan true terug.
-        Mockito.when(registrationService.checkExistingClientAccount(testClient.getEmail(), testClient.getBsn())).thenReturn(true);
+        Mockito.when(registrationService.checkExistingClientAccountEmail(testClient.getEmail())).thenReturn(true);
         //register endpoint uitvoeren en http-status code 409-conflict verwacht.
         try {
             mockMvc.perform(post("/register")
