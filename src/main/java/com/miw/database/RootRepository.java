@@ -19,8 +19,6 @@ import java.util.Map;
 public class RootRepository {
 
     private final Logger logger = LoggerFactory.getLogger(RootRepository.class);
-    public Asset getAssetBySymbol;
-
     private ClientDao clientDAO;
     private JdbcAccountDao jdbcAccountDao; // TODO: interface aanroepen ipv jdbcAccountDAO zelf
     private JdbcAdminDao jdbcAdminDao; // TODO: interface aanroepen ipv jdbcAdminDao zelf
@@ -84,8 +82,10 @@ public class RootRepository {
     }
 
     public Account getAccountById(int accountId){
-        return jdbcAccountDao.getAccountByUserID(accountId);
+        return jdbcAccountDao.getAccountByID(accountId);
     }
+
+    public Account getAccountByUserId(int userId) { return jdbcAccountDao.getAccountByUserID(userId);}
 
     public Account getAccountByEmail(String email){
         return jdbcAccountDao.getAccountByEmail(email);
@@ -163,5 +163,9 @@ public class RootRepository {
 
     public User getUserByEmail(String email) {
         return jdbcUserDao.getUserByEmail(email);
+    }
+
+    public void marketAsset(double unitsForSale, double salePrice, String symbol, int accountId) {
+        jdbcAssetDao.putAssetOnSale(unitsForSale, salePrice, symbol, accountId);
     }
 }

@@ -6,6 +6,11 @@
 package com.miw.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSerializer;
+import com.miw.database.RootRepository;
+import com.miw.model.Asset;
 import com.miw.service.PortfolioService;
 import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
@@ -13,9 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -24,12 +27,14 @@ public class PortfolioController {
 
     private PortfolioService portfolioService;
     private Gson gson;
+    private RootRepository rootRepository;
     private final Logger logger = LoggerFactory.getLogger(PortfolioController.class);
 
     @Autowired
-    public PortfolioController(PortfolioService portfolioService, Gson gson) {
+    public PortfolioController(PortfolioService portfolioService, Gson gson, RootRepository rootRepository) {
         this.portfolioService = portfolioService;
         this.gson = gson;
+        this.rootRepository = rootRepository;
     }
 
     @GetMapping("/portfolio")
@@ -42,4 +47,25 @@ public class PortfolioController {
         Map<String, Object> portfolio = portfolioService.getPortfolio(userId);
         return ResponseEntity.ok(portfolio);
     }
+
+    @PutMapping("/marketAsset")
+    public ResponseEntity<?> marketAsset(@RequestHeader("Authorization") String token, @RequestBody String assetsSale) {
+        Integer userId = TokenService.getValidUserID(token);
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        int accountId = rootRepository.getAccountById(userId).getAccountId();
+
+        Asset assetForSale = gson.fromJson(assetsSale, Asset.class);
+        System.out.println(assetForSale);
+
+        if (rootRepository.getAssetBySymbol(accountId, assetForSale.getCrypto().getSymbol()).getUnits() < assetForSale.getUnitsForSale()) {
+            return new ResponseEntity<>("User does not have sufficient units", HttpStatus.BAD_REQUEST);
+        }
+
+        rootRepository.marketAsset(assetForSale.getUnitsForSale(), assetForSale.getSalePrice(), assetForSale.getCrypto().getSymbol(), accountId);
+        return new ResponseEntity<>("The asset has been marketed successfully.", HttpStatus.OK);
+    }
+
+
 }

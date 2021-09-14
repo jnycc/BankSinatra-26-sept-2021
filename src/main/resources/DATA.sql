@@ -20,13 +20,13 @@ INSERT INTO Crypto (symbol, description, name) VALUES
 ('MATIC', 'Een cryptomunt.', 'Polygon'),
 ('VET', 'Een cryptomunt.', 'VeChain');
 
-INSERT INTO `Asset` (accountID, symbol, units) VALUES (1,'ADA',3617.10729350),(1,'BCH',3237.97825746),(1,'BNB',4446.80050983),
-                           (1,'BTC',1467.46154488),(1,'BUSD',2907.71188934),(1,'DOGE',4165.35024824),
-                           (1,'DOT',4299.78222044),(1,'ETH',4953.59009790),(1,'ICP',4204.44776219),
-                           (1,'LINK',3270.64077791),(1,'LTC',4452.54613758),(1,'LUNA',2664.79656423),
-                           (1,'MATIC',4202.83711257),(1,'SOL',4443.27804342),(1,'UNI',3251.06460353),
-                           (1,'USDC',1795.14359490),(1,'USDT',1520.26752852),(1,'VET',1989.28679912),
-                           (1,'WBTC',1514.80989533),(1,'XRP',3150.50238923);
+INSERT INTO `Asset` VALUES (1,'ADA',3617.10729350, 0, 0),(1,'BCH',3237.97825746, 0, 0),(1,'BNB',4446.80050983, 0, 0),
+                           (1,'BTC',1467.46154488, 0, 0),(1,'BUSD',2907.71188934, 0, 0),(1,'DOGE',4165.35024824, 0, 0),
+                           (1,'DOT',4299.78222044, 0, 0),(1,'ETH',4953.59009790, 0, 0),(1,'ICP',4204.44776219, 0, 0),
+                           (1,'LINK',3270.64077791, 0, 0),(1,'LTC',4452.54613758, 0, 0),(1,'LUNA',2664.79656423, 0, 0),
+                           (1,'MATIC',4202.83711257, 0, 0),(1,'SOL',4443.27804342, 0, 0),(1,'UNI',3251.06460353, 0, 0),
+                           (1,'USDC',1795.14359490, 0, 0),(1,'USDT',1520.26752852, 0, 0),(1,'VET',1989.28679912, 0, 0),
+                           (1,'WBTC',1514.80989533, 0, 0),(1,'XRP',3150.50238923, 0, 0);
 
 INSERT INTO BankingFee (percentage) VALUES (0.01);
 
@@ -53,9 +53,9 @@ VALUES ('test2@test.com', '7f69c1d1c98be26fd9acf05acb7faa06bdb1aaefc976c29a3fffe
 INSERT INTO Account (accountID, IBAN, balance, userID) VALUES ('3', 'NL24RBGO5459628412', '10000.00', '3');
 
 -- Give dummy client some assets to test
-INSERT INTO Asset (accountID, symbol, units) VALUES (2, 'ADA', 1000);
-INSERT INTO Asset (accountID, symbol, units) VALUES (2, 'BTC', 9);
-INSERT INTO Asset (accountID, symbol, units) VALUES (2, 'ETH', 10.25);
+INSERT INTO Asset VALUES (2, 'ADA', 1000, 0, 0);
+INSERT INTO Asset VALUES (2, 'BTC', 9, 0, 0);
+INSERT INTO Asset VALUES (2, 'ETH', 10.25, 0, 0);
 
 -- Dummy user 2 buys
 INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)

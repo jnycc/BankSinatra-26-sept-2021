@@ -107,12 +107,27 @@ public class JdbcAssetDao {
 
     public void updateAsset(double newUnits, String symbol, int accountId){
         String updateQuery = "UPDATE Asset SET units = ? WHERE symbol = ? AND accountID = ?;";
-        jdbcTemplate.update(updateQuery, newUnits, symbol, accountId);
+        try {
+            jdbcTemplate.update(updateQuery, newUnits, symbol, accountId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.warn("User does not have such assets");
+        }
     }
 
     public void deleteAsset(String symbol, int accountId){
         String deleteQuery = "DELETE FROM Asset WHERE symbol = ? AND accountID =?";
         jdbcTemplate.update(deleteQuery, symbol, accountId);
+    }
+
+    public void putAssetOnSale(double units, double salePrice, String symbol, int accountId) {
+        String putAssetOnSale = "UPDATE Asset SET unitsForSale = ?, salePrice = ? WHERE symbol = ? AND accountID = ?;";
+        try {
+            jdbcTemplate.update(putAssetOnSale, units, salePrice, symbol, accountId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.warn("User does not have enough units in the portfolio");
+        }
     }
 
     private static class AssetRowMapper implements RowMapper<Asset> {

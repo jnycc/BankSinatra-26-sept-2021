@@ -11,22 +11,28 @@ public class Asset {
     private double currentValue;
     private double unitsForSale;
     private double salePrice;
+    private static final double DEFAULT_UNITS = 0;
     private Map<String, Double> historicalNrOfUnits; //time interval, units
     private Map<String, Double> historicalValues; //time interval, oldValue
     private Map<String, Double> deltaValues;
-    private final int DEFAULT_UNITS = 0;
 
-
-    public Asset(Crypto crypto, double units) {
+    public Asset(Crypto crypto, double units, double unitsForSale, double salePrice) {
+        super();
         this.crypto = crypto;
         this.units = units;
         this.currentValue = calculateValue();
         this.historicalValues = new TreeMap<>();
         this.historicalNrOfUnits = new TreeMap<>();
         this.deltaValues = new TreeMap<>();
-        this.unitsForSale = DEFAULT_UNITS;
-        this.salePrice = DEFAULT_UNITS;
+        this.unitsForSale = unitsForSale;
+        this.salePrice = salePrice;
     }
+
+    public Asset(Crypto crypto, double units) {
+        this(crypto, units, DEFAULT_UNITS, DEFAULT_UNITS);
+    }
+
+    public Asset(){}
 
     private double calculateValue() {
         return units * crypto.getCryptoPrice();
@@ -103,5 +109,17 @@ public class Asset {
 
     public void setSalePrice(double salePrice) {
         this.salePrice = salePrice;
+    }
+
+    @Override
+    public String toString() {
+        return "Asset{" +
+                "account=" + account +
+                ", crypto=" + crypto +
+                ", units=" + units +
+                ", currentValue=" + currentValue +
+                ", unitsForSale=" + unitsForSale +
+                ", salePrice=" + salePrice +
+                '}';
     }
 }
