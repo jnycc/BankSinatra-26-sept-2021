@@ -58,31 +58,31 @@ INSERT INTO Asset (accountID, symbol, units) VALUES (2, 'BTC', 9);
 INSERT INTO Asset (accountID, symbol, units) VALUES (2, 'ETH', 10.25);
 
 -- Dummy user 2 buys
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (current_timestamp(), 3, 3000.0, 10.0, 2, 3, 'BTC');
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (current_timestamp(), 4, 3000.0, 10.0, 2, 3, 'BTC');
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (current_timestamp(), 5, 3000.0, 10.0, 2, 3, 'BTC');
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (current_timestamp(), 10.25, 2900.0, 10.0, 2, 3, 'ETH');
 -- Maand geleden gekocht
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (DATE_ADD(current_timestamp, INTERVAL -15 DAY), 3, 25.34, 10.0, 2, 3, 'BTC');
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (DATE_ADD(current_timestamp, INTERVAL -2 MONTH), 3, 25.34, 10.0, 2, 3, 'BTC');
 
 -- Dummy user 2 sells
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (current_timestamp(), 2, 2500.0, 10.0, 3, 2, 'BTC');
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (current_timestamp(), 1, 2500.0, 10.0, 3, 2, 'BTC');
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (current_timestamp(), 3, 2500.0, 10.0, 3, 2, 'BTC');
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (current_timestamp(), 1000, 2.00, 10.0, 3, 2, 'ADA');
 -- Maand geleden verkocht
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (DATE_ADD(current_timestamp(), INTERVAL -15 DAY), 1000, 2.00, 10.0, 3, 2, 'ADA');
-INSERT INTO `Transaction` (date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
+INSERT INTO `Transaction` (date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol)
 VALUES (DATE_ADD(current_timestamp(), INTERVAL -15 DAY), 20, 2900.00, 10.0, 3, 2, 'ETH');
