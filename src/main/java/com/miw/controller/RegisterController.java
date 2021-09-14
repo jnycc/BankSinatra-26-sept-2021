@@ -60,7 +60,7 @@ public class RegisterController {
         Map<String, String> violationsMap = registrationService.validateUserDetails(client);
         System.out.println("violations zijn: " + violationsMap);
         if (!violationsMap.isEmpty()) {
-            return new ResponseEntity<>(violationsMap, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.unprocessableEntity().body(violationsMap);
         }
         //Check of klant al bestaat in de database.
         if (registrationService.checkExistingClientAccount(client.getEmail(), client.getBsn())) {
