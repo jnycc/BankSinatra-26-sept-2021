@@ -1,17 +1,28 @@
 package com.miw.model;
 
-import java.util.*;
-
 public class Bank {
     private static Bank bankSinatra = null;
-    // private Random random;
+    public static final int BANK_ID = 1;
     private Account account;
-    private Map<Crypto, Double> portfolio = new TreeMap<>();
-    // private final double START_CAPITAL = 5000000;
-    // private final int NR_ASSETS_MIN = 1000;
-    // private final int NR_ASSETS_MAX = 5000;
+    private final double START_KAPITAAL = 5000000;
+    private final String BANK_IBAN = "NL91NODX9826496343";
 
-    private Bank() { }
+    private Bank() {
+        this.account = new Account(BANK_ID, BANK_IBAN, START_KAPITAAL);
+    }
+
+    @Override
+    public String toString() {
+        return "Bank{" +
+                "Account number: " + BANK_ID + " }";
+    }
+
+    public static Bank getBankSinatra() {
+        if (bankSinatra == null) {
+            bankSinatra = new Bank();
+        }
+        return bankSinatra;
+    }
 
     public Account getAccount() {
         return account;
@@ -19,32 +30,5 @@ public class Bank {
 
     public void setAccount(Account account) {
         this.account = account;
-    }
-
-    public Map<Crypto, Double> getPortfolio() {
-        return portfolio;
-    }
-
-    public void setPortfolio(Map<Crypto, Double> portfolio) {
-        this.portfolio = portfolio;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Bank{" +
-                "account=" + account +
-                ", portfolio=" + portfolio + '}';
-    }
-
-    /*public void setUpInitialPortfolio(Set<Crypto> cryptos) {
-        cryptos.forEach(c -> this.portfolio.put(c, (NR_ASSETS_MIN + (NR_ASSETS_MAX - NR_ASSETS_MIN) * random.nextDouble())));
-    }*/
-
-    public static Bank getBankSinatra() {
-        if (bankSinatra == null) {
-            bankSinatra = new Bank();
-        }
-        return bankSinatra;
     }
 }

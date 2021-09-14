@@ -1,6 +1,5 @@
 package com.miw.service;
 
-import com.miw.BankSinatraApplication;
 import com.miw.database.RootRepository;
 import com.miw.model.*;
 import com.miw.service.authentication.RegistrationService;
@@ -23,7 +22,7 @@ public class TransactionService {
     public TransactionService(RootRepository rootRepository) {
         super();
         this.rootRepository = rootRepository;
-        accountBank = BankSinatraApplication.BANK_ID;
+        accountBank = Bank.BANK_ID;
         logger.info("New TransactionService");
     }
 

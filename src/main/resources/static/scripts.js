@@ -14,8 +14,6 @@ let currentLogin = `${url.origin}/login`;
 let currentRegister = `${url.origin}/register`;
 let userDashBoardUrl = `${url.origin}/dashboard.html`
 
-btnRegister.addEventListener('click', toggleOverlay);
-closeOverlayBtn.addEventListener('click', closeOverlay);
 adminBtn.addEventListener('click', switchToAdmin);
 clientBtn.addEventListener('click', switchToClient);
 loginForm.addEventListener('submit', function(e) {
@@ -30,14 +28,6 @@ registerForm.addEventListener('submit', function (e) {
         doRegister(currentRegister);
     }
 })
-
-function toggleOverlay() {
-    overlay.style.display = 'block';
-}
-// TODO invulvelden leeg maken ?
-function closeOverlay() {
-    overlay.style.display = 'none';
-}
 
 function doRegister(currentRegister) {
     let payload =
@@ -142,4 +132,17 @@ function redirectUserAfterLogin(role) {
         window.location.replace(`${url.origin}/marketplace.html`)
     }
 }
+
+// jQuery Functions
+$(document).ready(function (){
+    $(btnRegister).click(function (){
+        $(overlay).show();
+    });
+
+    $(closeOverlayBtn).click(function (){
+        $(overlay).hide();
+        $(registerForm).trigger("reset");
+    })
+
+});
 
