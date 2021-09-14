@@ -19,7 +19,6 @@
 }
 
 
-
 .header {
     height: 140px;
     width: 100%;
@@ -85,7 +84,11 @@
     padding: 2px 20px;
 }
 
-.navigation a button{
+ul {
+    list-style: none;
+}
+
+.navigation a li {
     height: 90%;
     display: table-cell;
     vertical-align: top;
@@ -96,15 +99,4 @@
     border: none;
     background: none;
     color: lightgray;
-}
-
-.page {
-    height: 100%;
-    width: 1200px;
-    top: 120px;
-    display: block;
-    margin-left: 50px;
-    color: #001d23;
-    font-family:  "Bookman Old Style", monospace;
-    font-size: 30px;
 }

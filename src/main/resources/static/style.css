@@ -18,75 +18,8 @@
     text-decoration: none;
 }
 
-.header {
-    height: 140px;
-    width: 100%;
-    display: block;
-    background: #002932;
-}
-
-.innerHeader {
-    height: 100%;
-    width: 1200px;
-    display: block;
-    margin: 0 auto;
-    background: #002932;
-    color: #BABAD1;
-    font-family: "Sinatra",  "Bookman Old Style", monospace;
-    font-size: 50px;
-    align-content: center;
-    align-items: center;
-    vertical-align: middle;
-}
-
-.logoContainer {
-    height: 100%;
-    display: table;
-    float: left;
-    font-size: 30px;
-}
-
-.logoContainer h1 {
-    color: #BABAD1;
-    height: 100%;
-    display: table-cell;
-    vertical-align: middle;
-    font-family: "Paradise", "Bookman Old Style", monospace;
-    font-weight: 200;
-}
-
-.logoContainer h1 span {
-    font-weight: 800;
-    height: 100%;
-    display: table-cell;
-    vertical-align: middle;
-    font-family: "Paradise", "Bookman Old Style", monospace;
-}
-
-.navigation {
-    float: right;
-    height: 100%;
-    font-size: 20px;
-}
-
-.navigation a {
-    height: 100%;
-    display: table;
-    float: left;
-    padding: 2px 20px;
-}
-
-.navigation a button{
-    height: 90%;
-    display: table-cell;
-    vertical-align: top;
-    float: left;
-    font-family: "Paradise", "Bookman Old Style", monospace;
-    font-size: large;
-    padding: 0;
-    border: none;
-    background: none;
-    color: lightgray;
+.no-js {
+    display: none !important;
 }
 
 .page {
@@ -96,29 +29,11 @@
     display: block;
     margin-left: 50px;
     color: #001d23;
-    font-family:  "Bookman Old Style", monospace;
+    font-family: "Bookman Old Style", monospace;
     font-size: 30px;
-}
-.leftpage {
-    width: 40%;
-    right: 0;
-
-}
-
-.titleBar {
-    font-family: "Sinatra", "Bookman Old Style", monospace;
-    font-size: 120px;
-    color: darkgoldenrod;
-    background: lightgray;
-    position: fixed;
-    height: 150px;
-    width: 100%;
-    display: block;
-    left: 0;
-    right: 0;
-    top: 0;
-    text-align: center;
-    padding: 20px 20px;
+    align-content: center;
+    align-items: center;
+    vertical-align: middle;
 }
 
 body {
@@ -129,20 +44,6 @@ body {
     color: lightgray;
     margin:0;
     padding: 0;
-}
-.navigationBar {
-    font-family: "Paradise", "Bookman Old Style", monospace;
-    font-size: 60px;
-    color: darkgoldenrod;
-    background: lightgray;
-    position: fixed;
-    height: 65px;
-    width: 100%;
-    left: 0;
-    right: 0;
-    top: 0;
-    text-align: left;
-    padding: 20px 20px;
 }
 
 .button {
@@ -158,19 +59,6 @@ body {
     width: 1200px;
 }
 
-
-.gradient {
-    font-family: "Sinatra", "Bookman Old Style", monospace;
-    font-size: 100px;
-    background: radial-gradient(closest-side, navajowhite, goldenrod, darkgoldenrod, saddlebrown);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-align: center;
-    padding: 30px 50px;
-    position: fixed;
-    top: -15px;
-    width: 100%;
-}
 #overlay{
     position: fixed;
     display: none;

@@ -1,7 +1,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Header</title>
-    <script src="header.js" defer></script>
     <link rel="stylesheet" href="header.css">
 </head>
 
@@ -12,11 +11,18 @@
             <h1> <img width="120" height="100" style="object-position: left" alt="BSlogo" src="/images/BSLogo.png" ></h1>
         </div>
         <ul class="navigation">
-            <a><button id = "home" >Home</button></a>
-            <a><button id = "settings" >Settings</button></a>
-            <a><button id = "account">Account</button></a>
-            <a><button id = "portfolio">Portfolio</button></a>
-            <a><button id="transactions">Purchase Assets</button></a>
-            <a><button id="logout">Log out</button></a>
+            <a href="dashboard.html"><li>Home</li></a>
+            <a href="settings.html"><li>Settings</li></a>
+            <a href="account.html"><li>Account</li></a>
+            <a href="portfolio.html"><li>Portfolio</li></a>
+            <a href="marketplace.html"><li>Purchase assets</li></a>
+            <a id = logout href="index.html"><li>Log out</li></a>
         </ul>
 </div>
+
+<script>
+    const logout = document.querySelector("#logout")
+    logout.addEventListener("click", function() {
+        window.localStorage.clear();
+    })
+</script>
