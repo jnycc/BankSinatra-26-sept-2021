@@ -33,11 +33,11 @@ public class JdbcTransactionDao {
 
     private PreparedStatement insertTransactionStatement(Transaction transaction, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO Transaction " +
-                "(date, units, cryptoPrice, bankingFee, accountID_buyer, accountID_seller, symbol) " +
+                "(date, units, transactionPrice, bankingFee, accountID_buyer, accountID_seller, symbol) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         ps.setObject(1, transaction.getTransactionDate());
         ps.setDouble(2, transaction.getUnits());
-        ps.setDouble(3, transaction.getCrypto().getCryptoPrice());
+        ps.setDouble(3, transaction.getTransactionPrice());
         ps.setDouble(4, transaction.getBankCosts());
         ps.setInt(5, transaction.getBuyer());
         ps.setInt(6, transaction.getSeller());
@@ -94,7 +94,6 @@ public class JdbcTransactionDao {
         return jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper(), userId, userId);
     }
 
-    //TODO: tijdelijke oplossing: LocalDate().atStartOfDay();
     private static class TransactionRowMapper implements RowMapper<Transaction> {
 
         @Override
@@ -104,7 +103,7 @@ public class JdbcTransactionDao {
             int seller = resultSet.getInt("accountID_seller");
             Crypto crypto = new Crypto();
             double units = resultSet.getDouble("units");
-            double transactionPrice = resultSet.getDouble("cryptoPrice");
+            double transactionPrice = resultSet.getDouble("transactionPrice");
             double bankCosts = resultSet.getDouble("bankingFee");
             LocalDateTime transactionDate = resultSet.getObject("date", LocalDateTime.class);
             Transaction transaction = new Transaction(transactionId, units, buyer, seller, crypto, transactionPrice,

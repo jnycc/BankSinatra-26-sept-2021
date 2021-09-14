@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Transaction` (
   `transactionID` INT NOT NULL AUTO_INCREMENT,
   `date` DATETIME NOT NULL,
   `units` DECIMAL(20,8) NOT NULL,
-  `cryptoPrice` DECIMAL(12,2) NOT NULL,
+  `transactionPrice` DECIMAL(12,2) NOT NULL,
   `bankingFee` DECIMAL(6,2) NOT NULL,
   `accountID_buyer` INT NOT NULL,
   `accountID_seller` INT NOT NULL,
@@ -145,6 +145,8 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`Asset` (
   `accountID` INT NOT NULL,
   `symbol` VARCHAR(10) NOT NULL,
   `units` DECIMAL(20,8) NOT NULL,
+  `unitsForSale` DECIMAL (20,8) ,
+  `salePrice` DECIMAL (12,2),
   PRIMARY KEY (`accountID`, `symbol`),
   INDEX `fk_Account_Crypto_Crypto1_idx` (`symbol` ASC) VISIBLE,
   INDEX `fk_Account_Crypto_Account1_idx` (`accountID` ASC) VISIBLE,
@@ -168,7 +170,7 @@ INSERT INTO Role VALUES('bank');
 INSERT INTO User(email, password, salt, userRole, isBlocked, firstName, prefix, lastName,
                  street, houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth)
 VALUES ('', '', '', 'bank', 0, 'Bank', '', 'Sinatra', '', 0, '', '', '', 0, '2021-09-01');
-INSERT INTO Account VALUES (1,'NL91NODX9826496343',5000000.00,1);
+INSERT INTO Account VALUES (1,'NL91BSIN9826496343',5000000.00,1);
 
 
 -- Gebruiker definiëren en toegang verlenen
