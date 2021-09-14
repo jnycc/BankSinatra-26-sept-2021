@@ -2,6 +2,10 @@ package com.miw.service;
 
 import com.google.gson.*;
 import com.miw.database.JdbcCryptoDao;
+import com.miw.database.RootRepository;
+import com.miw.model.Asset;
+import com.miw.model.Bank;
+import com.miw.model.Crypto;
 import com.miw.service.authentication.RegistrationService;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -40,11 +44,11 @@ public class CryptoPriceService {
     private final int CALL_FREQUENCY    = 30 * 60 * 1000; // in milliseconds, i.e. 30 minutes
     private final int INITIAL_DELAY     = 10 * 60 * 1000; // i.e. 10 minutes (delay before first call after app launch)
 
-    private JdbcCryptoDao jdbcCryptoDao;
+    private RootRepository rootRepository;
 
     @Autowired
-    public CryptoPriceService(JdbcCryptoDao jdbcCryptoDao) {
-        this.jdbcCryptoDao = jdbcCryptoDao;
+    public CryptoPriceService(RootRepository rootRepository) {
+        this.rootRepository = rootRepository;
     }
 
     @Scheduled(fixedRate = CALL_FREQUENCY/*, initialDelay = INITIAL_DELAY*/)
@@ -55,6 +59,8 @@ public class CryptoPriceService {
 
         try {
             parseAndSave(makeAPICall(uri, params));
+            List<Asset> assets = rootRepository.getAssets(Bank.BANK_ID);
+            assets.forEach(asset -> rootRepository.marketAsset(asset.getUnits(), asset.getCrypto().getCryptoPrice(),asset.getCrypto().getSymbol(),Bank.BANK_ID));
             logger.info("Crypto prices updated successfully!");
         } catch (IOException e) {
             logger.info("Error: cannot access content - " + e.toString());
@@ -86,7 +92,7 @@ public class CryptoPriceService {
                     .get("quote").getAsJsonObject() // prijs bevindt zich diep in de json, onder "quote" ...
                     .get("USD").getAsJsonObject()  // ... binnen "quote" moeten we naar de sectie "usd" ...
                     .get("price").getAsDouble(); // ... en binnen "usd" bereiken we pas de property "price".
-            jdbcCryptoDao.saveCryptoPriceBySymbol(symbol, price, time);
+            rootRepository.saveCryptoPriceBySymbol(symbol, price, time);
         }
     }
 
@@ -119,7 +125,4 @@ public class CryptoPriceService {
         return responseContent;
     }
 
-    public JdbcCryptoDao getJdbcCryptoDao() {
-        return jdbcCryptoDao;
-    }
 }

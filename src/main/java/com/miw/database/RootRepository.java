@@ -172,4 +172,8 @@ public class RootRepository {
     public void marketAsset(double unitsForSale, double salePrice, String symbol, int accountId) {
         jdbcAssetDao.putAssetOnSale(unitsForSale, salePrice, symbol, accountId);
     }
+
+    public void saveCryptoPriceBySymbol(String symbol, double price, LocalDateTime time) {
+        jdbcCryptoDao.saveCryptoPriceBySymbol(symbol, price, time);
+    }
 }
