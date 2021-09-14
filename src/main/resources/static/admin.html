@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin dashboard</title>
+    <link rel="stylesheet" href="partials/header.css">
     <link rel="stylesheet" href="style.css">
     <script src="/scripts_admin.js" defer></script>
 </head>
@@ -10,15 +11,22 @@
 <body>
 
 <div class="header">
-    hier komt code voor een header. niet dezelfde als aan de client side, we hebben eigenlijk maar weinig nodig hier.
-    logo, logout button, misschien ook de verander bankkosten functie in header maar da's misschien wat lelijk, idk
+    <div class="innerHeader">
+        Welcome to Bank Sinatra!
+        <div class="logoContainer">
+            <h1> <img width="120" height="100" style="object-position: left" alt="BSlogo" src="/images/BSLogo.png" ></h1>
+        </div>
+        <ul class="navigation">
+            <a><button id="bankfee">Change bank fee</button></a>
+            <a><button id="logout">Log out</button></a>
+        </ul>
+    </div>
 </div>
 
 <div class="page">
     <div class="leftpage">
         linkerhelft: haal user op, blokkeerfunctie etc. welke css klasse hiervor?
     </div>
-
     <div class ="rightpage">
         rechterhelft: alleen portfolio inzien. willen we dit uitvouwen of gwn sws laden als we een client opvragen?
         we hebben de ruimte toch. bestaat geloof ik nog geen css voor.

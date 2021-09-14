@@ -1,10 +1,6 @@
-// checking valid token (with userrole) and loading data)
+// AUTHENTICATION
 window.addEventListener("DOMContentLoaded", validateAdmin)
 
-
-
-
-// FUNCTIONS
 function validateAdmin(){
     fetch(`http://localhost:8080/validateAdmin`, { // TODO: ENDPOINT BESTAAT NOG NIET
         method: 'POST',
@@ -19,3 +15,17 @@ function validateAdmin(){
             }
         })
 }
+
+// HEADER
+const bankfee = document.querySelector("#bankfee")
+const logout = document.querySelector("#logout")
+
+bankfee.addEventListener("click", function() {
+    window.alert("click") // functionaliteit hier
+})
+
+logout.addEventListener("click", function() {
+    window.localStorage.clear();
+    window.location.replace("/index.html");
+})
+
