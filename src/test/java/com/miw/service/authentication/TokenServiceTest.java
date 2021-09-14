@@ -8,6 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TokenServiceTest {
 
+    private String setUpCurrentJWT(){
+        return TokenService.jwtBuilderSetDate(1, "client",
+                System.currentTimeMillis(), 600000); //10 min
+    }
+
+
     // set up valid jwt with future date (so it will not expire)
     private String setUpValidJWT(){
         Date futureDate = new Date(2025, Calendar.JANUARY, 1, 0, 10, 10);
@@ -88,6 +94,22 @@ class TokenServiceTest {
         Boolean actual = TokenService.validateClient(setUpValidJWT());
         Boolean expected = false;
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testCurrentJwtBuilderSubject() {
+        String actual = TokenService.decodeJWT(setUpCurrentJWT()).getSubject();
+        String expected = "1";
+        assertEquals(expected, actual);
+
+    }
+
+    @Test
+    void testCurrentJwtBuilderRole() {
+        String actual= TokenService.decodeJWT(setUpCurrentJWT()).get("userrole").toString();
+        String expected = "client";
+        assertEquals(expected, actual);
+
     }
 
 

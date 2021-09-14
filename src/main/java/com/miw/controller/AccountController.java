@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,8 +23,8 @@ public class AccountController {
         this.jdbcTransactionDao = jdbcTransactionDao;
     }
 
-    @GetMapping("/getTransactions")
-    public ResponseEntity<?> getTransactions(@RequestBody String token) {
+    @GetMapping("/transactions")
+    public ResponseEntity<?> getTransactions(@RequestHeader("Authorization") String token) {
         int ID = TokenService.getValidUserID(token);
         List<Transaction> transactions =  jdbcTransactionDao.getTransactionsByUserId(ID);
         return ResponseEntity.ok(transactions);

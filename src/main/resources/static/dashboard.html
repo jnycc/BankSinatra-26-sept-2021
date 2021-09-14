@@ -2,28 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Account</title>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="partials/header.css">
     <link rel="stylesheet" href="style.css">
-    <script src="/scripts_dashboard.js" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="dashboard.js" defer></script>
+    <script src="partials/header.js" defer></script>
 
 </head>
 <body>
-    <div class="header">
-        <div class="innerHeader">
-                Welcome to Bank Sinatra!
-            <div class="logoContainer">
-                <h1> <img width="120" height="100" style="object-position: left" alt src="images/BSLogo.png" ></h1>
-            </div>
-            <ul class="navigation">
-                <a><button id = "home" >Home</button></a>
-                <a><button id = "settings" >Settings</button></a>
-                <a><button id = "account">Account</button></a>
-                <a><button id = "portfolio">Portfolio</button></a>
-                <a><button id="transactions">Purchase Assets</button></a>
-                <a><button id="logout">Log out</button></a>
-            </ul>
-        </div>
-    </div>
+<div id="header"></div>
+<!--    <div class="header">-->
+<!--        <div class="innerHeader">-->
+<!--                Welcome to Bank Sinatra!-->
+<!--            <div class="logoContainer">-->
+<!--                <h1> <img width="120" height="100" style="object-position: left" alt src="images/BSLogo.png" ></h1>-->
+<!--            </div>-->
+<!--            <ul class="navigation">-->
+<!--                <a><button id = "home" >Home</button></a>-->
+<!--                <a><button id = "settings" >Settings</button></a>-->
+<!--                <a><button id = "account">Account</button></a>-->
+<!--                <a><button id = "portfolio">Portfolio</button></a>-->
+<!--                <a><button id="transactions">Purchase Assets</button></a>-->
+<!--                <a><button id="logout">Log out</button></a>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
     <div class="page">
         <div class="leftpage">
             <label > U have a total balance of: </label>
