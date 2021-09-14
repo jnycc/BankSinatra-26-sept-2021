@@ -7,7 +7,6 @@ package com.miw.controller;
 import com.google.gson.*;
 import com.miw.model.Administrator;
 import com.miw.model.Client;
-import com.miw.model.User;
 import com.miw.service.authentication.HashService;
 import com.miw.service.authentication.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.*;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
 
 @RestController
@@ -63,8 +58,10 @@ public class RegisterController {
             return ResponseEntity.unprocessableEntity().body(violationsMap);
         }
         //Check of klant al bestaat in de database.
-        if (registrationService.checkExistingClientAccount(client.getEmail(), client.getBsn())) {
-            return new ResponseEntity<>("Registration failed. Account already exists.", HttpStatus.CONFLICT);
+        if (registrationService.checkExistingClientAccountEmail(client.getEmail())) {
+            return new ResponseEntity<>("Registration failed. An account with this e-mail address already exists.", HttpStatus.CONFLICT);
+        } else if (registrationService.checkExistingClientAccountBsn(client.getBsn())){
+            return new ResponseEntity<>("Registration failed. An account with this bsn already exists.", HttpStatus.CONFLICT);
         }
         //Gebruiker opslaan in database en beginkapitaal toewijzen. Succesmelding geven.
         client = (Client) hashService.hash(client);
