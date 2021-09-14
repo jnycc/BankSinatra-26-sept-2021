@@ -71,6 +71,14 @@ public class RootRepository {
         return client;
     }
 
+    public Client findClientByBsn(int bsn){
+        Client client = clientDAO.findByBsn(bsn);
+        if (client != null){
+            client.setAccount(getAccountByBsn(bsn));
+        }
+        return client;
+    }
+
     public Administrator findAdminByEmail(String email) {
         return jdbcAdminDao.findByEmail(email);
     }
@@ -81,6 +89,10 @@ public class RootRepository {
 
     public Account getAccountByEmail(String email){
         return jdbcAccountDao.getAccountByEmail(email);
+    }
+
+    public Account getAccountByBsn(int bsn){
+        return jdbcAccountDao.getAccountByBsn(bsn);
     }
 
     public void updateBalance(double newBalance, int accountId){

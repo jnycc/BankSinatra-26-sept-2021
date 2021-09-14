@@ -71,7 +71,7 @@ class RegisterControllerTest {
     @Test
     void registerNewClientTest() {
         //Met Mockito door validatiecheck slagen: klant bestaat niet, nieuwe klant mag dan geregistreerd worden
-        Mockito.when(registrationService.checkExistingClientAccount(testClient.getEmail())).thenReturn(false);
+        Mockito.when(registrationService.checkExistingClientAccount(testClient.getEmail(), testClient.getBsn())).thenReturn(false);
 
         //Test 1: de register endpoint uitvoeren waarna http-status code 201-Created verwacht wordt.
         try {
@@ -98,7 +98,7 @@ class RegisterControllerTest {
     @Test
     void registerExistingClientTest() {
         //Klant bestaat al in database (=true). Mockito db geeft dan true terug.
-        Mockito.when(registrationService.checkExistingClientAccount(testClient.getEmail())).thenReturn(true);
+        Mockito.when(registrationService.checkExistingClientAccount(testClient.getEmail(), testClient.getBsn())).thenReturn(true);
         //register endpoint uitvoeren en http-status code 409-conflict verwacht.
         try {
             mockMvc.perform(post("/register")

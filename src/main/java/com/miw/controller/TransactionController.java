@@ -23,6 +23,7 @@ public class TransactionController {
 
     private TransactionService transactionService;
     private Gson gson;
+    private final int ACCOUNTBANK = 1;
 
     private final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
@@ -43,6 +44,8 @@ public class TransactionController {
     //TODO: Methode verder opschonen
     @PostMapping("/buy") //TODO: URL aanpassen naar marketplace?
     public ResponseEntity<?> doTransaction(@RequestHeader("Authorization") String token, @RequestBody String transactionAsJson){
+
+        //Check 1: is the user trying to purchase/sell assets logged in?
         if (!TokenService.validateJWT(token)) {
             return new ResponseEntity<>("Invalid login credentials, try again", HttpStatus.UNAUTHORIZED);
         }
@@ -50,11 +53,15 @@ public class TransactionController {
         Transaction transaction = gson.fromJson(transactionAsJson, Transaction.class);
         int userId = TokenService.getValidUserID(token);
 
+        //Check 2: is the logged in user the buyer OR selling to the bank?
         if(userId != transaction.getBuyer()){
-            return new ResponseEntity<>("You are not authorized to purchase assets for another client," +
-                    " stop it", HttpStatus.CONFLICT); //TODO: is dit de juiste statuscode?
+            if (!(userId == transaction.getSeller() && transaction.getBuyer() == ACCOUNTBANK)){
+                return new ResponseEntity<>("You are not authorized to purchase assets for another client," +
+                        " stop it", HttpStatus.CONFLICT); //TODO: is dit de juiste statuscode?
+            }
         }
 
+        //Check 3: is the amount of units positive?
         if(transaction.getUnits() < 0){
             return new ResponseEntity<>("Buyer cannot purchase negative asssets. " +
                     "Transaction cannot be completed.", HttpStatus.CONFLICT);
@@ -63,6 +70,7 @@ public class TransactionController {
         transaction = setPrice(transaction);
         transaction = setCosts(transaction);
 
+        //Check 4 & 5: does the seller have enough assets & does the buyer have enough funds?
         if(!checkSufficientCrypto(transaction)){
             return new ResponseEntity<>("Seller has insufficient assets. Transaction cannot be completed.",
                     HttpStatus.CONFLICT);

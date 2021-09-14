@@ -37,7 +37,7 @@ public class TransactionService {
     }
 
     public Transaction setBankCosts(Transaction transaction){
-        transaction.setBankCosts(rootRepository.getBankCosts());
+        transaction.setBankCosts(rootRepository.getBankCosts() * transaction.getTransactionPrice());
         return transaction;
     }
 
