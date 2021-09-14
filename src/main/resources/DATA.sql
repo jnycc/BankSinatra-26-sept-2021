@@ -20,7 +20,7 @@ INSERT INTO Crypto (symbol, description, name) VALUES
 ('MATIC', 'Een cryptomunt.', 'Polygon'),
 ('VET', 'Een cryptomunt.', 'VeChain');
 
-INSERT INTO `Asset` VALUES (1,'ADA',3617.10729350),(1,'BCH',3237.97825746),(1,'BNB',4446.80050983),
+INSERT INTO `Asset` (accountID, symbol, units) VALUES (1,'ADA',3617.10729350),(1,'BCH',3237.97825746),(1,'BNB',4446.80050983),
                            (1,'BTC',1467.46154488),(1,'BUSD',2907.71188934),(1,'DOGE',4165.35024824),
                            (1,'DOT',4299.78222044),(1,'ETH',4953.59009790),(1,'ICP',4204.44776219),
                            (1,'LINK',3270.64077791),(1,'LTC',4452.54613758),(1,'LUNA',2664.79656423),
