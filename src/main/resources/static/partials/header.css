@@ -1,12 +1,12 @@
 #stylesheet
 
 @font-face {font-family: "Sinatra";
-    src: url("/fonts/Sinatra.woff") format('woff');
+    src: url("static/fonts/Sinatra.woff") format('woff');
     font-weight: normal;
     font-style: oblique;
 }
 @font-face {font-family: "Paradise";
-    src: url("/fonts/Paradise.woff") format('woff');
+    src: url("static/fonts/Paradise.woff") format('woff');
     font-weight: normal;
     font-style: oblique;
 }

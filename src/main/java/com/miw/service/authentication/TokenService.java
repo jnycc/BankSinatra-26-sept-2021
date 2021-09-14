@@ -39,23 +39,24 @@ public class TokenService {
 
 
     public static String jwtBuilder(int userID, String role, long expTime){ // input: Role role (nieuwe klasse Role?)
-        // creating specific claims to add
-        Map<String, Object> tokenClaims = new HashMap<>();
-        tokenClaims.put("userrole", role);
-
-        //set JWT Claims and set to compact, URL-safe string
-        JwtBuilder builder = Jwts.builder()
-                .setClaims(tokenClaims)
-                .setHeaderParam("typ", "JWT")
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setSubject(String.valueOf(userID))
-                .setExpiration(new Date(System.currentTimeMillis() + expTime))
-                .signWith(SignatureAlgorithm.HS256, generateKey());
-        return builder.compact();
+        return jwtBuilderSetDate(userID, role, System.currentTimeMillis(), expTime);
+//        // creating specific claims to add
+//        Map<String, Object> tokenClaims = new HashMap<>();
+//        tokenClaims.put("userrole", role);
+//
+//        //set JWT Claims and set to compact, URL-safe string
+//        JwtBuilder builder = Jwts.builder()
+//                .setClaims(tokenClaims)
+//                .setHeaderParam("typ", "JWT")
+//                .setIssuedAt(new Date(System.currentTimeMillis()))
+//                .setSubject(String.valueOf(userID))
+//                .setExpiration(new Date(System.currentTimeMillis() + expTime))
+//                .signWith(SignatureAlgorithm.HS256, generateKey());
+//        return builder.compact();
     }
 
 
-    //TODO: clean up code (super() of same method above?)
+    //JWT builder with set date (necessary for testing)
     public static String jwtBuilderSetDate(int userID, String role, long msNow, long expTime){
         // creating specific claims to add
         Map<String, Object> tokenClaims = new HashMap<>();

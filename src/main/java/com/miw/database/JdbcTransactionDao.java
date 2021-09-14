@@ -91,7 +91,7 @@ public class JdbcTransactionDao {
     public List<Transaction> getTransactionsByUserId (int userId) {
         String sql = "SELECT * FROM Transaction WHERE accountID_buyer = (SELECT accountID FROM Account WHERE userID = ?) " +
                 "OR accountID_seller = (SELECT accountID FROM Account WHERE userID = ?)";
-        return jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper(), userId);
+        return jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper(), userId, userId);
     }
 
     //TODO: tijdelijke oplossing: LocalDate().atStartOfDay();
