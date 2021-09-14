@@ -63,29 +63,31 @@ public class TransactionService {
     }
 
     public void transferCrypto(int seller, int buyer, Crypto crypto, double units){
-       double newAssetsForSale = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnitsForSale() - units;
-       double newTotalAssets = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() - units;
+       double newSellerAssetsForSale = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnitsForSale() - units;
+       double newSellerTotalAssets = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() - units;
+       double newBuyerAssets = rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()).getUnits() + units;
 
-       rootRepository.updateAssetForSale(newAssetsForSale, crypto.getSymbol(), seller);
+       rootRepository.updateAssetForSale(newSellerAssetsForSale, crypto.getSymbol(), seller);
 
-       if (!(newTotalAssets == 0)){ //seller still has some of this crypto left
-           rootRepository.updateAsset(newTotalAssets, crypto.getSymbol(), seller);
-       } else { //seller doesn't have this crypto anymore
+       if (!(newSellerTotalAssets == 0)){
+           rootRepository.updateAsset(newSellerTotalAssets, crypto.getSymbol(), seller);
+       } else {
            rootRepository.deleteAsset(crypto.getSymbol(), seller);
        }
 
-        if (rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()) != null) { // buyer already has this crypto
-            double newBuyerAsset = rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()).getUnits() + units;
-            rootRepository.updateAsset(newBuyerAsset, crypto.getSymbol(), buyer);
-        } else { // buyer does not have this crypto yet
-            rootRepository.saveAsset(buyer, crypto.getSymbol(), units);
-        }
+       if(rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()) == null){
+           rootRepository.saveAsset(buyer, crypto.getSymbol(), units);
+       } else {
+           rootRepository.updateAsset(newBuyerAssets, crypto.getSymbol(), buyer);
+           if (buyer == accountBank){
+               rootRepository.updateAssetForSale(newBuyerAssets, crypto.getSymbol(), buyer);
+           }
+       }
     }
 
     public void transferBankCosts(int seller, int buyer, double transactionPrice, double bankCostsPercentage){
         double bankCosts = bankCostsPercentage * transactionPrice;
 
-        //TODO: tidy up code?
         if (seller == accountBank){ //seller is bank, buyer is client
             rootRepository.updateBalance(rootRepository.getAccountById(seller).getBalance() + bankCosts, seller);
             rootRepository.updateBalance(rootRepository.getAccountById(buyer).getBalance() - bankCosts, buyer);
