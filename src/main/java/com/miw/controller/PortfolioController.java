@@ -57,7 +57,6 @@ public class PortfolioController {
         int accountId = rootRepository.getAccountById(userId).getAccountId();
 
         Asset assetForSale = gson.fromJson(assetsSale, Asset.class);
-        System.out.println(assetForSale);
 
         if (rootRepository.getAssetBySymbol(accountId, assetForSale.getCrypto().getSymbol()).getUnits() < assetForSale.getUnitsForSale()) {
             return new ResponseEntity<>("User does not have sufficient units", HttpStatus.BAD_REQUEST);
