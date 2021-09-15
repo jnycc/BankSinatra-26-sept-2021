@@ -68,6 +68,11 @@ public class JdbcUserDao {
         }
     }
 
+    public void toggleBlock(boolean blockUnblock, int id) {
+        String sql = "UPDATE User SET isBlocked = ? WHERE userID = ?;";
+        jdbcTemplate.update(sql, blockUnblock, id);
+    }
+
     private static class UserRowMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet resultSet, int i) throws SQLException {

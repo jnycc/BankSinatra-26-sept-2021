@@ -2,9 +2,8 @@ package com.miw.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.miw.database.JdbcAccountDao;
-import com.miw.database.JdbcAssetDao;
 import com.miw.database.JdbcTransactionDao;
+import com.miw.database.JdbcUserDao;
 import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +19,14 @@ public class AdminController {
 
     private final Logger logger = LoggerFactory.getLogger(LoginController.class);
     private JdbcTransactionDao jdbcTransactionDao;
+    private JdbcUserDao jdbcUserDao;
+
 
     @Autowired
-    public AdminController(JdbcTransactionDao jdbcTransactionDao) {
+    public AdminController(JdbcTransactionDao jdbcTransactionDao, JdbcUserDao jdbcUserDao) {
         super();
         this.jdbcTransactionDao = jdbcTransactionDao;
+        this.jdbcUserDao = jdbcUserDao;
         logger.info("New AdminController created");
     }
 
@@ -40,15 +42,14 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // TODO: is dit de juiste http code?
     }
 
-    @PutMapping("/blockUnblock")
-    public ResponseEntity<?> blockUnblock(@RequestBody String json) {
+    @PutMapping("/toggleBlock")
+    public ResponseEntity<?> toggleBlock(@RequestBody String json) {
         JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
         String token = convertedObject.get("token").getAsString();
         int userID = convertedObject.get("id").getAsInt();
-        boolean blocked = convertedObject.get("blocked").getAsBoolean();
+        boolean initialBlockStatus = convertedObject.get("blocked").getAsBoolean(); // current block status of user, which we want to invert
         if (TokenService.validateAdmin(token)) {
-            if (blocked)
-            jdbcUserDao.blockUser(userID);
+            jdbcUserDao.toggleBlock(!initialBlockStatus, userID); // inversion happens here via the ! operator
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // TODO: is dit de juiste http code?
