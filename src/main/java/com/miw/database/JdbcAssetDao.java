@@ -4,6 +4,7 @@
  */
 package com.miw.database;
 
+import com.miw.model.Account;
 import com.miw.model.Asset;
 import com.miw.model.Crypto;
 import org.slf4j.Logger;
@@ -65,9 +66,14 @@ public class JdbcAssetDao {
 
     public List<Asset> getAllAssetsForSaleBySymbol(String symbol, int accountId){
         String sql = "SELECT accountID, a.symbol, name, cryptoPrice, description, units, unitsForSale, salePrice" +
-                " FROM (Asset a JOIN Crypto c ON a.symbol = c.symbol)" +
-                "JOIN CryptoPrice p ON p.symbol = c.symbol" +
-                " WHERE a.symbol = ? AND unitsForSale > 0 AND ACCOUNTID != ?;";
+                " FROM (Asset a JOIN Crypto c ON a.symbol = c.symbol) " +
+                "JOIN CryptoPrice p ON p.symbol = c.symbol " +
+                "WHERE a.symbol = ? AND unitsForSale > 0 AND ACCOUNTID != ? " +
+                "AND dateRetrieved >= DATE_ADD( (SELECT dateRetrieved FROM CryptoPrice " +
+                "ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1), " +
+                "INTERVAL -0.00001 SECOND) AND dateRetrieved <= DATE_ADD( " +
+                "(SELECT dateRetrieved FROM CryptoPrice " +
+                "ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1), INTERVAL 0.00001 SECOND);";
         try {
             return jdbcTemplate.query(sql, new AssetRowMapper(), symbol, accountId);
         } catch (EmptyResultDataAccessException e){
@@ -77,7 +83,7 @@ public class JdbcAssetDao {
     }
 
     public List<Asset> getAssets(int accountId) {
-        String sql = "SELECT a.symbol, name, cryptoPrice, units, description, dateRetrieved " +
+        String sql = "SELECT a.accountID, a.symbol, name, cryptoPrice, units, description, dateRetrieved " +
                 "FROM (Asset a JOIN Crypto c ON a.symbol = c.symbol) " +
                 "JOIN CryptoPrice p ON p.symbol = c.symbol " +
                 "WHERE accountID = ? AND dateRetrieved >= DATE_ADD(" +
@@ -158,6 +164,7 @@ public class JdbcAssetDao {
         @Override
         public Asset mapRow(ResultSet resultSet, int i) throws SQLException {
             Asset asset = null;
+            Integer accountId = resultSet.getInt("accountID");
             String name = resultSet.getString("name");
             String symbol = resultSet.getString("symbol");
             String description = resultSet.getString("description");
@@ -165,6 +172,9 @@ public class JdbcAssetDao {
             Crypto crypto = new Crypto(name, symbol, description, cryptoPrice);
             double units = resultSet.getDouble("units");
             asset = new Asset(crypto, units);
+            Account account = new Account();
+            account.setAccountId(accountId);
+            asset.setAccount(account);
             return asset;
         }
     }
