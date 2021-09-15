@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializer;
+import com.miw.database.JdbcCryptoDao;
 import com.miw.database.RootRepository;
 import com.miw.model.Asset;
 import com.miw.service.PortfolioService;
@@ -27,11 +28,14 @@ public class PortfolioController {
 
     private PortfolioService portfolioService;
     private Gson gson;
+    private JdbcCryptoDao jdbcCryptoDao;
     private RootRepository rootRepository;
     private final Logger logger = LoggerFactory.getLogger(PortfolioController.class);
 
     @Autowired
-    public PortfolioController(PortfolioService portfolioService, Gson gson, RootRepository rootRepository) {
+    public PortfolioController(PortfolioService portfolioService, Gson gson, RootRepository rootRepository,
+                               JdbcCryptoDao jdbcCryptoDao) {
+        this.jdbcCryptoDao = jdbcCryptoDao;
         this.portfolioService = portfolioService;
         this.gson = gson;
         this.rootRepository = rootRepository;
@@ -55,16 +59,25 @@ public class PortfolioController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         int accountId = rootRepository.getAccountById(userId).getAccountId();
-
         Asset assetForSale = gson.fromJson(assetsSale, Asset.class);
-
         if (rootRepository.getAssetBySymbol(accountId, assetForSale.getCrypto().getSymbol()).getUnits() < assetForSale.getUnitsForSale()) {
             return new ResponseEntity<>("User does not have sufficient units", HttpStatus.BAD_REQUEST);
         }
-
         rootRepository.marketAsset(assetForSale.getUnitsForSale(), assetForSale.getSalePrice(), assetForSale.getCrypto().getSymbol(), accountId);
         return new ResponseEntity<>("The asset has been marketed successfully.", HttpStatus.OK);
     }
+
+    @GetMapping("/cryptoStats")
+    public ResponseEntity<?> getCryptoStats(@RequestHeader("Authorization") String token,
+                                            @RequestParam("symbol") String symbol,
+                                            @RequestParam("daysBack") Integer daysBack) {
+        if (!TokenService.validateClient(token)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return new ResponseEntity<>(jdbcCryptoDao.getDayValuesByCrypto(symbol, daysBack), HttpStatus.OK);
+    }
+
+
 
 
 }

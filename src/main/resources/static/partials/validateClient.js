@@ -1,7 +1,5 @@
 // checking valid token (with userrole) and loading data)
 document.documentElement.classList.remove('no-js')
-const nojs = document.querySelector("#nojs")
-nojs.remove();
 window.addEventListener("DOMContentLoaded", validateClient)
 
 // specific validation of jwt and userrole

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -98,6 +99,10 @@ public class JdbcTransactionDao {
                 "OR accountID_seller = (SELECT accountID FROM Account WHERE userID = ?)";
         return jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper(), userId, userId);
     }
+
+//    public Double getCryptoUnitsByDate(String crytpoSymbol, Date date) {
+//        String sql = "SELECT "
+//    }
 
     private static class TransactionRowMapper implements RowMapper<Transaction> {
 
