@@ -16,24 +16,41 @@ function validateAdmin(){
         })
 }
 
-// HEADER
-const bankfee = document.querySelector("#bankfee")
+// BASIS
+const btnBankfee = document.querySelector("#bankfee")
+const feeForm = document.querySelector("#feeForm")
 const logout = document.querySelector("#logout")
-
-bankfee.addEventListener("click", function() {
-    updateFee();
-})
+const btnCloseOverlay = document.querySelector("#close-overlay-btn")
+const overlay = document.querySelector("#overlay")
 
 logout.addEventListener("click", function() {
     window.localStorage.clear();
     window.location.replace("/index.html");
 })
 
+// CHANGE BANK FEE
+$(document).ready(function (){
+    $(btnBankfee).click(function (){
+        $(overlay).show();
+    });
+
+    $(btnCloseOverlay).click(function (){
+        $(overlay).hide();
+        $(feeForm).trigger("reset");
+    })
+});
+
+feeForm.addEventListener('submit', function (e) {
+    // TODO: wat doet preventdefault?
+    e.preventDefault();
+    updateFee();
+})
+
 function updateFee(){
     let payload =
         {token: `${localStorage.getItem('token')}`,
-            fee: `0.02`}
-
+            fee: `${document.querySelector("#fee-input").value}`}
+    console.log(payload);
     fetch(`http://localhost:8080/updateFee`,
         {
             method: 'PUT',
@@ -41,13 +58,12 @@ function updateFee(){
             body: JSON.stringify(payload)
         })
         .then(res => {
-        if (res.status === 200) {
-            window.alert("yay")
-        } else {
-            res.json().then(it => {
-                window.alert("update failed")
-            })
-        }
-    })
+            if (res.status === 200) {
+                window.alert("yay")
+            } else {
+                res.json().then(it => {
+                    window.alert("update failed")
+                })
+            }
+        })
 }
-

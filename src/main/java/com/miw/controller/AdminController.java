@@ -39,4 +39,18 @@ public class AdminController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // TODO: is dit de juiste http code?
     }
+
+    @PutMapping("/blockUnblock")
+    public ResponseEntity<?> blockUnblock(@RequestBody String json) {
+        JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+        String token = convertedObject.get("token").getAsString();
+        int userID = convertedObject.get("id").getAsInt();
+        boolean blocked = convertedObject.get("blocked").getAsBoolean();
+        if (TokenService.validateAdmin(token)) {
+            if (blocked)
+            jdbcUserDao.blockUser(userID);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // TODO: is dit de juiste http code?
+    }
 }
