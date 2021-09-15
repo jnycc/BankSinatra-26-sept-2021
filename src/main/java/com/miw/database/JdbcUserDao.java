@@ -82,7 +82,7 @@ public class JdbcUserDao {
             String salt = resultSet.getString("salt");
             String role = resultSet.getString("userRole");
             boolean isBlocked = resultSet.getBoolean("isBlocked");
-            boolean isAdmin = role.equals("admin") ? true : false;
+            boolean isAdmin = role.equals("admin");
 
             if (isAdmin) {
                 Administrator admin = new Administrator(email, password);

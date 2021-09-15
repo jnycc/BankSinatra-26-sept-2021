@@ -17,11 +17,15 @@ function validateAdmin(){
 }
 
 // BASIS
+const logout = document.querySelector("#logout")
+// fee
 const btnBankfee = document.querySelector("#bankfee")
 const feeForm = document.querySelector("#feeForm")
-const logout = document.querySelector("#logout")
 const btnCloseOverlay = document.querySelector("#close-overlay-btn")
 const overlay = document.querySelector("#overlay")
+// finduser
+const findUserForm = document.querySelector("#findUserForm")
+const userTable = $("#userTable");
 
 logout.addEventListener("click", function() {
     window.localStorage.clear();
@@ -65,5 +69,33 @@ function updateFee(){
                     window.alert("update failed")
                 })
             }
+        })
+}
+
+// LOAD USER
+findUserForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    userTable.empty();
+    loadUser();
+})
+
+function loadUser(){
+    fetch(`http://localhost:8080/getUserData?email=${document.querySelector("#email-input").value}`,
+        {
+            method: 'GET',
+            headers: { "Authorization": localStorage.getItem('token') }
+        })
+        .then(res => res.json())
+        .then(it => {
+            for (const key in it) {
+                if (key === "address") {
+                    for (const addressKey in key) {
+                        $(userTable).append("<tr><th>" + addressKey + "</th><th>" + key[addressKey] + "</th></tr>");
+                    }
+                } else {
+                    $(userTable).append("<tr><th>" + key + "</th><th>" + it[key] + "</th></tr>");
+                }
+            }
+            $("#userData").append(userTable);
         })
 }
