@@ -63,6 +63,19 @@ public class JdbcAssetDao {
         }
     }
 
+    public List<Asset> getAllAssetsForSaleBySymbol(String symbol, int accountId){
+        String sql = "SELECT accountID, a.symbol, name, cryptoPrice, description, units, unitsForSale, salePrice" +
+                " FROM (Asset a JOIN Crypto c ON a.symbol = c.symbol)" +
+                "JOIN CryptoPrice p ON p.symbol = c.symbol" +
+                " WHERE a.symbol = ? AND unitsForSale > 0 AND ACCOUNTID != ?;";
+        try {
+            return jdbcTemplate.query(sql, new AssetRowMapper(), symbol, accountId);
+        } catch (EmptyResultDataAccessException e){
+            logger.info("No data available");
+            return null;
+        }
+    }
+
     public List<Asset> getAssets(int accountId) {
         String sql = "SELECT a.symbol, name, cryptoPrice, units, description, dateRetrieved " +
                 "FROM (Asset a JOIN Crypto c ON a.symbol = c.symbol) " +
