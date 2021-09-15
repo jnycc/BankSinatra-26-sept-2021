@@ -108,6 +108,10 @@ public class RootRepository {
         return jdbcAssetDao.getAssetBySymbol(accountId, symbol);
     }
 
+    public List<Asset> getAllAssetsForSaleBySymbol(String symbol, int accountId){
+        return jdbcAssetDao.getAllAssetsForSaleBySymbol(symbol, accountId);
+    }
+
     public List<String> getAllCryptosOwned(int accountId) {
         return jdbcTransactionDao.getAllCryptosOwned(accountId);
     }
