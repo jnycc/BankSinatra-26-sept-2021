@@ -2,17 +2,23 @@ package com.miw.database;
 
 import com.miw.model.Asset;
 import com.miw.model.Crypto;
+import com.sun.source.tree.Tree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 // TODO: id's uit crypto wegwerken, primary key -> symbol
 
@@ -89,6 +95,18 @@ public class JdbcCryptoDao {
         }
     }
 
+    // Returns map of crypto values with accommodating key ("min", "max", "avg") of each day from now until certain past date
+    public Map<LocalDate, Map<String, Double>> getDayValuesByCrypto(String symbol, int daysBack) {
+        String sql = "Select symbol, AVG(cryptoPrice) avg, MIN(cryptoPrice) min, MAX(cryptoPrice) max, date(dateRetrieved) FROM cryptoprice WHERE symbol = ? " +
+                "AND dateRetrieved BETWEEN date_add(current_timestamp(),  INTERVAL -? DAY) AND current_timestamp() GROUP BY DATE(dateRetrieved);";
+        try {
+            return jdbcTemplate.query(sql, new JdbcCryptoDao.CryptoStatsSetExtractor(), symbol, daysBack);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Failed to get average, minimum and max crypto values per day of the following crypto: " + symbol);
+            return null;
+        }
+    }
+
     public void saveCryptoPriceBySymbol(String symbol, double price, LocalDateTime time) {
         jdbcTemplate.update(connection -> insertPriceStatement(symbol, price, time, connection));
     }
@@ -112,6 +130,29 @@ public class JdbcCryptoDao {
             return null;
         }
     }
+
+    //Rowmappers
+    private static class CryptoStatsSetExtractor implements ResultSetExtractor<Map<LocalDate, Map<String, Double>>> {
+
+        @Override
+        public Map<LocalDate, Map<String, Double>> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+            Map<LocalDate, Map<String, Double>> cryptoStatsTotal = new TreeMap<>();
+            while (resultSet.next()) {
+                double avg = resultSet.getDouble("avg");
+                double min = resultSet.getDouble("min");
+                double max = resultSet.getDouble("max");
+                LocalDate date = resultSet.getDate("date(dateRetrieved)").toLocalDate();
+                Map<String, Double> cryptoStats = new TreeMap<>();
+                cryptoStats.put("avg", avg);
+                cryptoStats.put("min", min);
+                cryptoStats.put("max", max);
+                cryptoStatsTotal.put(date, cryptoStats);
+            }
+            return cryptoStatsTotal;
+        }
+    }
+
+
 
     private static class CryptoRowMapper implements RowMapper<Crypto> {
 
