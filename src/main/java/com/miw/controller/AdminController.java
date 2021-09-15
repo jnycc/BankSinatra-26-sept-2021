@@ -39,7 +39,7 @@ public class AdminController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // TODO: is dit de juiste http code?
     }
-
+/*
     @PutMapping("/blockUnblock")
     public ResponseEntity<?> blockUnblock(@RequestBody String json) {
         JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
@@ -53,4 +53,5 @@ public class AdminController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // TODO: is dit de juiste http code?
     }
+ */
 }
