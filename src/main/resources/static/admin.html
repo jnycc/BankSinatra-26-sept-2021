@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="partials/header.css">
     <link rel="stylesheet" href="style.css">
     <script src="/admin.js" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -21,6 +22,16 @@
             <a><button id="logout">Log out</button></a>
         </ul>
     </div>
+</div>
+
+<div id="overlay">
+    <form id="feeForm">
+        <h1 id="feeLabel">Change bank fee</h1>
+        <img id="close-overlay-btn" src="images/close_btn.png" alt="close-btn"><br>
+        <p>Specify the bank fee here (e.g. 0.01 for 1%):</p><br>
+        <input id="fee-input" type="number" name="fee-input" min="0" max="1" step ="0.01" placeholder="0.01" required><br><br>
+        <input id="submitFee" type="submit" value="Submit">
+    </form>
 </div>
 
 <div class="page">
