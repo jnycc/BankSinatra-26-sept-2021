@@ -5,7 +5,7 @@ public class Bank {
     public static final int BANK_ID = 1;
     private Account account;
     private final double START_KAPITAAL = 5000000;
-    private final String BANK_IBAN = "NL91NODX9826496343";
+    private final String BANK_IBAN = "NL91BSIN9826496343";
 
     private Bank() {
         this.account = new Account(BANK_ID, BANK_IBAN, START_KAPITAAL);

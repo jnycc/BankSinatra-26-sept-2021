@@ -50,6 +50,10 @@ class TransactionControllerTest {
         testTransaction.setBankCosts(0.02);
     }
 
+    /*
+    * TODO: Lekker helemaal omschrijven joepie de poepie :D
+    *  Testen doen voor alle checks + validatie nog toevoegen. Ook doen voor TransactionService.
+    * En dan nog een DAO-test er in doen ook, hoera */
 
     @Test
     void validTransactionTest(){
