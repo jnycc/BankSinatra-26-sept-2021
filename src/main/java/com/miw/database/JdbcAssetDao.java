@@ -171,10 +171,14 @@ public class JdbcAssetDao {
             double cryptoPrice = resultSet.getDouble("cryptoPrice");
             Crypto crypto = new Crypto(name, symbol, description, cryptoPrice);
             double units = resultSet.getDouble("units");
+            double unitsForSale = resultSet.getDouble("unitsForSale");
+            double salePrice = resultSet.getDouble("salePrice");
             asset = new Asset(crypto, units);
             Account account = new Account();
             account.setAccountId(accountId);
             asset.setAccount(account);
+            asset.setUnitsForSale(unitsForSale);
+            asset.setSalePrice(salePrice);
             return asset;
         }
     }

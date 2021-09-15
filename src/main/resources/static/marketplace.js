@@ -1,5 +1,5 @@
 let url = new URL(window.location.href);
-let assets = [];
+const assets = [];
 setupPage();
 
 // marketplace functions:
@@ -13,10 +13,32 @@ async function setupPage() {
     $("#cryptoOverview").append(cryptoTable);
 
     await getCryptosForSale();
+
     for (let i = 0; i < assets.length; i++) {
         const tr = document.createElement("tr");
         tr.id = `tr${i+1}`;
-        const sellerId = (...assets[i][accountID])
+        let asset = Object.assign({}, assets[i]);
+
+        Object.keys(asset).forEach(key => {
+            const td = document.createElement("td");
+            if (key === "account") {
+                let accountId = "accountId";
+                let account = Object.assign({}, asset[key])
+                td.id = `seller${i++}`;
+                td.textContent = account[accountId];
+                tr.append(td);
+            } else if (key === "unitsForSale") {
+                td.id = `units${i++}`;
+                td.textContent = asset[key].toFixed(2);
+                tr.append(td);
+            } else if (key === "salePrice") {
+                td.id = `price${i++}`;
+                td.textContent = asset[key];
+                tr.append(td);
+            }
+
+        })
+        $(cryptoTable)
         $(cryptoTable).append(tr);
     }
 
