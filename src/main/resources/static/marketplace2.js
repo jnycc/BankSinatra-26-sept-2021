@@ -1,6 +1,6 @@
 //Create table and add the header row
 const cryptoTable = document.getElementById('cryptoTabel')
-$(cryptoTable).append("<tr><th>#</th><th>Crypto</th> <th>Symbol</th> <th>Price</th> </tr>")
+$(cryptoTable).append("<tr><th>#</th><th>Crypto</th> <th>Symbol</th> <th>Price</th> <th>PriceDelta1Day</th></tr>")
 
 window.addEventListener("DOMContentLoaded", getAvailableCryptos)
 
@@ -23,11 +23,7 @@ function getAvailableCryptos() {
                 for (let key of Object.keys(obj)) {
                     const cell = document.createElement('td')
                     if (key === 'name') {
-                        const logo = document.createElement('img').innerHTML = getCryptoLogo(obj.symbol)
-                        logo.classList.add("cryptoLogo")
-                        const name = document.createElement('div').innerHTML = obj[key]
-                        cell.append(logo, name)
-                        // cell.innerHTML = obj[key]
+                        cell.append(getCryptoLogo(obj.symbol), obj[key])
                     } else {
                         cell.innerHTML = obj[key]
                     }
@@ -40,6 +36,7 @@ function getAvailableCryptos() {
 function getCryptoLogo(symbol) {
     let logo = document.createElement('img')
     logo.src = `/images/cryptoLogos/logo_${symbol}.png`
+    logo.classList.add('cryptoLogo')
     return logo
 }
 
