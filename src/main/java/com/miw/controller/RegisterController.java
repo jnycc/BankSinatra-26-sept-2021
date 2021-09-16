@@ -53,7 +53,7 @@ public class RegisterController {
         Client client = gson.fromJson(clientDetails, Client.class);
         //Validatie volledigheid en juiste format van input. Validatie-eisen staan bij de attributen in de domeinklassen zelf.
         Map<String, String> violationsMap = registrationService.validateUserDetails(client);
-        System.out.println("violations zijn: " + violationsMap);
+//        System.out.println("violations zijn: " + violationsMap);
         if (!violationsMap.isEmpty()) {
             return ResponseEntity.unprocessableEntity().body(violationsMap);
         }
