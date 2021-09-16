@@ -1,4 +1,4 @@
-// Loginsectie
+// Elementen selecteren
 const btnRegister = document.querySelector("#btnRegister")
 const overlay = document.querySelector("#overlay")
 const loginForm = document.querySelector("#loginForm")
@@ -15,6 +15,7 @@ let currentRegister = `${url.origin}/register`;
 let userDashBoardUrl = `${url.origin}/dashboard.html`
 let adminDashBoardUrl = `${url.origin}/admin.html`
 
+// Event listeners koppelen
 adminBtn.addEventListener('click', switchToAdmin);
 clientBtn.addEventListener('click', switchToClient);
 loginForm.addEventListener('submit', function(e) {
@@ -30,23 +31,9 @@ registerForm.addEventListener('submit', function (e) {
     }
 })
 
+// Functies
 function doRegister(currentRegister) {
-    let payload =
-        {email: `${document.querySelector("#email-reg").value}`,
-            password: `${ document.querySelector("#password-reg").value}`,
-            firstName: `${document.querySelector("#firstName").value}`,
-            prefix: `${document.querySelector("#prefix").value}`,
-            lastName: `${document.querySelector("#lastName").value}`,
-            dateOfBirth: `${document.querySelector("#dob").value}`,
-            bsn: parseInt(`${document.querySelector("#bsn").value}`),
-            address: {
-                city: `${document.querySelector("#city").value}`,
-                zipCode: `${document.querySelector("#zipcode").value}`,
-                street: `${document.querySelector("#street").value}`,
-                houseNumber: `${document.querySelector("#houseNumber").value}`,
-                houseNumberExtension: `${document.querySelector("#hNrE").value}`
-            }
-        }
+    let payload = getRegisterFieldsInput();
 
     let jsonString = JSON.stringify(payload);
 
@@ -58,21 +45,11 @@ function doRegister(currentRegister) {
         })
         .then(res => {
             if (res.status === 201) {
-                console.log(res.text());
                 alert("Thank you. Your requested has been received. We will process it accordingly and come back to you as soon as possible.")
-            } else if (res.status === 409) {
-                alert("Registration failed. User with this email address already exists")
-                return;
             } else {
-                alert("Registration failed");
-                return;
+                return res.text().then(it => {alert(it)});
             }
-            return res.text();
         })
-        .then(it => {
-            console.log(it.statusText);
-        })
-        .catch()
 }
 
 function doLogin(){
@@ -94,7 +71,6 @@ function doLogin(){
                     localStorage.setItem('token', it.token);
                     localStorage.setItem('role', it.userRole);
                 });
-                return;
             } else {
                 res.json().then(it => {
                     alert(it.message);
@@ -123,6 +99,24 @@ function checkRegistrationFields() {
     && registerForm.children.namedItem("street-reg").validity.valid
     && registerForm.children.namedItem("housenumber-reg").validity.valid
     && registerForm.children.namedItem("extension-reg").validity.valid
+}
+
+function getRegisterFieldsInput() {
+    return  {email: `${document.querySelector("#email-reg").value}`,
+        password: `${ document.querySelector("#password-reg").value}`,
+        firstName: `${document.querySelector("#firstName").value}`,
+        prefix: `${document.querySelector("#prefix").value}`,
+        lastName: `${document.querySelector("#lastName").value}`,
+        dateOfBirth: `${document.querySelector("#dob").value}`,
+        bsn: parseInt(`${document.querySelector("#bsn").value}`),
+        address: {
+        city: `${document.querySelector("#city").value}`,
+            zipCode: `${document.querySelector("#zipcode").value}`,
+            street: `${document.querySelector("#street").value}`,
+            houseNumber: `${document.querySelector("#houseNumber").value}`,
+            houseNumberExtension: `${document.querySelector("#hNrE").value}`
+    }
+    }
 }
 
 function redirectUserAfterLogin(role) {

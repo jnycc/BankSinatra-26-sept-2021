@@ -51,7 +51,7 @@ async function fillTable() {
                 tr.append(td)
             } else if (key === "unitsForSale") {
                 td.id = `units${i}`
-                td.textContent = asset[key]
+                td.textContent = asset[key].toFixed(2)
                 tr.append(td)
             } else if (key === "salePrice") {
                 td.id = `price${i}`

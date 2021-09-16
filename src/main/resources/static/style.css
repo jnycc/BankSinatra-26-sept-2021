@@ -75,10 +75,10 @@ body {
 
 #registerFields{
     padding-left: 15px;
-    position: relative;
+    padding-bottom: 10px;
+    position: inherit;
     top: 50%;
     left: 50%;
-    height: 35%;
     width: 40%;
     background-color: whitesmoke;
     color: darkslategray;
@@ -124,7 +124,7 @@ body {
     height: 6%;
     width: 4%;
     position: relative;
-    left: 420px;
+    left: 450px;
 }
 
 #cryptoTable {
