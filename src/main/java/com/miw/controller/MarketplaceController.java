@@ -1,7 +1,8 @@
 package com.miw.controller;
 
+import com.google.gson.Gson;
 import com.miw.database.RootRepository;
-import com.miw.model.Asset;
+import com.miw.model.*;
 import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +21,12 @@ public class MarketplaceController {
 
     private RootRepository rootRepository;
     private final Logger logger = LoggerFactory.getLogger(MarketplaceController.class);
+    private int accountBank;
 
     @Autowired
     public MarketplaceController(RootRepository rootRepository){
         this.rootRepository = rootRepository;
+        accountBank = Bank.BANK_ID;
         logger.info("New MarketplaceController-object created");
     }
 
@@ -47,4 +50,23 @@ public class MarketplaceController {
         }
     }
 
+    @PostMapping("/requestName")
+    public ResponseEntity<?> getNameByAccountID(@RequestBody String accountIdAsJson){
+        Gson gson = new Gson();
+        int accountId = gson.fromJson(accountIdAsJson, Integer.class);
+
+        String name;
+        if (accountId == accountBank){
+            name = "Bank Sinatra";
+        } else {
+            Client client = rootRepository.findByAccountId(accountId);
+            name = client.getFirstName() + " " + client.getLastName();
+        }
+
+        if (!name.isEmpty()){
+            return new ResponseEntity<>(gson.toJson(name), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Something went wrong, fam", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

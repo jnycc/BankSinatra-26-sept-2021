@@ -173,6 +173,8 @@ public class RootRepository {
         return jdbcUserDao.getUserByEmail(email);
     }
 
+    public Client findByAccountId(int accountId){ return clientDAO.findByAccountId(accountId);}
+
     public void marketAsset(double unitsForSale, double salePrice, String symbol, int accountId) {
         jdbcAssetDao.putAssetOnSale(unitsForSale, salePrice, symbol, accountId);
     }
