@@ -40,9 +40,10 @@ public class MarketplaceController {
             return new ResponseEntity<>("booh", HttpStatus.UNAUTHORIZED);
         }
 
-        int accountId = rootRepository.getAccountById(TokenService.getValidUserID(token)).getAccountId();
+        int accountId = rootRepository.getAccountByUserId(TokenService.getValidUserID(token)).getAccountId();
 
         List<Asset> assetsForSale = rootRepository.getAllAssetsForSaleBySymbol(symbol, accountId);
+
         if (assetsForSale != null){
             return new ResponseEntity<>(assetsForSale, HttpStatus.OK);
         } else {

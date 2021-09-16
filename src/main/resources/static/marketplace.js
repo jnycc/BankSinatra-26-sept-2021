@@ -31,36 +31,35 @@ async function getCryptosForSale(){
             //for loop: for each object, get waarde
             it.forEach(it => assets.push(it))
     })
+    console.log(assets);
     return assets;
 }
 
 async function fillTable() {
     for (let i = 0; i < assets.length; i++) {
-        const tr = document.createElement("tr");
-        tr.id = `tr${i + 1}`;
-        let asset = Object.assign({}, assets[i]);
+        const tr = document.createElement("tr")
+        tr.id = `tr${i}`
+        let asset = Object.assign({}, assets[i])
 
         for (const key of Object.keys(asset)) {
-            const td = document.createElement("td");
-            if (key === "account") {
-                let accountId = "accountId";
+            const td = document.createElement("td")
+            if (key === "account"){
+                let accountId = "accountId"
                 let account = Object.assign({}, asset[key])
-                td.id = `seller${i++}`;
-                td.textContent = await getName(account[accountId]);
-                tr.append(td);
+                td.id = `seller${i}`
+                td.textContent = await getName(account[accountId])
+                tr.append(td)
             } else if (key === "unitsForSale") {
-                td.id = `units${i++}`;
-                td.textContent = asset[key].toFixed(2);
-                tr.append(td);
+                td.id = `units${i}`
+                td.textContent = asset[key]
+                tr.append(td)
             } else if (key === "salePrice") {
-                td.id = `price${i++}`;
-                td.textContent = asset[key];
-                tr.append(td);
+                td.id = `price${i}`
+                td.textContent = asset[key].toFixed(2)
+                tr.append(td)
             }
-
+            $(cryptoTable).append(tr);
         }
-        $(cryptoTable)
-        $(cryptoTable).append(tr);
     }
 }
 
