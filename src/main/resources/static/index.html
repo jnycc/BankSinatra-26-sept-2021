@@ -11,7 +11,7 @@
 
 <body>
 <form id="loginForm" class="split right">
-    <h1 id="loginLabel" >Login</h1>
+    <h1 id="loginLabel">Login</h1>
     <button id="admin">Admin</button>
     <button id="client">Client</button><br><br>
     <label for="email"> Username: </label>
@@ -33,7 +33,7 @@
         <input id="prefix" type="text" name="prefix-reg" placeholder="prefix">
         <input id="lastName" type="text" name="lastName-reg" placeholder="Lastname" required ><br><br>
         <input id="dob" type="date" value="2000-01-01">
-        <input min="0" minlength="8" maxlength="9" id="bsn" type="number" name="bsn-reg" placeholder="BSN" required><br><br>
+        <input min="10000000" minlength="8" maxlength="9" id="bsn" type="number" name="bsn-reg" placeholder="BSN" required oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('BSN should contain at least 8 digits')"><br><br>
         <input id="city" type="text" placeholder="City" name="city-reg" required pattern="^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$">
         <input id="zipcode" type="text" name="zipcode-reg" placeholder="Zipcode" required pattern="^[1-9][0-9]{3} ?(?!sa|sd|ss|SA|SD|SS)[A-Za-z]{2}$"><br><br>
         <input id="street" type="text" name="street-reg" placeholder="Street" required pattern="^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z0-9\u0080-\u024F]*$">
