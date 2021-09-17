@@ -31,7 +31,16 @@ public class DashboardController {
     @PostMapping("/getBalance")
     public double getBalance(@RequestBody String token) {
         int ID = TokenService.getValidUserID(token);
-        return jdbcAccountDao.getAccountByUserID(ID).getBalance();
+        try {
+            //double balance = jdbcAccountDao.getAccountByUserID(ID).getBalance() +9.78204;
+            double balance = Math.round((jdbcAccountDao.getAccountByUserID(ID).getBalance())*100);
+            return balance/100;
+        } catch (NullPointerException fault) {
+            return 0.00;
+        }
+//        double balance = jdbcAccountDao.getAccountByUserID(ID).getBalance();
+//        balance = Math.round(balance*100);
+//        return balance/100;
     }
 
 

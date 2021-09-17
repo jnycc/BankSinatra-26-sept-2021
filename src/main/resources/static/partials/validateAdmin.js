@@ -10,9 +10,14 @@ function validateAdmin(){
         .then(res => {
             if (res.status === 200) {
                 console.log("no problemo")
-            } else {
+            } if (res.status === 403) {
                 console.log("you do not have the power of an admin and you shall not pass")
+                window.location.replace("/dashboard.html");
+            }
+            else {
+                console.log("you are currently not logged in and will be redirected to the login page")
                 window.location.replace("/index.html");
             }
         })
 }
+

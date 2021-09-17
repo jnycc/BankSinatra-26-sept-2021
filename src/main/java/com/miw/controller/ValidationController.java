@@ -30,22 +30,29 @@ public class ValidationController {
         if (TokenService.validateClient(token)) {
             return ResponseEntity.status(HttpStatus.OK).build();
         }
+        if (TokenService.validateAdmin(token)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         // TODO: terug naar login paginga
         // TODO: terug naar pagina van voorheen
         // url opslaan in de body???
     }
 
-    // Validates if user is an admin. Use before endpoints to grand access to right html pages.
+    // Validates if user is an admin. Use before loading relevant html page.
     @PostMapping("/validateAdmin")
     public ResponseEntity<?> validateAdmin(@RequestBody String token) {
         if (TokenService.validateAdmin(token)) {
             return ResponseEntity.status(HttpStatus.OK).build();
         }
+        if (TokenService.validateClient(token)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    // Validates if user is legitimate and logged in. Use before endpoints to grand access to right html pages.
+
+    // Validates if user is legitimate and logged in. Use before loading relevant html page.
     @PostMapping("/validateUser")
     public ResponseEntity<?> validateUser(@RequestBody String token) {
         if (TokenService.validateJWT(token)) {
