@@ -1,35 +1,80 @@
 let url = new URL(window.location.href);
 const assets = [];
-const cryptoTable = $("#cryptoTable");
-setupPage();
+const cryptoTable = document.getElementById('cryptoTable');
+$(cryptoTable).append("<tr><th>#</th><th>Crypto</th> <th>Symbol</th> <th>Price</th> <th>PriceDelta1Day</th></tr>");
+const cryptosForSale = $("#cryptosForSale");
+window.addEventListener("DOMContentLoaded", setupPageWithCryptos)
 
-// marketplace functions:
-async function setupPage() {
-    const cryptoSymbol = $("#cryptoSymbol").text("BTC");
-    $("#cryptoOverview").append(cryptoSymbol);
+//Create table and add the header row
+function setupPageWithCryptos() {
+    fetch(`/cryptos`,
+        {
+            method: 'GET',
+            headers: { 'Authorization': `${localStorage.getItem('token')}` }
+        })
+        .then(res => res.json())
+        .then(json => {
+            // voor elk crypto-object: maak 1 klikbare row, vul hem met meerdere datacellen
+            let i = 1;
+            for (let obj of json) {
+                const row = document.createElement('tr')
+                row.id = obj.symbol
+                row.onclick = function() {openDetails(obj.symbol)}
+                cryptoTable.appendChild(row)
+                $(row).append(`<td>${i++}</td>`)
+                for (let key of Object.keys(obj)) {
+                    const cell = document.createElement('td')
+                    if (key === 'name') {
+                        cell.append(getCryptoLogo(obj.symbol), obj[key])
+                    } else {
+                        cell.innerHTML = obj[key]
+                    }
+                    row.append(cell)
+                }
+            }
+        })
+}
 
-    $(cryptoTable).append("<tr><th>Seller</th><th>Units for sale</th><th>Price per unit</th></tr>");
-    $("#cryptoOverview").append(cryptoTable);
+function getCryptoLogo(symbol) {
+    let logo = document.createElement('img')
+    logo.src = `/images/cryptoLogos/logo_${symbol}.png`
+    logo.classList.add('cryptoLogo')
+    return logo
+}
 
-    await getCryptosForSale().then(await fillTable);
+function openDetails(symbol) {
+    // alert('My crypto symbol is: ' + symbol + '\nHier komt de overlay met cryptodetails en buy/sell knop.')
+    $(cryptoTable).hide();
+    showCryptosForSale(symbol);
+}
+
+
+async function showCryptosForSale(symbol) {
+    const cryptoSymbol = $("#cryptoSymbol").text(symbol);
+
+    $(cryptosForSale).append("<tr><th>Seller</th><th>Units for sale</th><th>Price per unit</th></tr>");
+    $("#cryptoDetails").append(cryptoSymbol).append(cryptosForSale);
+
+    await getCryptosForSale(symbol).then(await fillTable);
 
 }
-async function getCryptosForSale(){
+
+async function getCryptosForSale(symbol){
     await fetch(`${url.origin}/requestCryptos`,{
         method: 'POST',
         headers: { "Content-Type": "text/plain" ,
-        "Authorization": `${localStorage.getItem('token')}`},
-        body: "BTC"
-        }).then(res => {
-            if (res.status === 200){
-                console.log("dit werkt")
-            } else if (res.status === 404){
-                console.log("hoiiiii")
-            }
-            return res.json();
-        }).then(it => {
-            //for loop: for each object, get waarde
-            it.forEach(it => assets.push(it))
+            "Authorization": `${localStorage.getItem('token')}`},
+        body: symbol
+    }).then(res => {
+        if (res.status === 200){
+            console.log("dit werkt")
+        } else if (res.status === 404){
+            console.log("hoiiiii")
+        }
+        return res.json();
+    }).then(it => {
+        //for loop: for each object, get waarde
+        it.forEach(it => assets.push(it))
     })
     console.log(assets);
     return assets;
@@ -58,7 +103,7 @@ async function fillTable() {
                 td.textContent = asset[key].toFixed(2)
                 tr.append(td)
             }
-            $(cryptoTable).append(tr);
+            $(cryptosForSale).append(tr);
         }
     }
 }
@@ -73,4 +118,5 @@ async function getName(accountId){
         .then(data => name = data)
     return name
 }
+
 
