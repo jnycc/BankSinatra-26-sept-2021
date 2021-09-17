@@ -92,7 +92,8 @@ function doLogin(){
                 res.json().then(it => {
                     redirectUserAfterLogin(it.userRole);
                     localStorage.setItem('token', it.token);
-                    localStorage.setItem('role', it.userRole);
+                    localStorage.setItem('role', it.userRole); // Dit is overbodig, rol is in de jwt verwerkt..
+                    // bovendien wil je de rol uit de jwt halen en niet uit de localstorage want die is handmatig aan te passen, de jwt niet
                 });
                 return;
             } else {

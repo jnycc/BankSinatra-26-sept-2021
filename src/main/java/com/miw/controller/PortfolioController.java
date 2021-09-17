@@ -10,9 +10,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializer;
 import com.miw.database.JdbcCryptoDao;
+import com.miw.database.JdbcTransactionDao;
 import com.miw.database.RootRepository;
 import com.miw.model.Asset;
 import com.miw.service.PortfolioService;
+import com.miw.service.StatisticsService;
+import com.miw.service.TransactionService;
 import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +32,16 @@ public class PortfolioController {
     private PortfolioService portfolioService;
     private Gson gson;
     private JdbcCryptoDao jdbcCryptoDao;
+    private StatisticsService statisticsService;
     private RootRepository rootRepository;
     private final Logger logger = LoggerFactory.getLogger(PortfolioController.class);
 
     @Autowired
     public PortfolioController(PortfolioService portfolioService, Gson gson, RootRepository rootRepository,
-                               JdbcCryptoDao jdbcCryptoDao) {
+                               JdbcCryptoDao jdbcCryptoDao, StatisticsService statisticsService) {
         this.jdbcCryptoDao = jdbcCryptoDao;
         this.portfolioService = portfolioService;
+        this.statisticsService = statisticsService;
         this.gson = gson;
         this.rootRepository = rootRepository;
     }
@@ -75,6 +80,15 @@ public class PortfolioController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return new ResponseEntity<>(jdbcCryptoDao.getDayValuesByCrypto(symbol, daysBack), HttpStatus.OK);
+    }
+
+    @GetMapping("/portfolioStats")
+    public ResponseEntity<?> getPortfolioStats(@RequestHeader("Authorization") String token) {
+        if (!TokenService.validateClient(token)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        int userId = TokenService.getValidUserID(token);
+        return new ResponseEntity<>(statisticsService.getPortfolioStats(userId), HttpStatus.OK);
     }
 
 

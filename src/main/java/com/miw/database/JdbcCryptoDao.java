@@ -98,7 +98,7 @@ public class JdbcCryptoDao {
     // Returns map of crypto values with accommodating key ("min", "max", "avg") of each day from now until certain past date
     public Map<LocalDate, Map<String, Double>> getDayValuesByCrypto(String symbol, int daysBack) {
         String sql = "Select symbol, AVG(cryptoPrice) avg, MIN(cryptoPrice) min, MAX(cryptoPrice) max, date(dateRetrieved) FROM cryptoprice WHERE symbol = ? " +
-                "AND dateRetrieved BETWEEN date_add(current_timestamp(),  INTERVAL -? DAY) AND current_timestamp() GROUP BY DATE(dateRetrieved);";
+                "AND dateRetrieved BETWEEN timestamp(curdate() -?) AND current_timestamp() GROUP BY DATE(dateRetrieved);";
         try {
             return jdbcTemplate.query(sql, new JdbcCryptoDao.CryptoStatsSetExtractor(), symbol, daysBack);
         } catch (EmptyResultDataAccessException e) {
@@ -131,7 +131,42 @@ public class JdbcCryptoDao {
         }
     }
 
+    public Map<LocalDate, Map<String, Double>> getPricesPerDate() {
+        String sql = "SELECT date(dateRetrieved) date, symbol, avg(cryptoprice) avgCryptoprice FROM cryptoprice\n" +
+                "GROUP BY day(dateRetrieved), symbol ORDER BY date;";;
+        try {
+            return jdbcTemplate.query(sql, new JdbcCryptoDao.AverageCryptopriceSetExtractor());
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Failed to retrieve prices of each crypto per day");
+            return null;
+        }
+    }
+
+
     //Rowmappers
+
+    private static class AverageCryptopriceSetExtractor implements ResultSetExtractor<Map<LocalDate, Map<String, Double>>> {
+
+        @Override
+        public Map<LocalDate, Map<String, Double>> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+            Map<LocalDate, Map<String, Double>> pricesPerDate = new TreeMap<>();
+            while (resultSet.next()) {
+                String symbol = resultSet.getString("symbol");
+                double price = resultSet.getDouble("avgCryptoprice");
+                LocalDate date = resultSet.getDate("date").toLocalDate();
+                if (pricesPerDate.containsKey(date)) {
+                    pricesPerDate.get(date).put(symbol, price);
+                } else {
+                    Map<String, Double> pricePerSymbol = new TreeMap<>();
+                    pricePerSymbol.put(symbol, price);
+                    pricesPerDate.put(date, pricePerSymbol);
+                }
+            }
+            return pricesPerDate;
+        }
+    }
+
+
     private static class CryptoStatsSetExtractor implements ResultSetExtractor<Map<LocalDate, Map<String, Double>>> {
 
         @Override

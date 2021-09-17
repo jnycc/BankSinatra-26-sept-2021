@@ -77,4 +77,9 @@ class TransactionServiceTest {
         assertFalse(transactionService.checkSufficientBalance(0, 1, testBuyerAccount.getBalance() - 1, testTransaction.getBankCosts()));
     }
 
+
+
+    @Test
+    void getPortfolioStats() {
+    }
 }

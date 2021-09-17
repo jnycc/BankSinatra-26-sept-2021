@@ -1,5 +1,10 @@
+
+
 // checking valid token (with userrole) and loading data)
 window.addEventListener("DOMContentLoaded", validateClient)
+
+
+
 window.addEventListener("DOMContentLoaded", getBalance)
 //window.addEventListener("DOMContentLoaded", getPortfolio)
 
@@ -16,7 +21,8 @@ function getBalance(){
         body: `${localStorage.getItem('token')}`
     })
         .then(res => res.text())
-        .then(it => {
+         // .then(it => parseFloat("it").toFixed(2))
+        .then (it => {
             balance.innerHTML = it
         })
 }

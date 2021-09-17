@@ -4,7 +4,10 @@ import com.miw.model.Crypto;
 import com.miw.model.Transaction;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -13,10 +16,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Repository
 public class JdbcTransactionDao {
@@ -100,9 +106,50 @@ public class JdbcTransactionDao {
         return jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper(), userId, userId);
     }
 
-//    public Double getCryptoUnitsByDate(String crytpoSymbol, Date date) {
-//        String sql = "SELECT "
-//    }
+    public Map<LocalDate, Map<String, Double>> getBoughtUnitsPerDay(int userID) {
+        String sql = "SELECT date(date) date, symbol, units FROM transaction WHERE accountID_buyer = ? GROUP BY date, symbol";;
+        try {
+            return jdbcTemplate.query(sql, new JdbcTransactionDao.UnitsSetExtractor(), userID);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Failed to retrieve bought units of each crypto per day");
+            return null;
+        }
+    }
+
+    public Map<LocalDate, Map<String, Double>> getSoldUnitsPerDay(int userID) {
+        String sql = "SELECT date(date) date, symbol, units FROM transaction WHERE accountID_seller = ? GROUP BY date, symbol";;
+        try {
+            return jdbcTemplate.query(sql, new JdbcTransactionDao.UnitsSetExtractor(), userID);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Failed to retrieve sold units of each crypto per day");
+            return null;
+        }
+    }
+
+    // Rowmappers
+
+    private static class UnitsSetExtractor implements ResultSetExtractor<Map<LocalDate, Map<String, Double>>> {
+
+        @Override
+        public Map<LocalDate, Map<String, Double>> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+            Map<LocalDate, Map<String, Double>> unitsPerDate = new TreeMap<>();
+            while (resultSet.next()) {
+                String symbol = resultSet.getString("symbol");
+                double units = resultSet.getDouble("units");
+                LocalDate date = resultSet.getDate("date").toLocalDate();
+                if (unitsPerDate.containsKey(date)){
+                    unitsPerDate.get(date).put(symbol,units);
+                }
+                else{
+                    Map<String, Double> unitsPerSymbol = new TreeMap<>();
+                    unitsPerSymbol.put(symbol, units);
+                    unitsPerDate.put(date, unitsPerSymbol);
+                }
+            }
+            return unitsPerDate;
+        }
+    }
+    
 
     private static class TransactionRowMapper implements RowMapper<Transaction> {
 
