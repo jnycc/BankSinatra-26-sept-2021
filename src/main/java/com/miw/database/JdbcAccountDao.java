@@ -67,7 +67,7 @@ public class JdbcAccountDao {
     }
 
     public Account getAccountByEmail(String email) {
-        String sql = "SELECT * FROM Account WHERE userID = ( SELECT userID FROM user WHERE email = ?);";
+        String sql = "SELECT * FROM Account WHERE userID = ( SELECT userID FROM User WHERE email = ?);";
         try {
             return jdbcTemplate.queryForObject(sql, new JdbcAccountDao.AccountRowMapper(), email);
         } catch (EmptyResultDataAccessException e) {
@@ -77,7 +77,7 @@ public class JdbcAccountDao {
     }
 
     public Account getAccountByBsn (int bsn){
-        String sql = "SELECT * FROM Account WHERE userID = ( SELECT userID FROM user WHERE bsn = ?);";
+        String sql = "SELECT * FROM Account WHERE userID = ( SELECT userID FROM User WHERE bsn = ?);";
         try{
             return jdbcTemplate.queryForObject(sql, new JdbcAccountDao.AccountRowMapper(), bsn);
         } catch (EmptyResultDataAccessException e) {
@@ -87,7 +87,7 @@ public class JdbcAccountDao {
     }
 
     public double getBalanceByEmail(String email) {
-        String sql = "SELECT balance FROM Account WHERE userID = ( SELECT userID FROM user WHERE email = ?);";
+        String sql = "SELECT balance FROM Account WHERE userID = ( SELECT userID FROM User WHERE email = ?);";
         try {
             return jdbcTemplate.queryForObject(sql, Double.class, email);
         } catch (EmptyResultDataAccessException e) {

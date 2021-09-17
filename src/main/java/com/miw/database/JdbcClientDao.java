@@ -83,7 +83,7 @@ public class JdbcClientDao implements ClientDao {
 
   @Override
   public Client findByAccountId(int accountId){
-    String sql = "SELECT * FROM user u JOIN account a ON u.userID = a.userID WHERE accountID = ?;";
+    String sql = "SELECT * FROM User u JOIN account a ON u.userID = a.userID WHERE accountID = ?;";
     try {
       return jdbcTemplate.queryForObject(sql, new ClientRowMapper(), accountId);
     }catch (EmptyResultDataAccessException e) {
