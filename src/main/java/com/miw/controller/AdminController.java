@@ -36,7 +36,7 @@ public class AdminController {
         logger.info("New AdminController created");
     }
 
-    @PutMapping("/updateFee")
+    @PutMapping("/admin/updateFee")
     public ResponseEntity<?> updateFee(@RequestBody String json) {
         JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
         String token = convertedObject.get("token").getAsString();
@@ -48,20 +48,17 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // TODO: is dit de juiste http code?
     }
 
-    @PutMapping("/toggleBlock")
-    public ResponseEntity<?> toggleBlock(@RequestBody String json) {
-        JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
-        String token = convertedObject.get("token").getAsString();
-        int userID = convertedObject.get("id").getAsInt();
-        boolean initialBlockStatus = convertedObject.get("blocked").getAsBoolean(); // current block status of user, which we want to invert
+    @PostMapping("/admin/toggleBlock")
+    public ResponseEntity<?> toggleBlock(@RequestHeader("Authorization") String token, @RequestParam String email) {
+        User user = jdbcUserDao.getUserByEmail(email);
         if (TokenService.validateAdmin(token)) {
-            jdbcUserDao.toggleBlock(!initialBlockStatus, userID); // inversion happens here via the ! operator
+            jdbcUserDao.toggleBlock(!user.isBlocked(), user.getUserId()); // block toggle through inversion of initial block status
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @GetMapping("/getUserData")
+    @GetMapping("/admin/getUserData")
     public ResponseEntity<?> getUserData(@RequestHeader("Authorization") String token, @RequestParam String email) {
         User user = jdbcUserDao.getUserByEmail(email);
 
@@ -71,7 +68,7 @@ public class AdminController {
             user = jdbcAdminDao.findByEmail(user.getEmail());
         }
 
-        System.out.println(user.toString()); // TODO: jdbcuserdao geeft niet compleet object terug
+        user.setSalt(null); user.setPassword(null); // remove data that don't need to be imported
         if (TokenService.validateAdmin(token)) {
             return ResponseEntity.ok(user);
         }

@@ -1,4 +1,4 @@
-// AUTHENTICATION
+// PAGE SETUP
 window.addEventListener("DOMContentLoaded", validateAdmin)
 
 function validateAdmin(){
@@ -16,17 +16,20 @@ function validateAdmin(){
         })
 }
 
-// BASIS
 const logout = document.querySelector("#logout")
-// fee
+
 const btnBankfee = document.querySelector("#bankfee")
 const feeForm = document.querySelector("#feeForm")
 const btnCloseOverlay = document.querySelector("#close-overlay-btn")
 const overlay = document.querySelector("#overlay")
-// finduser
+
+let user = null;
 const findUserForm = document.querySelector("#findUserForm")
 const userTable = $("#userTable");
 
+const btnToggleBlock = document.querySelector("#toggleBlock");
+
+// LOGOUT
 logout.addEventListener("click", function() {
     window.localStorage.clear();
     window.location.replace("/index.html");
@@ -45,7 +48,6 @@ $(document).ready(function (){
 });
 
 feeForm.addEventListener('submit', function (e) {
-    // TODO: wat doet preventdefault?
     e.preventDefault();
     updateFee();
 })
@@ -55,7 +57,7 @@ function updateFee(){
         {token: `${localStorage.getItem('token')}`,
             fee: `${document.querySelector("#fee-input").value}`}
     console.log(payload);
-    fetch(`http://localhost:8080/updateFee`,
+    fetch(`http://localhost:8080/admin/updateFee`,
         {
             method: 'PUT',
             header: { "Content-Type": "application/json" },
@@ -75,28 +77,55 @@ function updateFee(){
 // LOAD USER
 findUserForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    userTable.empty();
-    loadUser();
+    user = document.querySelector("#email-input").value;
+    loadUser(user);
 })
 
-function loadUser(){
-    fetch(`http://localhost:8080/getUserData?email=${document.querySelector("#email-input").value}`,
+function loadUser(user){
+    if ($('#userTable tr').length !== 0) {
+        userTable.empty();
+    }
+    fetch(`http://localhost:8080/admin/getUserData?email=${user}`,
         {
             method: 'GET',
             headers: { "Authorization": localStorage.getItem('token') }
         })
         .then(res => res.json())
-        .then(it => {
-            for (const key in it) {
-                if (key === "address") {
-                    let obj = it["address"];
-                    for (const key in obj) {
-                        $(userTable).append("<tr><th>" + key + "</th><th>" + obj[key] + "</th></tr>");
+        .then(it => {                        // TODO: dit moet mooier en met minder complexiteit kunnen
+            for (const key in it) {          // loop through all properties of the imported user json
+                if (it[key] !== null) {
+                    if (key === "address") { // "address" contains properties of its own, so needs to be looped through separately
+                        let obj = it["address"];
+                        for (const key in obj) {
+                            $(userTable).append("<tr><th>" + key + "</th><th>" + obj[key] + "</th></tr>");
+                        }
+                    } else {
+                        $(userTable).append("<tr><th>" + key + "</th><th>" + it[key] + "</th></tr>");
                     }
-                } else {
-                    $(userTable).append("<tr><th>" + key + "</th><th>" + it[key] + "</th></tr>");
                 }
             }
-            $("#userData").append(userTable);
+            $("#userData").append(userTable)
         })
+}
+
+// BLOCK/UNBLOCK USER
+btnToggleBlock.addEventListener("click", function() {
+    blockUser(user)
+})
+
+function blockUser(user) {
+    fetch(`http://localhost:8080/admin/toggleBlock?email=${user}`,
+        {
+            method: 'POST',
+            headers: { "Authorization": localStorage.getItem('token') }
+        }).then(res => {
+        if (res.status === 200) {
+            loadUser(user) // reload user user after block is toggled to update info
+            console.log("Block status changed.")
+        } else {
+            res.json().then(it => {
+                alert(it.message);
+            })
+        }
+    })
 }
