@@ -32,6 +32,10 @@ public class Crypto implements Comparable<Crypto>{
         return symbol;
     }
 
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
     public double getCryptoPrice() {
         return cryptoPrice;
     }
