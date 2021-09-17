@@ -1,12 +1,14 @@
 let url = new URL(window.location.href);
 const assets = [];
 const cryptoTable = document.getElementById('cryptoTable');
+const cryptosForSaleDiv = document.querySelector('#cryptoDetails');
 $(cryptoTable).append("<tr><th>#</th><th>Crypto</th> <th>Symbol</th> <th>Price</th> <th>PriceDelta1Day</th></tr>");
 const cryptosForSale = $("#cryptosForSale");
 window.addEventListener("DOMContentLoaded", setupPageWithCryptos)
 
 //Create table and add the header row
 function setupPageWithCryptos() {
+    $(cryptosForSaleDiv).hide();
     fetch(`/cryptos`,
         {
             method: 'GET',
@@ -51,12 +53,12 @@ function openDetails(symbol) {
 
 async function showCryptosForSale(symbol) {
     const cryptoSymbol = $("#cryptoSymbol").text(symbol);
-
+    $(cryptosForSaleDiv).show();
+    $(cryptosForSale).show();
     $(cryptosForSale).append("<tr><th>Seller</th><th>Units for sale</th><th>Price per unit</th></tr>");
     $("#cryptoDetails").append(cryptoSymbol).append(cryptosForSale);
 
     await getCryptosForSale(symbol).then(await fillTable);
-
 }
 
 async function getCryptosForSale(symbol){
