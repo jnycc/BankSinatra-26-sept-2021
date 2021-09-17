@@ -94,10 +94,16 @@ public class JdbcTransactionDao {
     }
 
     // TODO: nog testen of dit werkt
-    public List<Transaction> getTransactionsByUserId (int userId) {
-        String sql = "SELECT * FROM Transaction WHERE accountID_buyer = (SELECT accountID FROM Account WHERE userID = ?) " +
-                "OR accountID_seller = (SELECT accountID FROM Account WHERE userID = ?)";
-        return jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper(), userId, userId);
+    public List<Transaction> getTransactionsByUserIdSeller (int userId) {
+        String sql = "SELECT * FROM Transaction t JOIN Crypto c ON t.symbol = c.symbol " +
+                "WHERE accountID_seller = (SELECT accountID from Account WHERE userID = ?);";
+        return jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper(), userId);
+    }
+
+    public List<Transaction> getTransactionsByUserIdBuyer(int userId){
+        String sql = "SELECT * FROM Transaction t JOIN Crypto c ON t.symbol = c.symbol " +
+                "WHERE accountID_buyer = (SELECT accountID from Account WHERE userID = ?); ";
+        return jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper(), userId);
     }
 
 //    public Double getCryptoUnitsByDate(String crytpoSymbol, Date date) {
@@ -111,8 +117,10 @@ public class JdbcTransactionDao {
             int transactionId = resultSet.getInt("transactionID");
             int buyer = resultSet.getInt("accountID_buyer");
             int seller = resultSet.getInt("accountID_seller");
-            Crypto crypto = new Crypto();
             double units = resultSet.getDouble("units");
+            String symbol = resultSet.getString("symbol");
+            Crypto crypto = new Crypto();
+            crypto.setSymbol(symbol);
             double transactionPrice = resultSet.getDouble("transactionPrice");
             double bankCosts = resultSet.getDouble("bankingFee");
             LocalDateTime transactionDate = resultSet.getObject("date", LocalDateTime.class);

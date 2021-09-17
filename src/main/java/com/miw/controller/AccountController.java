@@ -1,6 +1,6 @@
 package com.miw.controller;
 
-import com.miw.database.JdbcTransactionDao;
+
 import com.miw.model.Account;
 import com.miw.model.Transaction;
 import com.miw.service.AccountService;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,10 +28,17 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @GetMapping("/transactions")
-    public ResponseEntity<?> getTransactions(@RequestHeader("Authorization") String token) {
+    @GetMapping("/transactionsBuyer")
+    public ResponseEntity<?> getTransactionsBuyer(@RequestHeader("Authorization") String token) {
         int userId = TokenService.getValidUserID(token);
-        List<Transaction> transactions =  transactionService.getTransactions(userId);
+        List<Transaction> transactions =  transactionService.getTransactionsBuyer(userId);
+        return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping("/transactionsSeller")
+    public ResponseEntity<?> getTransactionsSeller(@RequestHeader("Authorization") String token) {
+        int userId = TokenService.getValidUserID(token);
+        List<Transaction> transactions =  transactionService.getTransactionsSeller(userId);
         return ResponseEntity.ok(transactions);
     }
 
