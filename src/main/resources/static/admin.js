@@ -28,6 +28,7 @@ const findUserForm = document.querySelector("#findUserForm")
 const userTable = $("#userTable");
 
 const btnToggleBlock = document.querySelector("#toggleBlock");
+$(btnToggleBlock).hide()
 
 // LOGOUT
 logout.addEventListener("click", function() {
@@ -105,6 +106,7 @@ function loadUser(user){
                 }
             }
             $("#userData").append(userTable)
+            $(btnToggleBlock).show()
         })
 }
 
