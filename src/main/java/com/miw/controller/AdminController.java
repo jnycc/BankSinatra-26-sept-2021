@@ -48,12 +48,10 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // TODO: is dit de juiste http code?
     }
 
-    @PostMapping("/admin/toggleBlock")
-    public ResponseEntity<?> toggleBlock(@RequestHeader("Authorization") String token, @RequestParam String email) {
-        User user = jdbcUserDao.getUserByEmail(email);
+    @GetMapping("/admin/getBankFee")
+    public ResponseEntity<?> getBankFee(@RequestHeader("Authorization") String token) {
         if (TokenService.validateAdmin(token)) {
-            jdbcUserDao.toggleBlock(!user.isBlocked(), user.getUserId()); // block toggle through inversion of initial block status
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.ok(jdbcTransactionDao.getBankCosts());
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
@@ -68,9 +66,19 @@ public class AdminController {
             user = jdbcAdminDao.findByEmail(user.getEmail());
         }
 
-        user.setSalt(null); user.setPassword(null); // remove data that don't need to be imported
+        user.setSalt(null); user.setPassword(null); // remove data that don't need to be shown on the front-end
         if (TokenService.validateAdmin(token)) {
             return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @PostMapping("/admin/toggleBlock")
+    public ResponseEntity<?> toggleBlock(@RequestHeader("Authorization") String token, @RequestParam String email) {
+        User user = jdbcUserDao.getUserByEmail(email);
+        if (TokenService.validateAdmin(token)) {
+            jdbcUserDao.toggleBlock(!user.isBlocked(), user.getUserId()); // block toggle through inversion of initial block status
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }

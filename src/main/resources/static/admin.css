@@ -13,14 +13,20 @@
     height: 100px;
 }
 
-.left {
+.left { /* TODO: kan dit met style.css worden verenigd? */
     float: left;
-    width: 40%;
+    width: 45%;
 }
 
 .right {
     float: right;
-    width: 60%;
+    width: 55%;
+}
+
+/* bank fee button + overlay */
+#bankfee {
+    float: right;
+    margin-right: 150px;
 }
 
 /* left hand side: table */

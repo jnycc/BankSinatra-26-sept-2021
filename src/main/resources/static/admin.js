@@ -8,9 +8,9 @@ function validateAdmin(){
     })
         .then(res => {
             if (res.status === 200) {
-                console.log("no problemo")
+                console.log("Admin validated")
             } else {
-                console.log("your token is bad and you should feel bad")
+                console.log("Admin validation failed, redirecting to login page")
                 window.location.replace("/index.html")
             }
         })
@@ -32,15 +32,23 @@ $(btnToggleBlock).hide()
 const assetTable = document.querySelector("#assetTable")
 $(assetTable).hide()
 
+// CONFIRMATION PROMPT
+function confirmationPrompt(action) {
+    return confirm(`Are you sure you want to ${action}?`)
+}
+
 // LOGOUT
 logout.addEventListener("click", function() {
-    window.localStorage.clear();
-    window.location.replace("/index.html");
+    if (confirmationPrompt("logout")) {
+        window.localStorage.clear();
+        window.location.replace("/index.html");
+    }
 })
 
 // CHANGE BANK FEE
 $(document).ready(function (){
     $(btnBankfee).click(function (){
+        getCurrentFee()
         $(overlay).show()
     });
 
@@ -51,8 +59,10 @@ $(document).ready(function (){
 });
 
 feeForm.addEventListener('submit', function (e) {
-    e.preventDefault()
-    updateFee()
+    if (confirmationPrompt("change the bank costs")) {
+        e.preventDefault()
+        updateFee()
+    }
 })
 
 function updateFee(){
@@ -68,12 +78,23 @@ function updateFee(){
         })
         .then(res => {
             if (res.status === 200) {
-                window.alert("yay")
+                console.log("Bank costs updated.")
             } else {
-                res.json().then(it => {
-                    window.alert("update failed")
-                })
+                window.alert(`Error: ${res.statusText}`)
             }
+        })
+}
+
+function getCurrentFee(){
+    fetch(`http://localhost:8080/admin/getBankFee`,
+        {
+            method: 'GET',
+            headers: {"Authorization": localStorage.getItem('token')}
+        })
+        .then(res => res.json())
+        .then(it => {
+            console.log(it)
+            document.getElementById("fee-input").placeholder = `Current fee: ${it}`
         })
 }
 
@@ -88,13 +109,14 @@ function loadUser(user){
     if ($('#userTable tr').length !== 0) {
         userTable.empty()
     }
+
     fetch(`http://localhost:8080/admin/getUserData?email=${user}`,
         {
             method: 'GET',
             headers: { "Authorization": localStorage.getItem('token') }
         })
         .then(res => res.json())
-        .then(it => {                        // TODO: dit moet mooier en met minder complexiteit kunnen
+        .then(it => {                        // TODO: dit moet mooier en met minder complexiteit kunnen + heeft nu geen error message
             for (const key in it) {          // loop through all properties of the imported user json
                 if (it[key] !== null) {
                     if (key === "address") { // "address" contains properties of its own, so needs to be looped through separately
@@ -109,13 +131,20 @@ function loadUser(user){
             }
             $("#userData").append(userTable)
             $(btnToggleBlock).show()
-            $(assetTable).show()
+
+            if (it["dateOfBirth"] != null) { // only show assets when loading a client; admins don't have assets
+                $(assetTable).show()
+            } else {
+                $(assetTable).hide()
+            }
         })
 }
 
 // BLOCK/UNBLOCK USER
 btnToggleBlock.addEventListener("click", function() {
-    blockUser(user)
+    if (confirmationPrompt("change this user's block status")) {
+        blockUser(user)
+    }
 })
 
 function blockUser(user) {

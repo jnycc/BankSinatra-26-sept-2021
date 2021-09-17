@@ -62,7 +62,7 @@ public class JdbcTransactionDao {
     }
 
     public double getBankCosts() {
-        String sql = "SELECT * FROM `Bankingfee`";
+        String sql = "SELECT * FROM `BankingFee`";
         return jdbcTemplate.queryForObject(sql, Double.class);
     }
 
