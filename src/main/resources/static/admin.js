@@ -89,8 +89,9 @@ function loadUser(){
         .then(it => {
             for (const key in it) {
                 if (key === "address") {
-                    for (const addressKey in key) {
-                        $(userTable).append("<tr><th>" + addressKey + "</th><th>" + key[addressKey] + "</th></tr>");
+                    let obj = it["address"];
+                    for (const key in obj) {
+                        $(userTable).append("<tr><th>" + key + "</th><th>" + obj[key] + "</th></tr>");
                     }
                 } else {
                     $(userTable).append("<tr><th>" + key + "</th><th>" + it[key] + "</th></tr>");
