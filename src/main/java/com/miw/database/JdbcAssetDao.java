@@ -45,17 +45,13 @@ public class JdbcAssetDao {
     }
 
     public Asset getAssetBySymbol(int accountId, String symbol) {
-        String sql = "SELECT a.symbol, name, cryptoPrice, units, description, dateRetrieved " +
-                "FROM (Asset a JOIN Crypto c ON a.symbol = c.symbol) " +
-                "JOIN CryptoPrice p ON p.symbol = c.symbol " +
+        String sql = "SELECT a.accountId, a.unitsForSale, a.salePrice, a.symbol, name, cryptoPrice, units, description, dateRetrieved" +
+                " FROM (Asset a JOIN Crypto c ON a.symbol = c.symbol) JOIN CryptoPrice p ON p.symbol = c.symbol " +
                 "WHERE accountID = ? AND a.symbol = ? AND dateRetrieved >= DATE_ADD(" +
-                "   (SELECT dateRetrieved FROM CryptoPrice " +
-                "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1)" +
-                "   , INTERVAL -10 SECOND)" +
-                "AND dateRetrieved <= DATE_ADD(" +
-                "   (SELECT dateRetrieved FROM CryptoPrice " +
-                "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1)" +
-                "   , INTERVAL 10 SECOND);";
+                "(SELECT dateRetrieved FROM CryptoPrice ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP))" +
+                " LIMIT 1), INTERVAL -10 SECOND) AND dateRetrieved <= DATE_ADD(" +
+                " (SELECT dateRetrieved FROM CryptoPrice ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP))" +
+                " LIMIT 1), INTERVAL 10 SECOND);";
         try{
             return jdbcTemplate.queryForObject(sql, new AssetRowMapper(), accountId, symbol);
         }catch (Exception e){
@@ -83,7 +79,7 @@ public class JdbcAssetDao {
     }
 
     public List<Asset> getAssets(int accountId) {
-        String sql = "SELECT a.accountID, a.symbol, name, cryptoPrice, units, description, dateRetrieved " +
+        String sql = "SELECT a.unitsForSale, a.salePrice, a.accountID, a.symbol, name, cryptoPrice, units, description, dateRetrieved " +
                 "FROM (Asset a JOIN Crypto c ON a.symbol = c.symbol) " +
                 "JOIN CryptoPrice p ON p.symbol = c.symbol " +
                 "WHERE accountID = ? AND dateRetrieved >= DATE_ADD(" +
@@ -163,7 +159,6 @@ public class JdbcAssetDao {
 
         @Override
         public Asset mapRow(ResultSet resultSet, int i) throws SQLException {
-            Asset asset = null;
             Integer accountId = resultSet.getInt("accountID");
             String name = resultSet.getString("name");
             String symbol = resultSet.getString("symbol");
@@ -173,7 +168,7 @@ public class JdbcAssetDao {
             double units = resultSet.getDouble("units");
             double unitsForSale = resultSet.getDouble("unitsForSale");
             double salePrice = resultSet.getDouble("salePrice");
-            asset = new Asset(crypto, units);
+            Asset asset = new Asset(crypto, units);
             Account account = new Account();
             account.setAccountId(accountId);
             asset.setAccount(account);

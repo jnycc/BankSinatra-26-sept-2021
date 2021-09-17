@@ -5,6 +5,9 @@ body :not(#header){
 #cryptosForSale {
     display: none;
 }
+#cryptoBuy {
+    display: none;
+}
 
 .cryptoLogo {
     width: 24px;
@@ -16,13 +19,13 @@ body :not(#header){
 .cryptoLogo:first-child {
 }
 
-#cryptosForSale, #cryptoTable{
+#cryptosForSale, #cryptoTable, #orderForm{
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
-    width: 100%;
+    width: 70%;
 }
 
-#cryptosForSale td, #cryptosForSale th, #cryptoTable, th, td{
+#cryptosForSale td, #cryptosForSale th, #cryptoTable, th, td, #orderForm tbody{
     border: 1px solid #ddd;
     padding: 8px;
 }
@@ -31,13 +34,17 @@ body :not(#header){
 
 #cryptoTable tr:nth-child(even){background-color: lightcyan;}
 
+#orderForm tr:nth-child(even){background-color: lightcyan;}
+
 #cryptosForSale tr:nth-child(even):hover{background-color: teal;}
+
+#orderForm tr:nth-child(even):hover{background-color: teal;}
 
 #cryptoTable tr:nth-child(even):hover{background-color: teal;}
 
 #cryptosForSale tr:hover {background-color: #ddd;}
 
-#cryptosForSale th, #cryptoTable th{
+#cryptosForSale th, #cryptoTable th, #orderForm th{
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;

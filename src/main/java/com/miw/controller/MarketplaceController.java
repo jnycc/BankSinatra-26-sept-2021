@@ -70,4 +70,14 @@ public class MarketplaceController {
             return new ResponseEntity<>("Something went wrong, fam", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/getUserId")
+    public ResponseEntity<?> getCurrentUserId(@RequestHeader("Authorization") String token) {
+        Integer userId = TokenService.getValidUserID(token);
+        if (userId == null){
+            return new ResponseEntity<>("Not a valid Token", HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(userId.intValue(), HttpStatus.OK);
+        }
+    }
 }

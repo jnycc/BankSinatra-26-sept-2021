@@ -108,12 +108,12 @@ body {
 
 .left {
     right: 45%;
-    top: 40%;
+    top: 30%;
 }
 
 .right {
     left: 60%;
-    top: 40%;
+    top: 30%;
 }
 
 #registerLabel, #loginLabel{

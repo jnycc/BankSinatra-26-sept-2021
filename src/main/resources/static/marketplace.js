@@ -2,9 +2,20 @@ let url = new URL(window.location.href);
 const assets = [];
 const cryptoTable = document.getElementById('cryptoTable');
 const cryptosForSaleDiv = document.querySelector('#cryptoDetails');
-$(cryptoTable).append("<tr><th>#</th><th>Crypto</th> <th>Symbol</th> <th>Price</th> <th>PriceDelta1Day</th></tr>");
+const cryptoSymbol = document.querySelector("#cryptoSymbol");
+const cryptoBuy = $("#cryptoBuy");
+const orderForm = document.querySelector("#orderForm");
+let unitsToBuy;
+let buyerId;
+let purchasePrice;
+let totalPrice = document.querySelector("#totalPrice");
+let unitsToBuyInput = document.querySelector("#unitsToBuy");
+let isOrderFormEmpty = true;
 const cryptosForSale = $("#cryptosForSale");
-window.addEventListener("DOMContentLoaded", setupPageWithCryptos)
+$(cryptoTable).append("<tr><th>#</th><th>Crypto</th> <th>Symbol</th> <th>Price</th> <th>PriceDelta1Day</th></tr>");
+const purchase = document.querySelector("#purchase");
+window.addEventListener("DOMContentLoaded", setupPageWithCryptos);
+purchase.addEventListener('click', carryOutTransaction);
 
 //Create table and add the header row
 function setupPageWithCryptos() {
@@ -53,6 +64,8 @@ function openDetails(symbol) {
 
 async function showCryptosForSale(symbol) {
     const cryptoSymbol = $("#cryptoSymbol").text(symbol);
+    cryptoSymbol.css('display', 'inline');
+    $("#cryptoImg").attr('src',`/images/cryptoLogos/logo_${symbol}.png`);
     $(cryptosForSaleDiv).show();
     $(cryptosForSale).show();
     $(cryptosForSale).append("<tr><th>Seller</th><th>Units for sale</th><th>Price per unit</th></tr>");
@@ -69,9 +82,10 @@ async function getCryptosForSale(symbol){
         body: symbol
     }).then(res => {
         if (res.status === 200){
-            console.log("dit werkt")
+            return res.json();
         } else if (res.status === 404){
-            console.log("hoiiiii")
+            console.log("error")
+            return;
         }
         return res.json();
     }).then(it => {
@@ -85,25 +99,26 @@ async function getCryptosForSale(symbol){
 async function fillTable() {
     for (let i = 0; i < assets.length; i++) {
         const tr = document.createElement("tr")
-        tr.id = `tr${i}`
         let asset = Object.assign({}, assets[i])
 
         for (const key of Object.keys(asset)) {
             const td = document.createElement("td")
+            let accountId = "accountId";
             if (key === "account"){
-                let accountId = "accountId"
                 let account = Object.assign({}, asset[key])
-                td.id = `seller${i}`
-                td.textContent = await getName(account[accountId])
-                tr.append(td)
+                td.id = `sellerRow${i}`;
+                td.textContent = await getName(account[accountId]);
+                tr.id = `seller${account[accountId]}`;
+                tr.append(td);
+                tr.onclick = function () {showOrder(account[accountId])}
             } else if (key === "unitsForSale") {
-                td.id = `units${i}`
+                td.id = `units${asset['account'][accountId]}`;
                 td.textContent = asset[key].toFixed(2)
                 tr.append(td)
             } else if (key === "salePrice") {
-                td.id = `price${i}`
-                td.textContent = asset[key].toFixed(2)
-                tr.append(td)
+                td.id = `price${asset['account'][accountId]}`;
+                td.textContent = asset[key].toFixed(2);
+                tr.append(td);
             }
             $(cryptosForSale).append(tr);
         }
@@ -119,6 +134,73 @@ async function getName(accountId){
     }).then(res => res.json())
         .then(data => name = data)
     return name
+}
+
+async function showOrder(accountId) {
+    $(cryptoBuy).show();
+
+    unitsToBuy = `${$(`#units${accountId}`).text()}`;
+    purchasePrice = $(`#price${accountId}`).text();
+
+    if (isOrderFormEmpty) {
+        $("#cryptoCoinToBuy").text(cryptoSymbol.innerText);
+        $(unitsToBuyInput).attr('max', unitsToBuy);
+        $("#pricePerUnit").text(purchasePrice);
+        $(totalPrice).text(`0`);
+        $(purchase).attr('buyerId', accountId);
+        isOrderFormEmpty = false;
+    }
+
+}
+
+$(unitsToBuyInput).bind('keyup mouseup', updateTotalPrice);
+
+function updateTotalPrice() {
+    $(totalPrice).text(`${$(unitsToBuyInput).val() * $("#pricePerUnit").text()}`);
+}
+
+async function carryOutTransaction() {
+    buyerId = await getIdCurrentUser();
+    let payload = {
+        buyer: parseInt(buyerId),
+        seller : parseInt($(purchase).attr('buyerId')),
+        crypto: {
+        symbol: cryptoSymbol.textContent
+        },
+        units: parseInt($(unitsToBuyInput).val())
+    }
+    console.log(payload);
+
+    await fetch(`${url.origin}/buy`, {
+        method: 'POST',
+        headers: { "Authorization": `${localStorage.getItem('token')}`},
+        body: JSON.stringify(payload)
+    }).then(res => {
+        if (res.status === 200) {
+            alert("Transaction worked, thank you for your purchase! You will now be redirected to the Marketplace");
+            cryptosForSale.hide();
+            cryptoBuy.hide();
+            window.location.replace(`${url.origin}/marketplace.html`);
+        } else {
+            return res.text().then(it => alert(it));
+        }
+    })
+}
+
+async function getIdCurrentUser() {
+    let userId;
+    await fetch(
+        `${url.origin}/getUserId`, {
+            method: 'POST',
+            headers: { "Authorization": `${localStorage.getItem('token')}`}
+        }).then(res => {
+            if (res.status === 200) {
+                return res.text().then(it => { userId = it;})
+            } else {
+                alert("Not a valid token anymore");
+            }
+        })
+    return userId;
 }
 
 
