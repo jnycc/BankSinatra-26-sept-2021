@@ -160,8 +160,12 @@ public class RootRepository {
         return jdbcCryptoDao.getAllCryptos();
     }
 
-    public List<Transaction> getTransactionsByUserId(int userId){
-        return jdbcTransactionDao.getTransactionsByUserId(userId);
+    public List<Transaction> getTransactionsByUserIdSeller(int userId){
+        return jdbcTransactionDao.getTransactionsByUserIdSeller(userId);
+    }
+
+    public List<Transaction> getTransactionsByUserIdBuyer(int userId){
+        return jdbcTransactionDao.getTransactionsByUserIdBuyer(userId);
     }
 
     public int getUserIDbyEmail(String email) {
