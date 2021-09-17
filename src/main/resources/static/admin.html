@@ -19,26 +19,44 @@
         </div>
         <ul class="navigation">
             <button id="bankfee">Change bank fee</button>
-            <button id="toggleBlock">Block/unblock user</button>
             <button id="logout">Log out</button>
         </ul>
     </div>
 </div>
+
 <div class="page">
-    <div class="left">
+    <div class="top">
         <form id="findUserForm">
-           Select a user:
-           <input id="email-input" type="email" name="email-input" placeholder="name@mail.org" required><br>
-           <input id="submitEmail" type="submit" value="Submit">
+            Select a user:
+            <input id="email-input" type="email" name="email-input" placeholder="name@mail.org" required><br>
+            <input id="submitEmail" type="submit" value="Submit">
         </form>
+    </div>
+    <div class="left">
         <div id="userData">
             <table id="userTable"></table>
         </div>
+        <br>
+        <button id="toggleBlock">Block/unblock user</button>
     </div>
+
     <div class="right">
-        hee hoi
+        <div id="portfolioData">
+            <table id="assetTable">
+                <tr>
+                    <th>Header</th>
+                </tr>
+                <tr>
+                    <td>placeholder</td>
+                </tr>
+                <tr>
+                    <td>placeholder</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
+
 <div id="overlay">
     <form id="feeForm">
         <h1>Change bank fee</h1>

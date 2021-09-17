@@ -11,7 +11,7 @@ function validateAdmin(){
                 console.log("no problemo")
             } else {
                 console.log("your token is bad and you should feel bad")
-                window.location.replace("/index.html");
+                window.location.replace("/index.html")
             }
         })
 }
@@ -23,12 +23,14 @@ const feeForm = document.querySelector("#feeForm")
 const btnCloseOverlay = document.querySelector("#close-overlay-btn")
 const overlay = document.querySelector("#overlay")
 
-let user = null;
+let user = null
 const findUserForm = document.querySelector("#findUserForm")
-const userTable = $("#userTable");
-
-const btnToggleBlock = document.querySelector("#toggleBlock");
+const userTable = $("#userTable")
+const btnToggleBlock = document.querySelector("#toggleBlock")
 $(btnToggleBlock).hide()
+
+const assetTable = document.querySelector("#assetTable")
+$(assetTable).hide()
 
 // LOGOUT
 logout.addEventListener("click", function() {
@@ -39,18 +41,18 @@ logout.addEventListener("click", function() {
 // CHANGE BANK FEE
 $(document).ready(function (){
     $(btnBankfee).click(function (){
-        $(overlay).show();
+        $(overlay).show()
     });
 
     $(btnCloseOverlay).click(function (){
         $(overlay).hide();
-        $(feeForm).trigger("reset");
+        $(feeForm).trigger("reset")
     })
 });
 
 feeForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    updateFee();
+    e.preventDefault()
+    updateFee()
 })
 
 function updateFee(){
@@ -77,14 +79,14 @@ function updateFee(){
 
 // LOAD USER
 findUserForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    user = document.querySelector("#email-input").value;
-    loadUser(user);
+    e.preventDefault()
+    user = document.querySelector("#email-input").value
+    loadUser(user)
 })
 
 function loadUser(user){
     if ($('#userTable tr').length !== 0) {
-        userTable.empty();
+        userTable.empty()
     }
     fetch(`http://localhost:8080/admin/getUserData?email=${user}`,
         {
@@ -98,15 +100,16 @@ function loadUser(user){
                     if (key === "address") { // "address" contains properties of its own, so needs to be looped through separately
                         let obj = it["address"];
                         for (const key in obj) {
-                            $(userTable).append("<tr><th>" + key + "</th><th>" + obj[key] + "</th></tr>");
+                            $(userTable).append("<tr><th>" + key + "</th><th>" + obj[key] + "</th></tr>")
                         }
                     } else {
-                        $(userTable).append("<tr><th>" + key + "</th><th>" + it[key] + "</th></tr>");
+                        $(userTable).append("<tr><th>" + key + "</th><th>" + it[key] + "</th></tr>")
                     }
                 }
             }
             $("#userData").append(userTable)
             $(btnToggleBlock).show()
+            $(assetTable).show()
         })
 }
 
@@ -126,7 +129,7 @@ function blockUser(user) {
             console.log("Block status changed.")
         } else {
             res.json().then(it => {
-                alert(it.message);
+                alert(it.message)
             })
         }
     })
