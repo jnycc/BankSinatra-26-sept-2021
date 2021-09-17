@@ -110,4 +110,12 @@ public class TransactionService {
 
         return cryptoOverview;
     }
+
+    public List<Transaction> getTransactionsBuyer(int userId){
+        return rootRepository.getTransactionsByUserIdBuyer(userId);
+    }
+
+    public List<Transaction> getTransactionsSeller(int userId){
+        return rootRepository.getTransactionsByUserIdSeller(userId);
+    }
 }

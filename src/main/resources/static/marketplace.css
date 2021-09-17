@@ -1,0 +1,57 @@
+body :not(#header){
+    margin-left: 20px;
+}
+
+#cryptosForSale {
+    display: none;
+}
+#cryptoBuy {
+    display: none;
+}
+
+.cryptoLogo {
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    margin-right: 5px;
+}
+
+.cryptoLogo:first-child {
+}
+
+#cryptosForSale, #cryptoTable, #orderForm{
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 70%;
+}
+
+#cryptosForSale td, #cryptosForSale th, #cryptoTable, th, td, #orderForm tbody{
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#cryptosForSale tr:nth-child(even){background-color: lightcyan;}
+
+#cryptoTable tr:nth-child(even){background-color: lightcyan;}
+
+#orderForm tr:nth-child(even){background-color: lightcyan;}
+
+#cryptosForSale tr:nth-child(even):hover{background-color: teal;}
+
+#orderForm tr:nth-child(even):hover{background-color: teal;}
+
+#cryptoTable tr:nth-child(even):hover{background-color: teal;}
+
+#cryptosForSale tr:hover {background-color: #ddd;}
+
+#cryptosForSale th, #cryptoTable th, #orderForm th{
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #001d23;
+    color: white;
+}
+
+tr:hover{
+    background-color: teal;
+}

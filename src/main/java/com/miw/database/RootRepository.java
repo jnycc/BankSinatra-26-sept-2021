@@ -156,9 +156,16 @@ public class RootRepository {
         jdbcAssetDao.deleteAsset(symbol, seller);
     }
 
-
     public List<Crypto> getCryptoOverview() {
         return jdbcCryptoDao.getAllCryptos();
+    }
+
+    public List<Transaction> getTransactionsByUserIdSeller(int userId){
+        return jdbcTransactionDao.getTransactionsByUserIdSeller(userId);
+    }
+
+    public List<Transaction> getTransactionsByUserIdBuyer(int userId){
+        return jdbcTransactionDao.getTransactionsByUserIdBuyer(userId);
     }
 
     public int getUserIDbyEmail(String email) {

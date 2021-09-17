@@ -2,8 +2,11 @@
 <html lang="en" class ="no-js">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marketplace</title>
     <link rel="stylesheet" href="partials/header.css">
+    <link rel="stylesheet" href="marketplace.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="partials/validateClient.js"></script>
@@ -17,12 +20,36 @@
 
 <body>
 <div id="header"></div>
-<div id="cryptoOverview" class="split left">
+
+<table id="cryptoTable"></table>
+
+<div id="cryptoDetails" class="split left">
+    <img id="cryptoImg" alt="cryptocoin image">
     <h1 id="cryptoSymbol"></h1>
-    <table id="cryptoTable"></table>
+    <table id="cryptosForSale"></table>
 </div>
 
 <div id="cryptoBuy" class="split right">
+    <h1 id="orderHeader">Order Overview</h1>
+    <br><br>
+
+    <table id="orderForm">
+        <tr>
+            <th>Symbol</th>
+            <th>Units</th>
+            <th>Price per unit</th>
+        </tr>
+        <tr>
+            <td id="cryptoCoinToBuy"></td>
+            <td><input id="unitsToBuy" min="0" type="number"></td>
+            <td id="pricePerUnit"></td>
+        </tr>
+    </table>
+    <br>
+    <h2>Total:</h2>
+    <br>
+    <p id="totalPrice"></p>
+    <button id="purchase">Purchase</button>
 </div>
 
 </body>
