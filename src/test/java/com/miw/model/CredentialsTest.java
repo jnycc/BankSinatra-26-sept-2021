@@ -9,6 +9,9 @@ import javax.validation.ValidatorFactory;
 import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
+/**
+ *@author Nijad Nazarli
+ */
 
 class CredentialsTest {
     private Credentials validCredentials;
@@ -34,20 +37,37 @@ class CredentialsTest {
     }
 
     @Test
-    void testWrongInput() {
+    void testWrongEmail() {
         Set<ConstraintViolation<Credentials>> violations = validator.validate(notAnEmail);
-        Set<ConstraintViolation<Credentials>> violations2 = validator.validate(shortPassword);
-        Set<ConstraintViolation<Credentials>> violation3 = validator.validate(blankCredentials);
         assertFalse(violations.isEmpty());
-        assertFalse(violations2.isEmpty());
-        assertFalse(violation3.isEmpty());
     }
 
     @Test
-    void testCredentialsOnEquality() {
-        assertThat(validCredentials).isEqualTo(identicalCredentials);
-        assertThat(validCredentials).isNotEqualTo(oneMoreCredentials);
-        assertThat(noArgsCredentials.getEmail()).isNullOrEmpty();
+    void testShortPassword() {
+        Set<ConstraintViolation<Credentials>> violations2 = validator.validate(shortPassword);
+        assertFalse(violations2.isEmpty());
+    }
+
+    @Test
+    void testEmptyCredentials() {
+        Set<ConstraintViolation<Credentials>> violation3 = validator.validate(blankCredentials);
+        assertFalse(violation3.isEmpty());
+    }
+
+
+    @Test
+    void testNoArgsConstructor() {
         assertThat(noArgsCredentials.getPassword()).isNullOrEmpty();
+        assertThat(noArgsCredentials.getEmail()).isNullOrEmpty();
+    }
+
+    @Test
+    void testNotMatchingCredentials() {
+        assertThat(validCredentials).isNotEqualTo(oneMoreCredentials);
+    }
+
+    @Test
+    void testIdenticalCredentials() {
+        assertThat(validCredentials).isEqualTo(identicalCredentials);
     }
 }

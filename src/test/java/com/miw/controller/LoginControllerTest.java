@@ -1,10 +1,8 @@
 package com.miw.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.miw.database.JdbcClientDao;
 import com.miw.model.Credentials;
 import com.miw.service.authentication.AuthenticationService;
-import com.miw.service.authentication.TokenService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -18,10 +16,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import java.util.HashMap;
+import java.util.Map;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+/**
+ *@author Nijad Nazarli
+ */
 
 @WebMvcTest(LoginController.class)
 class LoginControllerTest {
@@ -30,10 +34,6 @@ class LoginControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private AuthenticationService authenticationService;
-    @MockBean
-    private TokenService tokenService;
-    @MockBean
-    private JdbcClientDao jdbcClientDao;
 
     @Autowired
     public LoginControllerTest(MockMvc mockMvc) {
@@ -44,8 +44,11 @@ class LoginControllerTest {
 
     @Test
     void loginUser() {
-        Credentials validCredentials = new Credentials("test@test.com", "zeerveiligwachtwoord2");
-        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MzA2OTE4ODEsInN1YiI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE2MzA2OTkyODF9.e0FE2OrTRImfnkIKkkuACikdh-CZHq7KuzTnQYeUsOI";
+        Credentials validCredentials = new Credentials("test1@test.com", "zeerveiligwachtwoord2");
+        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwidXNlcnJvbGUiOiJjbGllbnQiLCJleHAiOjE2MzE5Nzg5OTUsImlhdCI6MTYzMTk3MTU5NX0.Q1W8OTOQeylcPn2am7tI733gZcR7yE48v-hHqyj_c2k";
+        Map<String, String> loginResponse = new HashMap<>();
+        loginResponse.put("userRole", "client");
+        loginResponse.put("token", token);
         Mockito.when(authenticationService.authenticate(validCredentials)).thenReturn(token);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/login");
         request.contentType(MediaType.APPLICATION_JSON).content(asJsonString(validCredentials));
@@ -53,8 +56,8 @@ class LoginControllerTest {
             ResultActions actions = mockMvc.perform(request);
             MockHttpServletResponse response = actions.andExpect(status().isOk()).andDo(print()).andReturn().getResponse();
             assertThat(response.getContentAsString()).isNotEmpty();
-            assertThat(response.getContentType()).isEqualTo("text/plain;charset=UTF-8");
-            assertThat(response.getContentAsString()).isEqualTo(token);
+            assertThat(response.getContentType()).isEqualTo("application/json");
+            assertThat(response.getContentAsString()).isEqualTo(asJsonString(loginResponse));
         } catch (Exception e) {
             e.printStackTrace();
         }

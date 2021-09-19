@@ -67,4 +67,8 @@ public class AuthenticationService {
     public HashService getHashService() {
         return hashService;
     }
+
+    public RootRepository getRootRepository() {
+        return rootRepository;
+    }
 }
