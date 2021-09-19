@@ -97,7 +97,7 @@ public class JdbcCryptoDao {
 
     // Returns map of crypto values with accommodating key ("min", "max", "avg") of each day from now until certain past date
     public Map<LocalDate, Map<String, Double>> getDayValuesByCrypto(String symbol, int daysBack) {
-        String sql = "Select symbol, AVG(cryptoPrice) avg, MIN(cryptoPrice) min, MAX(cryptoPrice) max, date(dateRetrieved) FROM cryptoprice WHERE symbol = ? " +
+        String sql = "Select symbol, AVG(cryptoPrice) avg, MIN(cryptoPrice) min, MAX(cryptoPrice) max, date(dateRetrieved) FROM CryptoPrice WHERE symbol = ? " +
                 "AND dateRetrieved BETWEEN timestamp(curdate() -?) AND current_timestamp() GROUP BY DATE(dateRetrieved);";
         try {
             return jdbcTemplate.query(sql, new JdbcCryptoDao.CryptoStatsSetExtractor(), symbol, daysBack);
@@ -132,7 +132,7 @@ public class JdbcCryptoDao {
     }
 
     public Map<LocalDate, Map<String, Double>> getPricesPerDate() {
-        String sql = "SELECT date(dateRetrieved) date, symbol, avg(cryptoprice) avgCryptoprice FROM cryptoprice\n" +
+        String sql = "SELECT date(dateRetrieved) date, symbol, avg(cryptoprice) avgCryptoprice FROM CryptoPrice\n" +
                 "GROUP BY day(dateRetrieved), symbol ORDER BY date;";;
         try {
             return jdbcTemplate.query(sql, new JdbcCryptoDao.AverageCryptopriceSetExtractor());

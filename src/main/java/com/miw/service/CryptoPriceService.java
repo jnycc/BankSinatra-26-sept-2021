@@ -34,14 +34,14 @@ import java.util.List;
  *  @Author: elbertvw
  *  This service ensures recent prices are saved in the database periodically by calling the CoinMarketCap API.
  *
- *  The updatePrices-method the primary method of the service. It defines the parameters of the API call to CoinMarketCap,
+ *  The updatePrices-method is the primary method of the service. It defines the parameters of the API call to CoinMarketCap,
  *  and then calls the makeAPICall method with those parameters and immediately feeds its response, a large JSON string,
  *  to a parser method.
  *  The parser method, parseAndSave, handles the extraction of relevant data from the JSON and immediately updates crypto
  *  prices in the database.
  *
- *  The service, specifically the updatePrices-method, is scheduled to operate at a frequency defined as CALL_FREQUENCY,
- *  and executes for the first time after application launch after the specified INITIAL_DELAY.
+ *  The service is scheduled to operate at a frequency defined as CALL_FREQUENCY, and executes for the first time after
+ *  application launch after the specified INITIAL_DELAY.
  */
 
 @Service

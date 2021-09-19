@@ -113,7 +113,7 @@ public class JdbcTransactionDao {
     }
 
     public Map<LocalDate, Map<String, Double>> getBoughtUnitsPerDay(int userID) {
-        String sql = "SELECT date(date) date, symbol, units FROM transaction WHERE accountID_buyer = ? GROUP BY date, symbol";;
+        String sql = "SELECT date(date) date, symbol, units FROM Transaction WHERE accountID_buyer = ? GROUP BY date, symbol";;
         try {
             return jdbcTemplate.query(sql, new JdbcTransactionDao.UnitsSetExtractor(), userID);
         } catch (EmptyResultDataAccessException e) {
@@ -123,7 +123,7 @@ public class JdbcTransactionDao {
     }
 
     public Map<LocalDate, Map<String, Double>> getSoldUnitsPerDay(int userID) {
-        String sql = "SELECT date(date) date, symbol, units FROM transaction WHERE accountID_seller = ? GROUP BY date, symbol";;
+        String sql = "SELECT date(date) date, symbol, units FROM Transaction WHERE accountID_seller = ? GROUP BY date, symbol";;
         try {
             return jdbcTemplate.query(sql, new JdbcTransactionDao.UnitsSetExtractor(), userID);
         } catch (EmptyResultDataAccessException e) {
