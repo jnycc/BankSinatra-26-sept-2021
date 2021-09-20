@@ -159,7 +159,7 @@ public class JdbcAssetDao {
 
         @Override
         public Asset mapRow(ResultSet resultSet, int i) throws SQLException {
-            Integer accountId = resultSet.getInt("accountID");
+            int accountId = resultSet.getInt("accountID");
             String name = resultSet.getString("name");
             String symbol = resultSet.getString("symbol");
             String description = resultSet.getString("description");
@@ -169,9 +169,7 @@ public class JdbcAssetDao {
             double unitsForSale = resultSet.getDouble("unitsForSale");
             double salePrice = resultSet.getDouble("salePrice");
             Asset asset = new Asset(crypto, units, unitsForSale, salePrice);
-            Account account = new Account();
-            account.setAccountId(accountId);
-            asset.setAccount(account);
+            asset.setAccountId(accountId);
             return asset;
         }
     }

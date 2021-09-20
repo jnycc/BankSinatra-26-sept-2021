@@ -35,8 +35,8 @@ public class MarketplaceController {
         if (!TokenService.validateJWT(token)) {
             return new ResponseEntity<>("Invalid login credentials, try again", HttpStatus.UNAUTHORIZED);
         }
-        Integer userId = TokenService.getValidUserID(token);
-        if (userId == null){
+        int userId = TokenService.getValidUserID(token);
+        if (userId == 0){
             return new ResponseEntity<>("booh", HttpStatus.UNAUTHORIZED);
         }
 
@@ -53,31 +53,29 @@ public class MarketplaceController {
 
     @PostMapping("/requestName")
     public ResponseEntity<?> getNameByAccountID(@RequestBody String accountIdAsJson){
-        Gson gson = new Gson();
-        int accountId = gson.fromJson(accountIdAsJson, Integer.class);
+        int accountId = new Gson().fromJson(accountIdAsJson, Integer.class);
 
         String name;
         if (accountId == accountBank){
             name = "Bank Sinatra";
         } else {
             Client client = rootRepository.findByAccountId(accountId);
-            name = client.getFirstName() + " " + client.getLastName();
+            if (client != null) {
+                name = client.getFirstName() + " " + client.getLastName();
+            } else {
+                return new ResponseEntity<>("Something went wrong, fam", HttpStatus.BAD_REQUEST);
+            }
         }
-
-        if (!name.isEmpty()){
-            return new ResponseEntity<>(gson.toJson(name), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Something went wrong, fam", HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(new Gson().toJson(name), HttpStatus.OK);
     }
 
     @PostMapping("/getUserId")
     public ResponseEntity<?> getCurrentUserId(@RequestHeader("Authorization") String token) {
-        Integer userId = TokenService.getValidUserID(token);
-        if (userId == null){
+        int userId = TokenService.getValidUserID(token);
+        if (userId == 0){
             return new ResponseEntity<>("Not a valid Token", HttpStatus.UNAUTHORIZED);
         } else {
-            return new ResponseEntity<>(userId.intValue(), HttpStatus.OK);
+            return new ResponseEntity<>(userId, HttpStatus.OK);
         }
     }
 }

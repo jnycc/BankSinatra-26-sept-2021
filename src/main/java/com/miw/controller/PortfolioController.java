@@ -59,8 +59,8 @@ public class PortfolioController {
 
     @PutMapping("/marketAsset")
     public ResponseEntity<?> marketAsset(@RequestHeader("Authorization") String token, @RequestBody String assetsSale) {
-        Integer userId = TokenService.getValidUserID(token);
-        if (userId == null) {
+        int userId = TokenService.getValidUserID(token);
+        if (userId == 0) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         int accountId = rootRepository.getAccountById(userId).getAccountId();

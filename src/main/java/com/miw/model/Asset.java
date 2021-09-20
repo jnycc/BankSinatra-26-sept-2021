@@ -5,7 +5,7 @@ import java.util.TreeMap;
 
 public class Asset {
 
-    private Account account;
+    private int accountId;
     public Crypto crypto;
     private double units;
     private double currentValue;
@@ -38,13 +38,12 @@ public class Asset {
         return units * crypto.getCryptoPrice();
     }
 
-
-    public void setAccount(Account account) {
-        this.account = account;
+    public int getAccountId() {
+        return accountId;
     }
 
-    public Account getAccount() {
-        return account;
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 
     public Crypto getCrypto() {
@@ -114,7 +113,7 @@ public class Asset {
     @Override
     public String toString() {
         return "Asset{" +
-                "account=" + account +
+                "accountId=" + accountId +
                 ", crypto=" + crypto +
                 ", units=" + units +
                 ", currentValue=" + currentValue +
