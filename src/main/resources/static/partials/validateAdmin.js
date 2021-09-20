@@ -3,7 +3,7 @@ window.addEventListener("DOMContentLoaded", validateAdmin)
 
 // specific validation of jwt and userrole
 function validateAdmin(){
-    fetch(`http://localhost:8080/validateAdmin`, {
+    fetch('/validateAdmin', {
         method: 'POST',
         body: `${localStorage.getItem('token')}`
     })

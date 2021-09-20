@@ -4,7 +4,7 @@ window.addEventListener("DOMContentLoaded", validateClient)
 
 // specific validation of jwt and userrole
 function validateClient(){
-    fetch(`http://localhost:8080/validateClient`, {
+    fetch('/validateClient', {
         method: 'POST',
         body: `${localStorage.getItem('token')}`
     })

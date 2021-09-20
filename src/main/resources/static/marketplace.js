@@ -1,6 +1,7 @@
 let url = new URL(window.location.href);
 const assets = [];
 const cryptoTable = document.getElementById('cryptoTable');
+const currencyFormat = {style: "currency", currency: "USD", minimumFractionDigits: 2}
 const cryptosForSaleDiv = document.querySelector('#cryptoDetails');
 const cryptoSymbol = document.querySelector("#cryptoSymbol");
 const cryptoBuy = $("#cryptoBuy");
@@ -54,8 +55,10 @@ function setupPageWithCryptos() {
                     } else if (key === 'dateRetrieved'){
                         let date = new Date(obj[key]);
                         cell.innerHTML = date.toLocaleString();
+                    } else if (key === 'cryptoPrice'){
+                        cell.innerHTML = obj.cryptoPrice.toLocaleString("en-US", currencyFormat);
                     } else {
-                        cell.innerHTML = obj[key];
+                        cell.innerHTML = obj[key]
                     }
                     row.append(cell)
                 }
