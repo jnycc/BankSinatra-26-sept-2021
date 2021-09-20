@@ -5,17 +5,29 @@ const cryptosForSaleDiv = document.querySelector('#cryptoDetails');
 const cryptoSymbol = document.querySelector("#cryptoSymbol");
 const cryptoBuy = $("#cryptoBuy");
 const orderForm = document.querySelector("#orderForm");
+const buyBtn = document.querySelector("#buy");
+const cryptoOverlay = $("#cryptoOverlay");
+const cryptosForSale = $("#cryptosForSale");
+const purchase = document.querySelector("#purchase");
+const cryptoName = $("#cryptoName");
+const closeCryptoOverlayBtn = document.querySelector(".closeCryptoOverlay");
 let unitsToBuy;
 let buyerId;
 let purchasePrice;
+let cryptoChosen;
 let totalPrice = document.querySelector("#totalPrice");
 let unitsToBuyInput = document.querySelector("#unitsToBuy");
 let isOrderFormEmpty = true;
-const cryptosForSale = $("#cryptosForSale");
-$(cryptoTable).append("<tr><th>#</th><th>Crypto</th> <th>Symbol</th> <th>Price</th> <th>PriceDelta1Day</th></tr>");
-const purchase = document.querySelector("#purchase");
+$(cryptoTable).append("<tr><th>#</th><th>Crypto</th> <th>Symbol</th> <th>Price</th><th>Retrieval Date</th> <th>PriceDelta1Day</th></tr>");
 window.addEventListener("DOMContentLoaded", setupPageWithCryptos);
 purchase.addEventListener('click', carryOutTransaction);
+buyBtn.addEventListener('click', () => {
+    $(cryptoOverlay).hide();
+    showCryptosForSale(cryptoChosen);
+})
+closeCryptoOverlayBtn.addEventListener('click', () => {
+    $(cryptoOverlay).hide();
+})
 
 //Create table and add the header row
 function setupPageWithCryptos() {
@@ -39,8 +51,11 @@ function setupPageWithCryptos() {
                     const cell = document.createElement('td')
                     if (key === 'name') {
                         cell.append(getCryptoLogo(obj.symbol), obj[key])
+                    } else if (key === 'dateRetrieved'){
+                        let date = new Date(obj[key]);
+                        cell.innerHTML = date.toLocaleString();
                     } else {
-                        cell.innerHTML = obj[key]
+                        cell.innerHTML = obj[key];
                     }
                     row.append(cell)
                 }
@@ -56,13 +71,13 @@ function getCryptoLogo(symbol) {
 }
 
 function openDetails(symbol) {
-    // alert('My crypto symbol is: ' + symbol + '\nHier komt de overlay met cryptodetails en buy/sell knop.')
-    $(cryptoTable).hide();
-    showCryptosForSale(symbol);
+    cryptoChosen = symbol;
+    $(cryptoName).text(cryptoChosen);
+    $(cryptoOverlay).show();
 }
 
-
 async function showCryptosForSale(symbol) {
+    $(cryptoTable).hide();
     const cryptoSymbol = $("#cryptoSymbol").text(symbol);
     cryptoSymbol.css('display', 'inline');
     $("#cryptoImg").attr('src',`/images/cryptoLogos/logo_${symbol}.png`);
@@ -103,20 +118,19 @@ async function fillTable() {
 
         for (const key of Object.keys(asset)) {
             const td = document.createElement("td")
-            let accountId = "accountId";
-            if (key === "account"){
-                let account = Object.assign({}, asset[key])
+            if (key === "accountId"){
+                let accountId = asset[key]
                 td.id = `sellerRow${i}`;
-                td.textContent = await getName(account[accountId]);
-                tr.id = `seller${account[accountId]}`;
+                td.textContent = await getName(accountId);
+                tr.id = `seller${accountId}`;
                 tr.append(td);
-                tr.onclick = function () {showOrder(account[accountId])}
+                tr.onclick = function () {showOrder(accountId)}
             } else if (key === "unitsForSale") {
-                td.id = `units${asset['account'][accountId]}`;
+                td.id = `units${asset["accountId"]}`;
                 td.textContent = asset[key].toFixed(2)
                 tr.append(td)
             } else if (key === "salePrice") {
-                td.id = `price${asset['account'][accountId]}`;
+                td.id = `price${asset["accountId"]}`;
                 td.textContent = asset[key].toFixed(2);
                 tr.append(td);
             }
@@ -202,5 +216,8 @@ async function getIdCurrentUser() {
         })
     return userId;
 }
+
+
+
 
 

@@ -5,6 +5,7 @@
     <title>Account</title>
     <link rel="stylesheet" href="partials/header.css">
     <link rel="stylesheet" href="style.css">
+    <style src="//cdn.datatables.net/1.11.2/css/jquery.dataTables.min.css"></style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="partials/validateClient.js"></script>
     <script src="account.js" defer></script>
@@ -26,12 +27,32 @@
 
 <div id="transactionsAsBuyer" class="split left">
     <h3>Transactions as buyer:</h3>
-    <table id="transactionTableBuyer"></table>
+    <table id="transactionTableBuyer" class="sortable">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Seller</th>
+            <th>Purchase</th>
+            <th>Price</th>
+            <th>Bank fee</th>
+        </tr>
+        </thead>
+    </table>
 </div>
 
 <div id="transactionsAsSeller" class="split right">
     <h3>Transactions as seller:</h3>
-    <table id="transactionTableSeller"></table>
+    <table id="transactionTableSeller" class="sortable">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Seller</th>
+            <th>Purchase</th>
+            <th>Price</th>
+            <th>Bank fee</th>
+        </tr>
+        </thead>
+    </table>
 </div>
 
 
