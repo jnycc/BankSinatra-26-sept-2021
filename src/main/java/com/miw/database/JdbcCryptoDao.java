@@ -145,7 +145,8 @@ public class JdbcCryptoDao {
 
 
     public Map<String, Double> getPriceDeltas(LocalDateTime dateTime) {
-        String sql = "SELECT q1.symbol, (q1.cryptoPrice - q2.cryptoPrice) AS priceDelta FROM " +
+        String sql = "SELECT q1.symbol, ROUND(((q1.cryptoPrice - q2.cryptoPrice)/q2.cryptoPrice * 100), 2) AS priceDelta" +
+                " FROM " +
                 "(SELECT * FROM CryptoPrice " +
                 "WHERE dateRetrieved >= DATE_ADD( " +
                 "   (SELECT dateRetrieved FROM CryptoPrice " +
