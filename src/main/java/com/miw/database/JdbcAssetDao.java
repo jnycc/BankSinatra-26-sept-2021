@@ -168,12 +168,10 @@ public class JdbcAssetDao {
             double units = resultSet.getDouble("units");
             double unitsForSale = resultSet.getDouble("unitsForSale");
             double salePrice = resultSet.getDouble("salePrice");
-            Asset asset = new Asset(crypto, units);
+            Asset asset = new Asset(crypto, units, unitsForSale, salePrice);
             Account account = new Account();
             account.setAccountId(accountId);
             asset.setAccount(account);
-            asset.setUnitsForSale(unitsForSale);
-            asset.setSalePrice(salePrice);
             return asset;
         }
     }

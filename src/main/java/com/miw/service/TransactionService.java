@@ -65,7 +65,6 @@ public class TransactionService {
     public void transferCrypto(int seller, int buyer, Crypto crypto, double units){
        double newSellerAssetsForSale = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnitsForSale() - units;
        double newSellerTotalAssets = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() - units;
-       double newBuyerAssets = rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()).getUnits() + units;
 
        rootRepository.updateAssetForSale(newSellerAssetsForSale, crypto.getSymbol(), seller);
 
@@ -78,6 +77,7 @@ public class TransactionService {
        if(rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()) == null){
            rootRepository.saveAsset(buyer, crypto.getSymbol(), units);
        } else {
+           double newBuyerAssets = rootRepository.getAssetBySymbol(buyer, crypto.getSymbol()).getUnits() + units;
            rootRepository.updateAsset(newBuyerAssets, crypto.getSymbol(), buyer);
            if (buyer == accountBank){
                rootRepository.updateAssetForSale(newBuyerAssets, crypto.getSymbol(), buyer);
