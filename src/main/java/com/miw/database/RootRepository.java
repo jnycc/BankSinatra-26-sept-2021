@@ -85,7 +85,9 @@ public class RootRepository {
         return jdbcAccountDao.getAccountByID(accountId);
     }
 
-    public Account getAccountByUserId(int userId) { return jdbcAccountDao.getAccountByUserID(userId);}
+    public Account getAccountByUserId(int userId) {
+        return jdbcAccountDao.getAccountByUserID(userId);
+    }
 
     public Account getAccountByEmail(String email){
         return jdbcAccountDao.getAccountByEmail(email);
@@ -188,5 +190,9 @@ public class RootRepository {
 
     public void saveCryptoPriceBySymbol(String symbol, double price, LocalDateTime time) {
         jdbcCryptoDao.saveCryptoPriceBySymbol(symbol, price, time);
+    }
+
+    public Map<String, Double> getPriceDeltas(LocalDateTime dateTime) {
+        return jdbcCryptoDao.getPriceDeltas(dateTime);
     }
 }

@@ -32,6 +32,23 @@ public class PortfolioService {
         return rootRepository.findClientByEmail(email);
     }
 
+    public int getAccountIdByUserId(int userId) {
+        return rootRepository.getAccountByUserId(userId).getAccountId();
+    }
+
+    public double getTotalPortfolioValue(int accountId) {
+        List<Asset> assetList = rootRepository.getAssets(accountId);
+        double totalPortfolioValue = 0.0;
+        for (Asset asset : assetList) {
+            totalPortfolioValue += asset.getCurrentValue();
+        }
+        return totalPortfolioValue;
+    }
+
+    public List<Asset> getAssets(int accountId) {
+        return rootRepository.getAssets(accountId);
+    }
+
     /**
      * Obtains the client's portfolio with all assets, including the current, historical and delta values.
      * Delta values are changes in the value of the assets and total portfolio

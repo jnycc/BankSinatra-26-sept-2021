@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TransactionService {
@@ -107,6 +109,10 @@ public class TransactionService {
         List<Crypto> cryptoOverview = rootRepository.getCryptoOverview();
 
         return cryptoOverview;
+    }
+
+    public Map<String, Double> getPriceDeltas(LocalDateTime dateTime) {
+        return rootRepository.getPriceDeltas(dateTime);
     }
 
     public List<Transaction> getTransactionsBuyer(int userId){

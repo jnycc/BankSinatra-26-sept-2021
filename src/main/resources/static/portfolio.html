@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio</title>
     <link rel="stylesheet" href="partials/header.css">
-    <link rel="stylesheet" href="marketplace.css">
+    <link rel="stylesheet" href="portfolio.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="partials/validateClient.js"></script>
@@ -20,27 +20,43 @@
 
 <body>
     <nav id="header"></nav>
+    <br>
+    <section>
+        <p>Total EUR balance: <span id="totalBalance">€&nbsp;</span></p>
+        <p>Total portfolio value: <span id="totalPortfolioValue">€&nbsp;</span></p>
+        <p>Total portfolio delta 1 day: <span id="totalPortfolioDelta"></span></p>
+<!--        <span data-id="totalPortfolioValue" data-field="total" class="_8Dp1KM5D " data-positive="true" title="10,000.00">€&nbsp;10,000.00</span>-->
+    </section>
+    <br><br>
+    <table id="assetTable"></table>
 
+    <br><br><br>
+    <h2>Oefentabel (TO BE DEL</h2>
     <table>
         <tr>
             <th>Crypto</th>
             <th>Symbol</th>
+            <th>Units</th>
             <th>Price</th>
+            <th>Value</th>
             <th>Delta</th>
         </tr>
         <tr>
             <td>Bitcoin</td>
             <td>BTC</td>
-            <td>hier komt prijs</td>
-            <td>hier komt prijsdelta</td>
+            <td>9</td>
+            <td>€40,000.00</td>
+            <td>€360,000.00</td>
+            <td>assetValueDelta</td>
         </tr>
         <tr>
             <td>Cardano</td>
             <td>ADA</td>
-            <td>hier komt prijs</td>
-            <td>hier komt prijsdelta</td>
+            <td>1,000</td>
+            <td>€2.56</td>
+            <td>€2,560.00</td>
+            <td>assetValueDelta</td>
         </tr>
-
     </table>
 
 
