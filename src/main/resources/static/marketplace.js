@@ -18,9 +18,7 @@ let cryptoChosen;
 let totalPrice = document.querySelector("#totalPrice");
 let unitsToBuyInput = document.querySelector("#unitsToBuy");
 let isOrderFormEmpty = true;
-const cryptosForSale = $("#cryptosForSale");
-$(cryptoTable).append("<tr><th>#</th><th>Cryptocurrency</th> <th>Symbol</th> <th>Price</th> <th>24h %</th> <th>7d %</th></tr>");
-const purchase = document.querySelector("#purchase");
+$(cryptoTable).append("<tr><th>#</th><th>Cryptocurrency</th> <th>Symbol</th> <th>Price</th> <th>Last price update</th><th>24h %</th> <th>7d %</th></tr>");
 window.addEventListener("DOMContentLoaded", setupPageWithCryptos);
 purchase.addEventListener('click', carryOutTransaction);
 buyBtn.addEventListener('click', () => {
