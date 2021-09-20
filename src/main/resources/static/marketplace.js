@@ -12,18 +12,18 @@ let totalPrice = document.querySelector("#totalPrice");
 let unitsToBuyInput = document.querySelector("#unitsToBuy");
 let isOrderFormEmpty = true;
 const cryptosForSale = $("#cryptosForSale");
-$(cryptoTable).append("<tr><th>#</th><th>Crypto</th> <th>Symbol</th> <th>Price</th> <th>PriceDelta1Day</th></tr>");
+$(cryptoTable).append("<tr><th>#</th><th>Cryptocurrency</th> <th>Symbol</th> <th>Price</th> <th>24h %</th> <th>7d %</th></tr>");
 const purchase = document.querySelector("#purchase");
 window.addEventListener("DOMContentLoaded", setupPageWithCryptos);
 purchase.addEventListener('click', carryOutTransaction);
 
-//Create table and add the header row
+//Create table and add the crypto data
 function setupPageWithCryptos() {
     $(cryptosForSaleDiv).hide();
     fetch(`/cryptos`,
         {
             method: 'GET',
-            headers: { 'Authorization': `${localStorage.getItem('token')}` }
+            headers: { 'Authorization': localStorage.getItem('token') }
         })
         .then(res => res.json())
         .then(json => {
@@ -32,7 +32,7 @@ function setupPageWithCryptos() {
             for (let obj of json) {
                 const row = document.createElement('tr')
                 row.id = obj.symbol
-                row.onclick = function() {openDetails(obj.symbol)}
+                row.addEventListener('click', () => openDetails(obj.symbol))
                 cryptoTable.appendChild(row)
                 $(row).append(`<td>${i++}</td>`)
                 for (let key of Object.keys(obj)) {
@@ -45,6 +45,12 @@ function setupPageWithCryptos() {
                     row.append(cell)
                 }
             }
+            let yesterday = new Date()
+            yesterday.setDate(yesterday.getDate() - 1)
+            setPriceDeltas(yesterday)
+            let oneWeekAgo = new Date()
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+            setPriceDeltas(oneWeekAgo)
         })
 }
 
@@ -55,8 +61,36 @@ function getCryptoLogo(symbol) {
     return logo
 }
 
+/**
+ * Obtains the delta of the current price vs. the price on the selected date of all crypto values.
+ * Consequently sets them in the table in the market place page.
+ * @param date: the selected date against which a price-delta value is to be calculated.
+ */
+function setPriceDeltas(date) {
+    fetch('/priceDeltas', {
+        method: 'GET',
+        headers: {
+            'Authorization': localStorage.getItem('token'),
+            'dateTime': date.toISOString(),
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(res => res.json())
+        .then(json => {
+            // json-object is een map met crypto's met key-values: "symbol: delta%".
+            // Voor elk crypto-item in de map: maak 1 td-cell, zet innerHTML value op de delta-waarde. Append de cell aan de bestaande table rows.
+            const rows = cryptoTable.rows
+            let i = 1 //start vanaf table row 1 (0 = table header)
+            for (let key of Object.keys(json)) {
+                const cell = document.createElement('td')
+                cell.innerHTML = json[key].toFixed(2) + '%'
+                rows[i].appendChild(cell)
+                i++
+            }
+        })
+}
+
 function openDetails(symbol) {
-    // alert('My crypto symbol is: ' + symbol + '\nHier komt de overlay met cryptodetails en buy/sell knop.')
     $(cryptoTable).hide();
     showCryptosForSale(symbol);
 }
