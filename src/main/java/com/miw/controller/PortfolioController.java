@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,19 +38,41 @@ public class PortfolioController {
                                JdbcCryptoDao jdbcCryptoDao) {
         this.jdbcCryptoDao = jdbcCryptoDao;
         this.portfolioService = portfolioService;
-        this.gson = gson;
         this.rootRepository = rootRepository;
     }
 
     @GetMapping("/portfolio")
     public ResponseEntity<?> getPortfolioOverview(@RequestHeader("Authorization") String token) {
-        Integer userId = TokenService.getValidUserID(token);
-        if (userId == null) {
+        int userId = TokenService.getValidUserID(token);
+        if (userId == 0) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        int accountId = portfolioService.getAccountIdByUserId(userId);
         //PortfolioService aanroepen om de vereiste gegevens te verzamelen en returnen aan frontend
-        Map<String, Object> portfolio = portfolioService.getPortfolio(userId);
+        Map<String, Object> portfolio = portfolioService.getPortfolio(accountId);
         return ResponseEntity.ok(portfolio);
+    }
+    
+    @GetMapping("/portfolio/totalPortfolioValue")
+    public ResponseEntity<?> getCurrentPortfolioValue(@RequestHeader("Authorization") String token) {
+        int userId = TokenService.getValidUserID(token);
+        if (userId == 0) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        int accountId = portfolioService.getAccountIdByUserId(userId);
+        double totalPortfolioValue = portfolioService.getTotalPortfolioValue(accountId);
+        return ResponseEntity.ok(totalPortfolioValue);
+    }
+
+    @GetMapping("/portfolio/assets")
+    public ResponseEntity<?> getAssets(@RequestHeader("Authorization") String token) {
+        int userId = TokenService.getValidUserID(token);
+        if (userId == 0) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        int accountId = portfolioService.getAccountIdByUserId(userId);
+        List<Asset> assetList= portfolioService.getAssets(accountId);
+        return ResponseEntity.ok(assetList);
     }
 
     @PutMapping("/marketAsset")

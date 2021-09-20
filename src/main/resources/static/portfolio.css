@@ -1,0 +1,30 @@
+body :not(#header){
+    margin-left: 20px;
+}
+
+table {
+    width: 80%;
+    border-collapse:collapse;
+}
+
+table, th, td {
+    border: 1px solid rgb(179, 176, 176);
+    text-align: left;
+    vertical-align: text-bottom;
+    padding-left: 5px;
+    /*background-color:bisque;*/
+}
+
+tr:hover{
+    background-color: teal;
+}
+
+.cryptoLogo {
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    margin-right: 5px;
+}
+
+.cryptoLogo:first-child {
+}

@@ -8,14 +8,16 @@ import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Type;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -126,5 +128,19 @@ public class TransactionController {
         //TODO: Map in Crypto toevoegen met prijsdeltas
         List<Crypto> cryptoOverview = transactionService.getCryptoOverview();
         return ResponseEntity.ok(cryptoOverview);
+    }
+
+    @GetMapping("/priceDeltas")
+    public ResponseEntity<?> getPriceDeltas(@RequestHeader("Authorization") String token,
+                                                @RequestHeader("dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime) {
+        if (!TokenService.validateJWT(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+//        LocalDateTime dateTime2 = gson.fromJson(dateTimeAsJson, LocalDateTime.class);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        LocalDateTime dateTime1 = LocalDateTime.parse(dateTime, formatter);
+//        System.out.println("formatted dateTime: " + dateTime1);
+        Map<String, Double> priceDeltas = transactionService.getPriceDeltas(dateTime);
+        return ResponseEntity.ok(priceDeltas);
     }
 }

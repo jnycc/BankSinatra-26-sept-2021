@@ -50,6 +50,10 @@ public class JdbcCryptoDao {
         return ps;
     }
 
+    public void saveCryptoPriceBySymbol(String symbol, double price, LocalDateTime time) {
+        jdbcTemplate.update(connection -> insertPriceStatement(symbol, price, time, connection));
+    }
+
     // Selecteert een crypto uit de db, neemt daarbij automatisch de meest recente opgeslagen prijs in het object op
     public Crypto getCryptoBySymbol(String symbol) {
         String sql = "SELECT Crypto.*, CryptoPrice.cryptoPrice " +
@@ -107,9 +111,6 @@ public class JdbcCryptoDao {
         }
     }
 
-    public void saveCryptoPriceBySymbol(String symbol, double price, LocalDateTime time) {
-        jdbcTemplate.update(connection -> insertPriceStatement(symbol, price, time, connection));
-    }
 
     public List<Crypto> getAllCryptos() {
         String sql = "SELECT c.symbol, description, name, cryptoPrice, dateRetrieved " +
@@ -129,6 +130,35 @@ public class JdbcCryptoDao {
             logger.info("Failed to get past crypto price by symbol");
             return null;
         }
+    }
+
+    public Map<String, Double> getPriceDeltas(LocalDateTime dateTime) {
+        String sql = "SELECT q1.symbol, (q1.cryptoPrice - q2.cryptoPrice) AS priceDelta FROM " +
+                "(SELECT * FROM CryptoPrice " +
+                "WHERE dateRetrieved >= DATE_ADD( " +
+                "   (SELECT dateRetrieved FROM CryptoPrice " +
+                "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1) " +
+                "   , INTERVAL -10 SECOND) " +
+                "   AND " +
+                "   dateRetrieved <= DATE_ADD(" +
+                "   (SELECT dateRetrieved FROM CryptoPrice " +
+                "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1) " +
+                "   , INTERVAL 10 SECOND) " +
+                ") q1 " +
+                "LEFT JOIN " +
+                "(SELECT * FROM CryptoPrice " +
+                "WHERE dateRetrieved >= DATE_ADD( " +
+                "   (SELECT dateRetrieved FROM CryptoPrice " +
+                "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, ?)) LIMIT 1) " +
+                "   , INTERVAL -10 SECOND) " +
+                "   AND " +
+                "   dateRetrieved <= DATE_ADD( " +
+                "   (SELECT dateRetrieved FROM CryptoPrice " +
+                "   ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, ?)) LIMIT 1) " +
+                "   , INTERVAL 10 SECOND) " +
+                ") q2 " +
+                "ON q1.symbol = q2.symbol;";
+        return jdbcTemplate.query(sql, new PriceDeltaExtractor(), dateTime, dateTime);
     }
 
     //Rowmappers
@@ -164,6 +194,20 @@ public class JdbcCryptoDao {
             Double price = resultSet.getDouble("cryptoPrice");
             Crypto crypto = new Crypto(name, symbol, description, price);
             return crypto;
+        }
+    }
+
+    private static class PriceDeltaExtractor implements ResultSetExtractor<Map<String, Double>> {
+
+        @Override
+        public Map<String, Double> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+            Map<String, Double> priceDeltas = new TreeMap<>();
+            while (resultSet.next()) {
+                String symbol = resultSet.getString("symbol");
+                double priceDelta = resultSet.getDouble("priceDelta");
+                priceDeltas.put(symbol, priceDelta);
+            }
+            return priceDeltas;
         }
     }
 }

@@ -35,6 +35,11 @@ public class JdbcAssetDao {
         logger.info("JdbcAssetDAO-object created.");
     }
 
+    public void saveAsset(int accountID, String symbol, double units) {
+        jdbcTemplate.update(connection -> insertAssetStatement(accountID, symbol, units, connection));
+        logger.info("New asset has been saved to the database.");
+    }
+
     private PreparedStatement insertAssetStatement (int accountId, String symbol, double units, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO Asset (accountID, symbol, units)" + "VALUES (?, ?, ?)");
@@ -83,7 +88,7 @@ public class JdbcAssetDao {
     }
 
     public List<Asset> getAssets(int accountId) {
-        String sql = "SELECT a.accountID, a.symbol, name, cryptoPrice, units, description, dateRetrieved " +
+        String sql = "SELECT a.accountID, a.symbol, name, cryptoPrice, units, dateRetrieved, description, unitsForSale, salePrice " +
                 "FROM (Asset a JOIN Crypto c ON a.symbol = c.symbol) " +
                 "JOIN CryptoPrice p ON p.symbol = c.symbol " +
                 "WHERE accountID = ? AND dateRetrieved >= DATE_ADD(" +
@@ -117,11 +122,6 @@ public class JdbcAssetDao {
         Double units = jdbcTemplate.queryForObject(sql, Double.class, accountId, symbol, accountId, symbol, dateTime,
                 accountId, symbol, dateTime);
         return (units != null) ? units : 0.0;
-    }
-
-    public void saveAsset(int accountID, String symbol, double units) {
-        jdbcTemplate.update(connection -> insertAssetStatement(accountID, symbol, units, connection));
-        logger.info("New asset has been saved to the database.");
     }
 
     public void updateAsset(double newUnits, String symbol, int accountId){

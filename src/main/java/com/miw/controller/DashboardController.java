@@ -28,6 +28,7 @@ public class DashboardController {
     }
 
     //TODO: waarom komt token niet binnen???
+    //TODO: dit moet een GetMapping worden. Data wordt ge-get, resource op server wordt niet aangepast.
     @PostMapping("/getBalance")
     public double getBalance(@RequestBody String token) {
         int ID = TokenService.getValidUserID(token);
