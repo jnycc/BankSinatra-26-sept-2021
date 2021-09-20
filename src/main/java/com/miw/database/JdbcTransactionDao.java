@@ -99,16 +99,17 @@ public class JdbcTransactionDao {
         return datetime;
     }
 
-    // TODO: nog testen of dit werkt
     public List<Transaction> getTransactionsByUserIdSeller (int userId) {
         String sql = "SELECT * FROM Transaction t JOIN Crypto c ON t.symbol = c.symbol " +
-                "WHERE accountID_seller = (SELECT accountID from Account WHERE userID = ?);";
+                "WHERE accountID_seller = (SELECT accountID from Account WHERE userID = ?) " +
+                "ORDER BY date desc;";
         return jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper(), userId);
     }
 
     public List<Transaction> getTransactionsByUserIdBuyer(int userId){
         String sql = "SELECT * FROM Transaction t JOIN Crypto c ON t.symbol = c.symbol " +
-                "WHERE accountID_buyer = (SELECT accountID from Account WHERE userID = ?); ";
+                "WHERE accountID_buyer = (SELECT accountID from Account WHERE userID = ?) " +
+                "ORDER BY date desc; ";
         return jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper(), userId);
     }
 

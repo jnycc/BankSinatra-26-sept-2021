@@ -133,7 +133,32 @@ body {
     width: 100%;
 }
 
-#cryptosForSale td, #cryptosForSale th, #transactionTableBuyer td, #transactionTableBuyer th, #transactionTableSeller td, #transactionTableSeller th {
+#transactionTableBuyer, #transactionTableSeller{
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    padding: 0px 8px 8px;
+    max-height: 300px;
+    overflow-y: scroll;
+    display: inline-block;
+}
+
+#transactionTableBuyer th, #transactionTableSeller th{
+    border: 1px solid #ddd;
+    padding: 8px;
+    max-height: 150px;
+    position: sticky;
+    top: 0;
+    cursor: pointer;
+}
+
+#transactionTableSeller td, #transactionTableBuyer td{
+    border: 1px solid #ddd;
+    padding: 8px;
+    max-height: 150px;
+}
+
+#cryptosForSale td, #cryptosForSale th {
     border: 1px solid #ddd;
     padding: 8px;
 }

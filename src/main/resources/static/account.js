@@ -5,8 +5,6 @@ const transactionTableBuyer = document.getElementById("transactionTableBuyer")
 const transactionTableSeller = document.getElementById("transactionTableSeller")
 const buyer = "buyer"
 const seller = "seller"
-$(transactionTableBuyer).append("<tr><th>Date</th> <th>Seller</th> <th>Purchase</th> <th>Price</th> <th>Bank fee</th>")
-$(transactionTableSeller).append("<tr><th>Date</th> <th>Buyer</th> <th>Purchase</th> <th>Price</th> <th>Bank fee</th>")
 
 window.addEventListener("DOMContentLoaded", setupPage)
 
@@ -14,8 +12,8 @@ async function setupPage(){
     await getAccount()
     await getTransactionsBuyer()
     await getTransactionsSeller()
-    await fillTable(transactionsBuyer, transactionTableBuyer, seller)
-    await fillTable(transactionsSeller, transactionTableSeller, buyer)
+    await createTable(transactionsBuyer, transactionTableBuyer, seller)
+    await createTable(transactionsSeller, transactionTableSeller, buyer)
 }
 
 async function getAccount(){
@@ -71,6 +69,12 @@ async function getTransactionsSeller(){
     return transactionsSeller
 }
 
+async function createTable(array, table, transactionParty){
+    if(array !== undefined){
+        await fillTable(array, table, transactionParty)
+    }
+}
+
 async function fillTable(array, table, transactionParty) {
     for (let i = 0; i < array.length; i++) {
         const tr = document.createElement("tr")
@@ -83,7 +87,7 @@ async function fillTable(array, table, transactionParty) {
             if (key === "transactionDate") {
                 td.id = `date${i}`
                 let date = new Date(transaction[key])
-                td.textContent = date.toLocaleString()
+                td.textContent = formatDate(date)
                 tr.append(td)
             } else if (key === transactionParty) {
                 td.id = `transactionParty${i}`
@@ -102,7 +106,7 @@ async function fillTable(array, table, transactionParty) {
                 td.textContent = "$" + transaction[key].toFixed(2)
                 tr.append(td)
             }
-            $(table).append(tr);
+            $(table).append(tr)
         }
     }
 }
@@ -127,4 +131,49 @@ async function getName(accountId){
     }).then(res => res.json())
         .then(data => name = data)
     return name
+}
+
+function formatDate(date){
+    const year = date.getFullYear()
+    const month = addZero(date.getMonth() + 1)
+    const day = addZero(date.getDate())
+    const hour = addZero(date.getHours())
+    const minute = addZero(date.getMinutes())
+    return `${year}-${month}-${day} ${hour}:${minute}`
+}
+
+function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+}
+
+$('th').click(function(){
+    const table = $(this).parents('table').eq(0);
+    let rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()));
+    this.asc = !this.asc
+    if (!this.asc){rows = rows.reverse()}
+    for (let i = 0; i < rows.length; i++){table.append(rows[i])}
+})
+function comparer(index) {
+    return function(a, b) {
+        let valA = getCellValue(a, index), valB = getCellValue(b, index);
+        if (hasNumber(valA)){
+            valA = valA.replace(/[^0-9]/g, '')
+        }
+        if(hasNumber(valB)){
+            valB = valB.replace(/[^0-9]/g, '')
+        }
+        if ($.isNumeric(valA) && $.isNumeric(valB)) {
+            return valA - valB
+        } else {
+            return valA.toString().localeCompare(valB)
+        }
+    }
+}
+function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+
+function hasNumber(myString) {
+    return /\d/.test(myString);
 }
