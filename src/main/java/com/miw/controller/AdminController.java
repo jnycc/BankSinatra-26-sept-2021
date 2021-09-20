@@ -2,13 +2,8 @@ package com.miw.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.miw.database.JdbcAdminDao;
-import com.miw.database.JdbcClientDao;
-import com.miw.database.JdbcTransactionDao;
-import com.miw.database.JdbcUserDao;
-import com.miw.model.Administrator;
-import com.miw.model.Client;
-import com.miw.model.User;
+import com.miw.database.*;
+import com.miw.model.*;
 import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class AdminController {
@@ -25,14 +25,22 @@ public class AdminController {
     private JdbcUserDao jdbcUserDao;
     private JdbcClientDao jdbcClientDao;
     private JdbcAdminDao jdbcAdminDao;
+    private JdbcAccountDao jdbcAccountDao;
+    private JdbcAssetDao jdbcAssetDao;
+    private JdbcCryptoDao jdbcCryptoDao;
 
     @Autowired
-    public AdminController(JdbcTransactionDao jdbcTransactionDao, JdbcUserDao jdbcUserDao, JdbcClientDao jdbcClientDao, JdbcAdminDao jdbcAdminDao) {
+    public AdminController(JdbcTransactionDao jdbcTransactionDao, JdbcUserDao jdbcUserDao, JdbcClientDao jdbcClientDao,
+                           JdbcAdminDao jdbcAdminDao, JdbcAccountDao jdbcAccountDao, JdbcAssetDao jdbcAssetDao, JdbcCryptoDao jdbcCryptoDao) {
         super();
         this.jdbcTransactionDao = jdbcTransactionDao;
         this.jdbcUserDao = jdbcUserDao;
         this.jdbcClientDao = jdbcClientDao;
         this.jdbcAdminDao = jdbcAdminDao;
+        this.jdbcAccountDao = jdbcAccountDao;
+        this.jdbcAssetDao = jdbcAssetDao;
+        this.jdbcCryptoDao = jdbcCryptoDao;
+
         logger.info("New AdminController created");
     }
 
@@ -79,6 +87,27 @@ public class AdminController {
         if (TokenService.validateAdmin(token)) {
             jdbcUserDao.toggleBlock(!user.isBlocked(), user.getUserId()); // block toggle through inversion of initial block status
             return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @GetMapping("/admin/getAssets")
+    public ResponseEntity<?> getAssets(@RequestHeader("Authorization") String token, @RequestParam String email) {
+        User user = jdbcUserDao.getUserByEmail(email);
+        Map<String, Double> assets = new HashMap<>();
+
+        if (TokenService.validateAdmin(token)) {
+            assets.put("USD", jdbcAccountDao.getBalanceByEmail(email));
+            List<Crypto> allCryptos = jdbcCryptoDao.getAllCryptos(); // TODO: dit throwt momenteel een boel exceptions, kan misschien gracieuzer afgehandeld worden
+            for (Crypto crypto : allCryptos) {
+                Asset asset = jdbcAssetDao.getAssetBySymbol(user.getUserId(), crypto.getSymbol());
+                if (asset != null) {
+                    assets.put(crypto.getSymbol(), asset.getUnits());
+                } else {
+                    assets.put(crypto.getSymbol(), 0.0);
+                }
+            }
+            return ResponseEntity.ok(assets);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }

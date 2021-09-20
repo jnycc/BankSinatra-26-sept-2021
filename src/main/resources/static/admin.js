@@ -16,6 +16,8 @@ function validateAdmin(){
         })
 }
 
+let url = new URL(window.location.href);
+
 const logout = document.querySelector("#logout")
 
 const btnBankfee = document.querySelector("#bankfee")
@@ -29,8 +31,12 @@ const userTable = $("#userTable")
 const btnToggleBlock = document.querySelector("#toggleBlock")
 $(btnToggleBlock).hide()
 
+const portfolioData = document.querySelector("#portfolioData")
 const assetTable = document.querySelector("#assetTable")
-$(assetTable).hide()
+let assets = {}
+const btnSubmitChanges = document.querySelector("#submitChanges")
+
+
 
 // CONFIRMATION PROMPT
 function confirmationPrompt(action) {
@@ -133,9 +139,9 @@ function loadUser(user){
             $(btnToggleBlock).show()
 
             if (it["dateOfBirth"] != null) { // only show assets when loading a client; admins don't have assets
-                $(assetTable).show()
+                showPortfolio(user)
             } else {
-                $(assetTable).hide()
+                $(portfolioData).hide()
             }
         })
 }
@@ -162,4 +168,50 @@ function blockUser(user) {
             })
         }
     })
+}
+
+// ADD OR REMOVE ASSETS
+btnSubmitChanges.addEventListener("click", function() {
+    if (confirmationPrompt("modify this user's crypto and/or USD balance")) {
+        console.log("let's gooooooooooooooooo")
+    }
+})
+
+async function showPortfolio(user) {
+    $(assetTable).append("<tr><th>Symbol</th> <th>Amount owned</th> <th>Add/subtract amount</th></tr>");
+    await getAssets(user)
+    $(portfolioData).show()
+}
+
+async function getAssets(user) {
+    await fetch(`${url.origin}/admin/getAssets?email=${user}`, {
+        method: 'GET',
+        headers: {"Authorization": `${localStorage.getItem('token')}`},
+    }).then(res => {
+        if (res.status === 200) {
+            console.log("ok")
+        } else {
+            console.log("error")
+        }
+        return res.json().then(it => {
+            assets = it
+            fillTable()
+        })
+    })
+}
+
+function fillTable() {
+    for (const key in assets) {
+        const tr = document.createElement("tr")
+        const td1 = document.createElement("td")
+        td1.innerText = key;
+        const td2 = document.createElement("td")
+        td2.innerText = parseFloat(assets[key]).toFixed(2)
+        const td3 = document.createElement("input")
+        td3.type = "number"
+        td3.step = "0.01"
+        td3.value = "0.00"
+        tr.append(td1, td2, td3)
+        assetTable.append(tr)
+    }
 }
