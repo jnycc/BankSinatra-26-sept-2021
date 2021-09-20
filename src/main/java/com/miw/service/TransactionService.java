@@ -45,11 +45,11 @@ public class TransactionService {
     public boolean checkSufficientBalance(int seller, int buyer, double transactionPrice, double bankCosts){
         double buyerBalance = rootRepository.getAccountById(buyer).getBalance();
         if (seller == accountBank){
-            return buyerBalance >= transactionPrice + (transactionPrice * bankCosts);
+            return buyerBalance >= transactionPrice + bankCosts;
         } else if (buyer == accountBank){
             return buyerBalance >= transactionPrice;
         } else {
-            return buyerBalance >= transactionPrice + (HALF * (transactionPrice * bankCosts));
+            return buyerBalance >= transactionPrice + (HALF * bankCosts);
         }
     }
 

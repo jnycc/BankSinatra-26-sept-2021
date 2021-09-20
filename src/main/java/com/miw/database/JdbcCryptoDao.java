@@ -52,7 +52,7 @@ public class JdbcCryptoDao {
 
     // Selecteert een crypto uit de db, neemt daarbij automatisch de meest recente opgeslagen prijs in het object op
     public Crypto getCryptoBySymbol(String symbol) {
-        String sql = "SELECT Crypto.*, CryptoPrice.cryptoPrice " +
+        String sql = "SELECT Crypto.*, CryptoPrice.cryptoPrice, cryptoPrice.dateRetrieved " +
                 "FROM Crypto LEFT JOIN CryptoPrice " +
                 "ON Crypto.symbol = CryptoPrice.symbol " +
                 "WHERE Crypto.symbol = ? " +
@@ -197,7 +197,9 @@ public class JdbcCryptoDao {
             String symbol = resultSet.getString("symbol");
             String description = resultSet.getString("description");
             Double price = resultSet.getDouble("cryptoPrice");
+            LocalDateTime dateRetrieved = resultSet.getObject("dateRetrieved", LocalDateTime.class);
             Crypto crypto = new Crypto(name, symbol, description, price);
+            crypto.setDateRetrieved(dateRetrieved);
             return crypto;
         }
     }
