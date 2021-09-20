@@ -102,19 +102,6 @@ public class TransactionService {
         }
     }
 
-    public List<Crypto> getCryptoOverview() {
-        //Get list of all cryptos
-        //Obtain prices minus 1day/1month/3months/year/start
-        //Calculate delta values. Hiervoor is een map in Crypto nodig.
-        List<Crypto> cryptoOverview = rootRepository.getCryptoOverview();
-
-        return cryptoOverview;
-    }
-
-    public Map<String, Double> getPriceDeltas(LocalDateTime dateTime) {
-        return rootRepository.getPriceDeltas(dateTime);
-    }
-
     public List<Transaction> getTransactionsBuyer(int userId){
         return rootRepository.getTransactionsByUserIdBuyer(userId);
     }

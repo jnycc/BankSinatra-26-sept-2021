@@ -32,7 +32,7 @@ closeCryptoOverlayBtn.addEventListener('click', () => {
 //Create table and add the crypto data
 function setupPageWithCryptos() {
     $(cryptosForSaleDiv).hide();
-    fetch(`/cryptos`,
+    fetch(`/cryptoOverview`,
         {
             method: 'GET',
             headers: { 'Authorization': localStorage.getItem('token') }
@@ -88,7 +88,7 @@ function setPriceDeltas(date) {
             'Authorization': localStorage.getItem('token'),
             'dateTime': date.toISOString(),
             'Content-Type': 'application/json'
-        },
+        }
     })
         .then(res => res.json())
         .then(json => {

@@ -7,14 +7,14 @@ import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class MarketplaceController {
@@ -77,5 +77,31 @@ public class MarketplaceController {
         } else {
             return new ResponseEntity<>(userId, HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/cryptoOverview")
+    public ResponseEntity<?> getCryptoOverview(@RequestHeader("Authorization") String token) {
+        if (!TokenService.validateJWT(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        List<Crypto> cryptoOverview = rootRepository.getCryptoOverview();
+        return ResponseEntity.ok(cryptoOverview);
+    }
+
+    /**
+     * Endpoint to obtain the calculated price deltas for a certain period of time.
+     * @param token JWT-token to verify authentication
+     * @param dateTime selected date-time against which to compare the current price
+     * @return map with key-value pair: "symbol: priceDelta".
+     */
+    @GetMapping("/priceDeltas")
+    public ResponseEntity<?> getPriceDeltas(@RequestHeader("Authorization") String token,
+                                            @RequestHeader("dateTime")
+                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime) {
+        if (!TokenService.validateJWT(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        Map<String, Double> priceDeltas = rootRepository.getPriceDeltas(dateTime);
+        return ResponseEntity.ok(priceDeltas);
     }
 }

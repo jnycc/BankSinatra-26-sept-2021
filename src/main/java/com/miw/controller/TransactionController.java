@@ -119,28 +119,4 @@ public class TransactionController {
         return transactionService.checkSufficientBalance(transaction.getSeller(), transaction.getBuyer(),
                 transaction.getTransactionPrice(), transaction.getBankCosts());
     }
-
-    @GetMapping("/cryptos")
-    public ResponseEntity<?> getCryptoOverview(@RequestHeader("Authorization") String token) {
-        if (!TokenService.validateJWT(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        //TODO: Map in Crypto toevoegen met prijsdeltas
-        List<Crypto> cryptoOverview = transactionService.getCryptoOverview();
-        return ResponseEntity.ok(cryptoOverview);
-    }
-
-    @GetMapping("/priceDeltas")
-    public ResponseEntity<?> getPriceDeltas(@RequestHeader("Authorization") String token,
-                                                @RequestHeader("dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime) {
-        if (!TokenService.validateJWT(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-//        LocalDateTime dateTime2 = gson.fromJson(dateTimeAsJson, LocalDateTime.class);
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        LocalDateTime dateTime1 = LocalDateTime.parse(dateTime, formatter);
-//        System.out.println("formatted dateTime: " + dateTime1);
-        Map<String, Double> priceDeltas = transactionService.getPriceDeltas(dateTime);
-        return ResponseEntity.ok(priceDeltas);
-    }
 }

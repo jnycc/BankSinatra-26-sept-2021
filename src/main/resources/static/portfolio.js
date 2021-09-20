@@ -1,11 +1,11 @@
 //Total values
 const totalBalance = document.getElementById('totalBalance')
 const totalPortfolioValue = document.getElementById('totalPortfolioValue')
-const totalPortfolioDelta = document.getElementById('totalPortfolioDelta')
+const currencyFormat = {style: "currency", currency: "USD", minimumFractionDigits: 2}
 
 //Create table with header row
 const assetTable = document.getElementById('assetTable')
-$(assetTable).append("<tr><th>Crypto</th> <th>Symbol</th> <th>Units</th> <th>Price</th> <th>Value</th> <th>Delta</th></tr>")
+$(assetTable).append("<tr><th>Crypto</th> <th>Symbol</th> <th>Units</th> <th>Price</th> <th>Value</th> <th>24h %</th></tr>")
 
 //Modal - overlay with crypto statistics
 const cryptoOverlay = document.getElementById('cryptoOverlay')
@@ -70,13 +70,31 @@ function getAssets() {
                 }
                 cells[0].append(getCryptoLogo(asset.crypto.symbol), asset.crypto.name)
                 cells[1].innerHTML = asset.crypto.symbol
-                cells[2].innerHTML = asset.units
-                cells[3].innerText = asset.crypto.cryptoPrice
-                cells[4].innerHTML = asset.currentValue
+                cells[2].innerHTML = asset.units.toLocaleString("en-US", {style: 'decimal', minimumFractionDigits: 2})
+                cells[3].innerText = asset.crypto.cryptoPrice.toLocaleString('en-US', currencyFormat)
+                cells[4].innerHTML = asset.currentValue.toLocaleString('en-US', currencyFormat)
                 // row.append(cells[0], cells[1], cells[2], cells[3], cells[4])
                 cells.forEach(cell => row.appendChild(cell))
             }
         })
+}
+
+function setAssetValueDeltas() {
+    fetch('/assetValueDeltas', {
+        method: 'GET',
+        headers: {
+            'Authorization': localStorage.getItem('token'),
+            'dateTime': date.toISOString(),
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(res => res.json())
+        .then(json => {
+            //TODO:
+            // uit sql map van "symbol: delta" krijgen.
+            // historische units x historische prijs voor een bepaalde dateTime, voor alle cryptos
+        })
+
 }
 
 function getCryptoLogo(symbol) {
