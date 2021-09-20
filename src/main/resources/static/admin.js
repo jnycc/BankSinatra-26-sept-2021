@@ -8,13 +8,15 @@ function validateAdmin(){
     })
         .then(res => {
             if (res.status === 200) {
-                console.log("no problemo")
+                console.log("Admin validated")
             } else {
-                console.log("your token is bad and you should feel bad")
+                console.log("Admin validation failed, redirecting to login page")
                 window.location.replace("/index.html")
             }
         })
 }
+
+let url = new URL(window.location.href);
 
 const logout = document.querySelector("#logout")
 
@@ -29,18 +31,30 @@ const userTable = $("#userTable")
 const btnToggleBlock = document.querySelector("#toggleBlock")
 $(btnToggleBlock).hide()
 
+const portfolioData = document.querySelector("#portfolioData")
 const assetTable = document.querySelector("#assetTable")
-$(assetTable).hide()
+let assets = {}
+const btnSubmitChanges = document.querySelector("#submitChanges")
+
+
+
+// CONFIRMATION PROMPT
+function confirmationPrompt(action) {
+    return confirm(`Are you sure you want to ${action}?`)
+}
 
 // LOGOUT
 logout.addEventListener("click", function() {
-    window.localStorage.clear();
-    window.location.replace("/index.html");
+    if (confirmationPrompt("logout")) {
+        window.localStorage.clear();
+        window.location.replace("/index.html");
+    }
 })
 
 // CHANGE BANK FEE
 $(document).ready(function (){
     $(btnBankfee).click(function (){
+        getCurrentFee()
         $(overlay).show()
     });
 
@@ -51,8 +65,10 @@ $(document).ready(function (){
 });
 
 feeForm.addEventListener('submit', function (e) {
-    e.preventDefault()
-    updateFee()
+    if (confirmationPrompt("change the bank costs")) {
+        e.preventDefault()
+        updateFee()
+    }
 })
 
 function updateFee(){
@@ -68,12 +84,23 @@ function updateFee(){
         })
         .then(res => {
             if (res.status === 200) {
-                window.alert("yay")
+                console.log("Bank costs updated.")
             } else {
-                res.json().then(it => {
-                    window.alert("update failed")
-                })
+                window.alert(`Error: ${res.statusText}`)
             }
+        })
+}
+
+function getCurrentFee(){
+    fetch(`http://localhost:8080/admin/getBankFee`,
+        {
+            method: 'GET',
+            headers: {"Authorization": localStorage.getItem('token')}
+        })
+        .then(res => res.json())
+        .then(it => {
+            console.log(it)
+            document.getElementById("fee-input").placeholder = `Current fee: ${it}`
         })
 }
 
@@ -88,13 +115,14 @@ function loadUser(user){
     if ($('#userTable tr').length !== 0) {
         userTable.empty()
     }
+
     fetch(`http://localhost:8080/admin/getUserData?email=${user}`,
         {
             method: 'GET',
             headers: { "Authorization": localStorage.getItem('token') }
         })
         .then(res => res.json())
-        .then(it => {                        // TODO: dit moet mooier en met minder complexiteit kunnen
+        .then(it => {                        // TODO: dit moet mooier en met minder complexiteit kunnen + heeft nu geen error message
             for (const key in it) {          // loop through all properties of the imported user json
                 if (it[key] !== null) {
                     if (key === "address") { // "address" contains properties of its own, so needs to be looped through separately
@@ -109,13 +137,20 @@ function loadUser(user){
             }
             $("#userData").append(userTable)
             $(btnToggleBlock).show()
-            $(assetTable).show()
+
+            if (it["dateOfBirth"] != null) { // only show assets when loading a client; admins don't have assets
+                showPortfolio(user)
+            } else {
+                $(portfolioData).hide()
+            }
         })
 }
 
 // BLOCK/UNBLOCK USER
 btnToggleBlock.addEventListener("click", function() {
-    blockUser(user)
+    if (confirmationPrompt("change this user's block status")) {
+        blockUser(user)
+    }
 })
 
 function blockUser(user) {
@@ -133,4 +168,50 @@ function blockUser(user) {
             })
         }
     })
+}
+
+// ADD OR REMOVE ASSETS
+btnSubmitChanges.addEventListener("click", function() {
+    if (confirmationPrompt("modify this user's crypto and/or USD balance")) {
+        console.log("let's gooooooooooooooooo")
+    }
+})
+
+async function showPortfolio(user) {
+    $(assetTable).append("<tr><th>Symbol</th> <th>Amount owned</th> <th>Add/subtract amount</th></tr>");
+    await getAssets(user)
+    $(portfolioData).show()
+}
+
+async function getAssets(user) {
+    await fetch(`${url.origin}/admin/getAssets?email=${user}`, {
+        method: 'GET',
+        headers: {"Authorization": `${localStorage.getItem('token')}`},
+    }).then(res => {
+        if (res.status === 200) {
+            console.log("ok")
+        } else {
+            console.log("error")
+        }
+        return res.json().then(it => {
+            assets = it
+            fillTable()
+        })
+    })
+}
+
+function fillTable() {
+    for (const key in assets) {
+        const tr = document.createElement("tr")
+        const td1 = document.createElement("td")
+        td1.innerText = key;
+        const td2 = document.createElement("td")
+        td2.innerText = parseFloat(assets[key]).toFixed(2)
+        const td3 = document.createElement("input")
+        td3.type = "number"
+        td3.step = "0.01"
+        td3.value = "0.00"
+        tr.append(td1, td2, td3)
+        assetTable.append(tr)
+    }
 }

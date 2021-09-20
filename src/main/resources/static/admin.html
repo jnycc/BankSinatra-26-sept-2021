@@ -18,19 +18,21 @@
             <h1> <img width="120" height="100" style="object-position: left" alt="BSlogo" src="/images/BSLogo.png" ></h1>
         </div>
         <ul class="navigation">
-            <button id="bankfee">Change bank fee</button>
             <button id="logout">Log out</button>
         </ul>
     </div>
 </div>
 
 <div class="page">
-    <div class="top">
+    <div class="top left">
         <form id="findUserForm">
             Select a user:
-            <input id="email-input" type="email" name="email-input" placeholder="name@mail.org" required><br>
+            <input id="email-input" type="email" name="email-input" placeholder="name@mail.org" required>
             <input id="submitEmail" type="submit" value="Submit">
         </form>
+    </div>
+    <div class="top right">
+        <button id="bankfee">Change bank fee</button>
     </div>
     <div class="left">
         <div id="userData">
@@ -42,17 +44,11 @@
 
     <div class="right">
         <div id="portfolioData">
-            <table id="assetTable">
-                <tr>
-                    <th>Header</th>
-                </tr>
-                <tr>
-                    <td>placeholder</td>
-                </tr>
-                <tr>
-                    <td>placeholder</td>
-                </tr>
-            </table>
+            To add assets (various symbols) or account balance (symbol: USD), insert a positive value (e.g. 0.25).<br>
+            To remove assets or account balance, insert a negative value (e.g. -0.25).<br>
+            To apply the changes, click "Submit changes".<br>
+            <table id="assetTable"></table><br><br>
+            <button id="submitChanges">Submit changes</button>
         </div>
     </div>
 </div>

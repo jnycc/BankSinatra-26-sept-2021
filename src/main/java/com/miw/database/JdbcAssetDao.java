@@ -49,7 +49,7 @@ public class JdbcAssetDao {
         return ps;
     }
 
-    public Asset getAssetBySymbol(int accountId, String symbol) {
+    public Asset getAssetBySymbol(int accountId, String symbol) throws EmptyResultDataAccessException {
         String sql = "SELECT a.accountId, a.unitsForSale, a.salePrice, a.symbol, name, cryptoPrice, units, description, dateRetrieved" +
                 " FROM (Asset a JOIN Crypto c ON a.symbol = c.symbol) JOIN CryptoPrice p ON p.symbol = c.symbol " +
                 "WHERE accountID = ? AND a.symbol = ? AND dateRetrieved >= DATE_ADD(" +
@@ -57,10 +57,10 @@ public class JdbcAssetDao {
                 " LIMIT 1), INTERVAL -10 SECOND) AND dateRetrieved <= DATE_ADD(" +
                 " (SELECT dateRetrieved FROM CryptoPrice ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP))" +
                 " LIMIT 1), INTERVAL 10 SECOND);";
-        try{
+        try {
             return jdbcTemplate.queryForObject(sql, new AssetRowMapper(), accountId, symbol);
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (EmptyResultDataAccessException e){
+            logger.info("Requested asset not found for given accountId");
             return null;
         }
     }
