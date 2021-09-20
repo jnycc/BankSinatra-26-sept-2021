@@ -1,10 +1,26 @@
-//Create table and add the header row
-const assetTable = document.getElementById('assetTable')
-$(assetTable).append("<tr><th>Crypto</th> <th>Symbol</th> <th>Units</th> <th>Price</th> <th>Value</th> <th>Delta</th></tr>")
+//Total values
 const totalBalance = document.getElementById('totalBalance')
 const totalPortfolioValue = document.getElementById('totalPortfolioValue')
 const totalPortfolioDelta = document.getElementById('totalPortfolioDelta')
 
+//Create table with header row
+const assetTable = document.getElementById('assetTable')
+$(assetTable).append("<tr><th>Crypto</th> <th>Symbol</th> <th>Units</th> <th>Price</th> <th>Value</th> <th>Delta</th></tr>")
+
+//Modal - overlay with crypto statistics
+const cryptoOverlay = document.getElementById('cryptoOverlay')
+const closeCryptoOverlay = document.getElementsByClassName('closeCryptoOverlay')[0]
+closeCryptoOverlay.addEventListener('click', () => {
+    $(cryptoOverlay).hide()
+})
+window.onclick = function (event) {
+    if (event.target === cryptoOverlay) {
+        cryptoOverlay.style.display = "none"
+    }
+}
+const cryptoName = document.getElementById('cryptoName')
+
+//Load total portfolio values
 window.addEventListener("DOMContentLoaded", () => {
     getBalance();
     getTotalPortfolioValue();
@@ -40,12 +56,12 @@ function getAssets() {
     })
         .then(res => res.json())
         .then(json => {
-            let nrOfCells = assetTable.rows[0].cells.length
+            let nrOfCells = assetTable.rows[0].cells.length - 1
             //For every asset, create a row
             for (let asset of json) {
                 const row = document.createElement('tr')
                 row.id = asset.crypto.symbol
-                row.addEventListener('click', () => openDetails(asset.crypto.symbol))
+                row.addEventListener('click', () => openDetails(asset.crypto.symbol, asset.crypto.name))
                 assetTable.appendChild(row)
                 //Prepare the required data-cells
                 let cells = []
@@ -70,7 +86,8 @@ function getCryptoLogo(symbol) {
     return logo
 }
 
-function openDetails(symbol) {
-    alert('My crypto symbol is: ' + symbol + '\nHier komt de overlay met cryptodetails en buy/sell knop.')
+function openDetails(symbol, name) {
+    $(cryptoName).text(name + " (" + symbol + ")")
+    $(cryptoOverlay).show()
 }
 
