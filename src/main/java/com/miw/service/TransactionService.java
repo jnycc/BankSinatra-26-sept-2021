@@ -85,9 +85,7 @@ public class TransactionService {
        }
     }
 
-    public void transferBankCosts(int seller, int buyer, double transactionPrice, double bankCostsPercentage){
-        double bankCosts = bankCostsPercentage * transactionPrice;
-
+    public void transferBankCosts(int seller, int buyer, double transactionPrice, double bankCosts){
         if (seller == accountBank){ //seller is bank, buyer is client
             rootRepository.updateBalance(rootRepository.getAccountById(seller).getBalance() + bankCosts, seller);
             rootRepository.updateBalance(rootRepository.getAccountById(buyer).getBalance() - bankCosts, buyer);
