@@ -126,6 +126,38 @@ public class JdbcTransactionDao {
         }
     }
 
+    // Returns total portfolio value of 1 day,
+    // daysBack =
+    // vandaag = 0, gisteren = 1, eergisteren = 2 etc.
+    public double getPortfolioValueByDate(int userID, int daysBack) {
+        String sql = "SELECT coalesce(SUM(ROUND((cryptoprice * tr.totalUnits), 2)),0) portfolioValue \n" +
+                "FROM \n" +
+                "(SELECT symbol, date(dateRetrieved), cryptoprice \n" +
+                "FROM cryptoprice WHERE dateRetrieved = \n" +
+                "(SELECT max(dateRetrieved) \n" +
+                "FROM cryptoprice WHERE dateRetrieved \n" +
+                "BETWEEN timestamp(curdate() -?) AND timestamp(curdate() +1 -?))) cr -- ? ? vandaag = -0, +1, gisteren = -1, +0, eergisteren = -2, +-1 etc\n" +
+                "JOIN \n" +
+                "(SELECT sold.symbol, bought.units-sold.units totalUnits \n" +
+                "FROM (SELECT SUM(units) units, accountID_buyer, symbol, date \n" +
+                "FROM transaction\n" +
+                "WHERE accountID_buyer = ? -- ? = userID\n" +
+                "AND date < timestamp(curdate()+?) GROUP BY symbol) bought -- vandaag = 1, gisteren = 0, eergisteren = -1\n" +
+                "JOIN \n" +
+                "(SELECT SUM(units) units, accountID_seller, symbol, date FROM transaction\n" +
+                "WHERE accountID_seller = ? -- ? = userID\n" +
+                "AND date < timestamp(curdate()+?) GROUP BY symbol) sold -- vandaag = 1, gisteren = 0, eergisteren = -1\n" +
+                "ON bought.symbol = sold.symbol) tr\n" +
+                "ON cr.symbol = tr.symbol;";
+        try {
+            return jdbcTemplate.queryForObject(sql, Double.class, daysBack, daysBack, userID, daysBack, userID, daysBack);
+        } catch (NullPointerException e) {
+            return 0.0;
+        }
+    }
+
+
+
     // Rowmappers
 
     private static class UnitsSetExtractor implements ResultSetExtractor<Map<LocalDate, Map<String, Double>>> {

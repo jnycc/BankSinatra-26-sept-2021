@@ -68,6 +68,16 @@ public class JdbcUserDao {
         }
     }
 
+    public Boolean checkIfBlockedByID(int userID){
+        String sql = "SELECT isBlocked FROM User WHERE userID = ?;";
+        try {
+            return (jdbcTemplate.queryForObject(sql, Boolean.class, userID =1));
+        } catch (EmptyResultDataAccessException exception) {
+            logger.info("The user with ID" + userID + " does not exist in the database");
+            return true;
+        }
+    }
+
     public void toggleBlock(boolean blockUnblock, int id) {
         String sql = "UPDATE User SET isBlocked = ? WHERE userID = ?;";
         jdbcTemplate.update(sql, blockUnblock, id);

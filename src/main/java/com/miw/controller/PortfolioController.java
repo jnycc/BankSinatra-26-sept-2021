@@ -88,7 +88,7 @@ public class PortfolioController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         int userId = TokenService.getValidUserID(token);
-        return new ResponseEntity<>(statisticsService.getPortfolioStats(userId), HttpStatus.OK);
+        return new ResponseEntity<>(statisticsService.getPortfolioStats(userId, 30), HttpStatus.OK);
     }
 
 
