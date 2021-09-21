@@ -60,7 +60,6 @@ public class JdbcAssetDao {
         try {
             return jdbcTemplate.queryForObject(sql, new AssetRowMapper(), accountId, symbol);
         } catch (EmptyResultDataAccessException e){
-            logger.info("Requested asset not found for given accountId");
             return null;
         }
     }

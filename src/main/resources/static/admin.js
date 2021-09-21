@@ -124,31 +124,39 @@ function loadUser(user){
             method: 'GET',
             headers: { "Authorization": localStorage.getItem('token') }
         })
-        .then(res => res.json())
-        .then(it => {                        // TODO: dit moet mooier en met minder complexiteit kunnen + heeft nu geen error message
-            for (const key in it) {          // loop through all properties of the imported user json
-                if (it[key] !== null) {
-                    if (key === "address") { // "address" contains properties of its own, so needs to be looped through separately
-                        let obj = it["address"];
-                        for (const key in obj) {
-                            $(userTable).append("<tr><th>" + key + "</th><th>" + obj[key] + "</th></tr>")
-                        }
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(it => {
+                    fillUserTable(it)
+                    $(btnToggleBlock).show()
+                    if (it["dateOfBirth"] != null) { // only show assets when loading a client; admins don't have assets
+                        showPortfolio(user)
                     } else {
-                        $(userTable).append("<tr><th>" + key + "</th><th>" + it[key] + "</th></tr>")
+                        $(portfolioData).hide()
                     }
-                }
-            }
-            $("#userData").append(userTable)
-            $(btnToggleBlock).show()
-
-            if (it["dateOfBirth"] != null) { // only show assets when loading a client; admins don't have assets
-                showPortfolio(user)
+                })
             } else {
-                $(portfolioData).hide()
+                res.json().then(it => {
+                    alert(it.message);
+                })
             }
         })
 }
 
+function fillUserTable(it) {
+    for (const key in it) {          // loop through all properties of the imported user json
+        if (it[key] !== null && key !== "account") {
+            if (key === "address") { // "address" contains properties of its own, so needs to be looped through separately
+                let obj = it["address"];
+                for (const key in obj) {
+                    $(userTable).append(`<tr><td>${key}</td><td>${obj[key]}</td></tr>`)
+                }
+            } else {
+                $(userTable).append(`<tr><td>${key}</td><td>${it[key]}</td></tr>`)
+            }
+        }
+    }
+}
 // BLOCK/UNBLOCK USER
 btnToggleBlock.addEventListener("click", function() {
     if (confirmationPrompt("change this user's block status")) {
@@ -175,7 +183,7 @@ function blockUser(user) {
 
 // ADD OR REMOVE ASSETS
 btnSubmitChanges.addEventListener("click", function() {
-    if (confirmationPrompt("modify this user's crypto and/or USD balance")) {
+    if (confirmationPrompt("modify this user's assets")) {
         applyAssetChanges()
     }
 })
@@ -197,12 +205,12 @@ async function getAssets(user) {
         }
         return res.json().then(it => {
             assets = it
-            fillTable()
+            fillAssetTable()
         })
     })
 }
 
-function fillTable() {
+function fillAssetTable() {
     for (const key in assets) {
         const tr = document.createElement("tr")
         const td1 = document.createElement("td")
@@ -245,5 +253,5 @@ async function applyAssetChanges() {
                 window.alert(`Error: ${res.statusText}`) // TODO: werkt dit nou eigenlijk echt?
             }
         })
-    await loadUser(user) // reload user to reflect changes
+    loadUser(user) // reload user to reflect changes
 }

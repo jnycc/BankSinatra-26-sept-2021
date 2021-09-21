@@ -28,11 +28,11 @@
         <form id="findUserForm">
             Select a user:
             <input id="email-input" type="email" name="email-input" placeholder="name@mail.org" required>
-            <input id="submitEmail" type="submit" value="Submit">
+            <input id="submitEmail" type="submit" value="Load">
         </form>
     </div>
     <div class="top right">
-        <button id="bankfee">Change bank fee</button>
+        <button id="bankFee">Change bank fee</button>
     </div>
     <div class="left">
         <div id="userData">
@@ -41,12 +41,11 @@
         <br>
         <button id="toggleBlock">Block/unblock user</button>
     </div>
-
     <div class="right">
         <div id="portfolioData">
             To add assets (various symbols) or account balance (symbol: USD), insert a positive value (e.g. 0.25).<br>
             To remove assets or account balance, insert a negative value (e.g. -0.25).<br>
-            To apply the changes, click "Submit changes".<br>
+            To apply the changes, click "Submit changes". If changes are not visible, reload the user.<br>
             <table id="assetTable"></table><br><br>
             <button id="submitChanges">Submit changes</button>
         </div>

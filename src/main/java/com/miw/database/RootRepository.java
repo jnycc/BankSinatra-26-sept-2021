@@ -9,6 +9,7 @@ import com.miw.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -102,8 +103,7 @@ public class RootRepository {
     }
 
     public List<Asset> getAssets(int accountId) {
-        List<Asset> assets = jdbcAssetDao.getAssets(accountId);
-        return assets;
+        return jdbcAssetDao.getAssets(accountId);
     }
 
     public Asset getAssetBySymbol(int accountId, String symbol){
@@ -184,6 +184,14 @@ public class RootRepository {
 
     public Client findByAccountId(int accountId){ return clientDAO.findByAccountId(accountId);}
 
+    public void toggleBlock(boolean blockUnblock, int id) {
+        jdbcUserDao.toggleBlock(blockUnblock, id);
+    }
+
+    public double getBalanceByEmail(String email) {
+        return jdbcAccountDao.getBalanceByEmail(email);
+    }
+
     public void marketAsset(double unitsForSale, double salePrice, String symbol, int accountId) {
         jdbcAssetDao.putAssetOnSale(unitsForSale, salePrice, symbol, accountId);
     }
@@ -194,5 +202,13 @@ public class RootRepository {
 
     public Map<String, Double> getPriceDeltas(LocalDateTime dateTime) {
         return jdbcCryptoDao.getPriceDeltas(dateTime);
+    }
+
+    public void updateBankCosts(double fee) {
+        jdbcTransactionDao.updateBankCosts(fee);
+    }
+
+    public List<Crypto> getAllCryptos() {
+        return jdbcCryptoDao.getAllCryptos();
     }
 }
