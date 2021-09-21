@@ -209,7 +209,6 @@ async function setupSellAsset() {
     $(table).append(tr)
     $(contentFeature).append(header, table, footnote, sellBankbtn);
     console.log(getCurrentValue(cryptoChosen))
-    //TODO: gaat nog niet helemaal goed. Doet het prima als je de pagina refresht, maar als je op kruisje drukt moettie nog refreshen oid
 }
 
 async function getCurrentValue(symbol) {
@@ -229,9 +228,9 @@ async function sellToBank(){
         buyer: 1, //dit werkt
         seller: parseInt(sellerId), //dit werkt ook
         crypto: {
-            symbol: "DOT" //TODO: moet cryptoChosen zijn maar dat doettie nog niet
+            symbol: cryptoChosen.textContent
         },
-        units: parseInt(unitsToSellToBank) //TODO: werkt ook nog niet
+        units: parseInt(unitsToSellToBank) //TODO: werkt nog niet
     }
     console.log(payload);
 
