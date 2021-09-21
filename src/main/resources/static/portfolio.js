@@ -205,7 +205,7 @@ async function setupSellAsset() {
     tr.append(units)
     tr.append(value)
     $(tr).append("<td><input id='unitsToSellToBank' type='number' max={availableUnits} min='0'></td>")
-    unitsToSellToBank = `${$(`#unitsToSellToBank`).text()}`; //TODO: geeft ingevuld int nog niet goed door help
+    //unitsToSellToBank = $(`#unitsToSellToBank`).val(); //TODO: geeft ingevuld int nog niet goed door help
     $(table).append(tr)
     $(contentFeature).append(header, table, footnote, sellBankbtn);
     console.log(getCurrentValue(cryptoChosen))
@@ -223,12 +223,14 @@ async function getCurrentValue(symbol) {
 }
 
 async function sellToBank(){
+    unitsToSellToBank = $(`#unitsToSellToBank`).val(); //TODO: geeft ingevuld int nog niet goed door help
+
     let sellerId = await getIdCurrentUser();
     let payload ={
         buyer: 1, //dit werkt
         seller: parseInt(sellerId), //dit werkt ook
         crypto: {
-            symbol: cryptoChosen.textContent
+            symbol: cryptoChosen
         },
         units: parseInt(unitsToSellToBank) //TODO: werkt nog niet
     }

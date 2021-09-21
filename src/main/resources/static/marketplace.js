@@ -212,7 +212,7 @@ async function showOrder(accountId) {
 $(unitsToBuyInput).bind('keyup mouseup', updateTotalPrice);
 
 function updateTotalPrice() {
-    $(totalPrice).text(`${$(unitsToBuyInput).val() * $("#pricePerUnit").text()}`);
+    $(totalPrice).text(`$ ${($(unitsToBuyInput).val() * $("#pricePerUnit").text()).toFixed(2)}`);
 }
 
 async function carryOutTransaction() {
