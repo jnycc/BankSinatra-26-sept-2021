@@ -1,3 +1,6 @@
+//Page elements
+const contentFeature = document.querySelector(".contentFeature");
+
 //Total values
 const totalBalance = document.getElementById('totalBalance')
 const totalPortfolioValue = document.getElementById('totalPortfolioValue')
