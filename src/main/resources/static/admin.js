@@ -1,3 +1,5 @@
+let url = new URL(window.location.href);
+
 // PAGE SETUP
 window.addEventListener("DOMContentLoaded", validateAdmin)
 
@@ -16,7 +18,6 @@ function validateAdmin(){
         })
 }
 
-let url = new URL(window.location.href);
 
 const logout = document.querySelector("#logout")
 
@@ -76,7 +77,7 @@ function updateFee(){
         {token: `${localStorage.getItem('token')}`,
             fee: `${document.querySelector("#fee-input").value}`}
     console.log(payload);
-    fetch(`http://localhost:8080/admin/updateFee`,
+    fetch(`${url.origin}/admin/updateFee`,
         {
             method: 'PUT',
             header: { "Content-Type": "application/json" },
@@ -92,7 +93,7 @@ function updateFee(){
 }
 
 function getCurrentFee(){
-    fetch(`http://localhost:8080/admin/getBankFee`,
+    fetch(`${url.origin}/admin/getBankFee`,
         {
             method: 'GET',
             headers: {"Authorization": localStorage.getItem('token')}
@@ -119,7 +120,7 @@ function loadUser(user){
         assetTable.empty()
     }
 
-    fetch(`http://localhost:8080/admin/getUserData?email=${user}`,
+    fetch(`${url.origin}/admin/getUserData?email=${user}`,
         {
             method: 'GET',
             headers: { "Authorization": localStorage.getItem('token') }
@@ -165,7 +166,7 @@ btnToggleBlock.addEventListener("click", function() {
 })
 
 function blockUser(user) {
-    fetch(`http://localhost:8080/admin/toggleBlock?email=${user}`,
+    fetch(`${url.origin}/admin/toggleBlock?email=${user}`,
         {
             method: 'POST',
             headers: { "Authorization": localStorage.getItem('token') }
@@ -239,7 +240,7 @@ async function applyAssetChanges() {
     }
 
     console.log(changes)
-    fetch(`http://localhost:8080/admin/updateAssets?email=${user}`,
+    fetch(`${url.origin}/admin/updateAssets?email=${user}`,
         {
             method: 'PUT',
             headers: {  "Content-Type": "application/json",
