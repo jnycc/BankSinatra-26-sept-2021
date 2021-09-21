@@ -181,7 +181,6 @@ btnSubmitChanges.addEventListener("click", function() {
 })
 
 async function showPortfolio(user) {
-    $(assetTable).append("<tr><th>Symbol</th> <th>Amount owned</th> <th>Add/subtract amount</th></tr>");
     await getAssets(user)
     $(portfolioData).show()
 }
@@ -216,8 +215,13 @@ function fillTable() {
         td3.value = "0.00"
         td3.id = `${key}input`
         tr.append(td1, td2, td3)
-        assetTable.append(tr)
+        if (key === 'USD') { // move USD to top of table
+            $(assetTable).prepend(tr)
+        } else {
+            $(assetTable).append(tr)
+        }
     }
+    $(assetTable).prepend("<tr><th>Symbol</th> <th>Amount owned</th> <th>Add/subtract amount</th></tr>"); // place header
 }
 
 async function applyAssetChanges() {

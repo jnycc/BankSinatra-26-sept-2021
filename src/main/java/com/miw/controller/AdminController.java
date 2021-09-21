@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @RestController
 public class AdminController {
@@ -93,7 +94,7 @@ public class AdminController {
     @GetMapping("/admin/getAssets")
     public ResponseEntity<?> getAssets(@RequestHeader("Authorization") String token, @RequestParam String email) {
         Account account = jdbcAccountDao.getAccountByEmail(email);
-        Map<String, Double> assets = new HashMap<>();
+        Map<String, Double> assets = new TreeMap<>();
 
         if (TokenService.validateAdmin(token)) {
             assets.put("USD", jdbcAccountDao.getBalanceByEmail(email));
@@ -130,6 +131,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+    // Hulpmethoden:
     public void updateCrypto(Crypto crypto, double unitsChange, int accountId) {
         String symbol = crypto.getSymbol();
         Asset asset = jdbcAssetDao.getAssetBySymbol(accountId, symbol);
