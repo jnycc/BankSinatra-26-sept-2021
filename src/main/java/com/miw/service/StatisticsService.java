@@ -30,11 +30,11 @@ public class StatisticsService {
 
     // TODO: Methode die in loop alle portfolio waarde ophaalt
     public Map<LocalDate, Double> getPortfolioStats(int userID, int daysBack) {
-        Map<LocalDate, Double> portfolioValues = new HashMap<>();
+        Map<LocalDate, Double> portfolioValues = new TreeMap<>();
 
         //iterate through days  
         for (int days = daysBack; days >= 0; days--) {
-            double portfolioValue = jdbcTransactionDao.getPortfolioValueByDate(days, userID);
+            double portfolioValue = jdbcTransactionDao.getPortfolioValueByDate(userID, days);
             LocalDate date = LocalDate.now().minusDays(days);
             portfolioValues.put(date,portfolioValue);
         }
