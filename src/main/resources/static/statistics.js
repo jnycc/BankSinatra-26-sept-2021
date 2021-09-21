@@ -1,13 +1,16 @@
 //JSON-object klaarzetten
 var assetStats = null
+const testing = document.getElementById('testing')
+window.onload = getAssetStats('BTC', 7)
 
-function getAssetStats() {
-    fetch('/', {//vullen met endpoint
+function getAssetStats(symbol, daysBack) {
+    fetch(`/cryptoStats?symbol=${symbol}&daysBack=${daysBack}`, {//vullen met endpoint
         method: 'GET',
         headers: {'Authorization': localStorage.getItem('token')}
-    }).then(res => res.json())
+    }).then(res => res.text())
         .then(json => {
-            assetStats = json
+            // assetStats = json
+            testing.innerHTML = json
         })
 }
 
