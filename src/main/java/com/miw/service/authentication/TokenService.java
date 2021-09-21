@@ -2,6 +2,7 @@ package com.miw.service.authentication;
 import com.miw.database.JdbcAdminDao;
 import com.miw.database.JdbcClientDao;
 import com.miw.database.JdbcTokenDao;
+import com.miw.database.JdbcUserDao;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +20,13 @@ import java.util.UUID;
 @Service
 public class TokenService {
     private JdbcTokenDao jdbcTokenDao;
+    private static JdbcUserDao jdbcUserDao;
     private static final Logger logger = LoggerFactory.getLogger(TokenService.class);
 
     @Autowired
-    public TokenService(JdbcTokenDao jdbcTokenDao) {
+    public TokenService(JdbcTokenDao jdbcTokenDao, JdbcUserDao jdbcUserDao) {
         this.jdbcTokenDao = jdbcTokenDao;
+        this.jdbcUserDao = jdbcUserDao;
         logger.info("New Tokenservice created.");
 
     }
@@ -65,7 +68,12 @@ public class TokenService {
                 .parseClaimsJws(jwt).getBody();
     }
 
+    // TODO: check if blocked
     public static boolean validateJWT(String jwt) {
+        int userID = Integer.valueOf(decodeJWT(jwt).getSubject());
+        if (jdbcUserDao.checkIfBlockedByID(userID)){
+            return false;
+        }
         try {
             decodeJWT(jwt);
         } catch (ExpiredJwtException expired) {
@@ -77,6 +85,7 @@ public class TokenService {
 
     // Will return userID if JWT is valid.
     public static int getValidUserID(String jwt) {
+        int userID = Integer.valueOf(decodeJWT(jwt).getSubject());
         try {
             return Integer.valueOf(decodeJWT(jwt).getSubject());
         } catch (ExpiredJwtException expired) {
@@ -95,6 +104,10 @@ public class TokenService {
     }
 
     public static boolean validateAdmin(String jwt) {
+        int userID = Integer.valueOf(decodeJWT(jwt).getSubject());
+        if (jdbcUserDao.checkIfBlockedByID(userID)){
+            return false;
+        }
         try {
             return TokenService.getRole(jwt).equals("admin");
         } catch (ExpiredJwtException invalid) {
@@ -104,6 +117,10 @@ public class TokenService {
     }
 
     public static boolean validateClient(String jwt) {
+        int userID = Integer.valueOf(decodeJWT(jwt).getSubject());
+        if (jdbcUserDao.checkIfBlockedByID(userID)){
+            return false;
+        }
         try {
             return TokenService.getRole(jwt).equals("client");
         } catch (ExpiredJwtException invalid) {
