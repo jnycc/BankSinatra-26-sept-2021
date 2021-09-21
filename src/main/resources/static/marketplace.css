@@ -113,7 +113,7 @@ tr:hover{
     color: white;
 }
 
-.cryptoOverlay-body {padding: 2px 16px;}
+.cryptoOverlay-body {padding: 10px 16px 10px;}
 
 .cryptoOverlay-footer {
     height: 30px;

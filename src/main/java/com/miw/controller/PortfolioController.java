@@ -5,10 +5,7 @@
  */
 package com.miw.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import com.miw.database.JdbcCryptoDao;
 import com.miw.database.JdbcTransactionDao;
 import com.miw.database.RootRepository;
@@ -24,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +41,9 @@ public class PortfolioController {
         this.jdbcCryptoDao = jdbcCryptoDao;
         this.portfolioService = portfolioService;
         this.statisticsService = statisticsService;
-        this.gson = gson;
+        this.gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>)
+                (jsonElement, type, jsonDeserializationContext) ->
+                        LocalDateTime.parse(jsonElement.getAsJsonPrimitive().getAsString())).create();
         this.rootRepository = rootRepository;
     }
 

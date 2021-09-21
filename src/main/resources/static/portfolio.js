@@ -1,5 +1,14 @@
 //Page elements
 const contentFeature = document.querySelector(".contentFeature");
+const marketBtn = document.querySelector("#market");
+let cryptoChosen;
+let availableUnits;
+let unitsForSale;
+let salePrice;
+let featureContentIsFilled = false;
+let confirmBtn;
+let url = new URL(window.location.href);
+marketBtn.addEventListener('click', setUpMarketAsset);
 
 //Total values
 const totalBalance = document.getElementById('totalBalance')
@@ -14,7 +23,9 @@ $(assetTable).append("<tr><th>Crypto</th> <th>Symbol</th> <th>Units</th> <th>Pri
 const cryptoOverlay = document.getElementById('cryptoOverlay')
 const closeCryptoOverlay = document.getElementsByClassName('closeCryptoOverlay')[0]
 closeCryptoOverlay.addEventListener('click', () => {
-    $(cryptoOverlay).hide()
+    $(cryptoOverlay).hide();
+    $(contentFeature).empty();
+    featureContentIsFilled = false;
 })
 window.onclick = function (event) {
     if (event.target === cryptoOverlay) {
@@ -64,7 +75,7 @@ function getAssets() {
             for (let asset of json) {
                 const row = document.createElement('tr')
                 row.id = asset.crypto.symbol
-                row.addEventListener('click', () => openDetails(asset.crypto.symbol, asset.crypto.name))
+                row.addEventListener('click', () => openDetails(asset.crypto.symbol, asset.crypto.name, asset.units.toFixed(2)))
                 assetTable.appendChild(row)
                 //Prepare the required data-cells
                 let cells = []
@@ -107,8 +118,68 @@ function getCryptoLogo(symbol) {
     return logo
 }
 
-function openDetails(symbol, name) {
+function openDetails(symbol, name, units) {
     $(cryptoName).text(name + " (" + symbol + ")")
     $(cryptoOverlay).show()
+    // TODO toon crypto grafiek in contentFeature div
+    cryptoChosen = symbol;
+    availableUnits = units;
 }
 
+function setUpMarketAsset() {
+    if (!featureContentIsFilled) {
+        const table = $('<table class="marketTable" style="margin-left: auto; margin-right: auto"></table>');
+        $(table).append("<tr><th>Available Units</th><th>Units for sale</th><th>Price per unit</th></tr>");
+        const tr = document.createElement("tr");
+        const units = document.createElement("td");
+        units.id = "unitsAvailable";
+        units.innerText = `${availableUnits}`;
+        tr.append(units);
+        $(tr).append(`<td><input id='unitsToSell' type='number' min='0'></td>`);
+        $(tr).append("<td>$<input id='pricePerUnit' type='number' min='0'></td>");
+        $(table).append(tr);
+        $(contentFeature).append(table).append('<br>').append(`<button id="confirm" class="market" onclick="marketAsset()">Confirm</button>`);
+        featureContentIsFilled = true;
+    }
+}
+
+function marketAsset() {
+    unitsForSale = $("#unitsToSell").val();
+    salePrice = $("#pricePerUnit").val();
+
+    if (!(unitsForSale > 0)) {
+        alert("Units for sale must be larger than 0");
+        return;
+    } else if (!(salePrice > 0)) {
+        alert("Price per unit must be larger than 0");
+        return;
+    }
+
+    let payload = {
+        crypto: {
+            symbol: cryptoChosen
+        },
+        units: parseFloat(availableUnits),
+        unitsForSale: parseFloat(unitsForSale),
+        salePrice: parseFloat(salePrice),
+        symbol: cryptoChosen
+    }
+    fetch(`${url.origin}/marketAsset`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    }).then(response => {
+        if (response.status === 200) {
+            return response.text().then( text => {
+                alert(text);
+                window.location.replace(`${url.origin}/portfolio.html`);
+            });
+        }
+        return response.text.then(text => {
+            alert(text);
+        })
+    })
+}
