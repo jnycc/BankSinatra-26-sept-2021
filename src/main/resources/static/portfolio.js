@@ -1,14 +1,19 @@
 //Page elements
 const contentFeature = document.querySelector(".contentFeature");
 const marketBtn = document.querySelector("#market");
+const sellBtn = document.querySelector("#sell");
 let cryptoChosen;
 let availableUnits;
 let unitsForSale;
 let salePrice;
 let featureContentIsFilled = false;
 let confirmBtn;
+let unitsToSellToBank;
+let unitsToSellToBankInput = document.querySelector("#unitsToSellToBank");
 let url = new URL(window.location.href);
 marketBtn.addEventListener('click', setUpMarketAsset);
+sellBtn.addEventListener('click', setupSellAsset);
+
 
 //Total values
 const totalBalance = document.getElementById('totalBalance')
@@ -182,4 +187,79 @@ function marketAsset() {
             alert(text);
         })
     })
+}
+
+async function setupSellAsset() {
+    const header = $('<h3>Sell your units to Bank Sinatra for their current market value*</h3>')
+    const footnote = $('<p>*Bank fees apply, lolz</p>')
+    const table = $('<table class="sellTable"></table>')
+    const sellBankbtn = $('<button class="sellToBankButton" onclick="sellToBank()">Sell</button>')
+    $(table).append("<tr><th>Total units</th><th>Current value</th><th>Units to sell</th></tr>")
+    const tr = document.createElement("tr")
+    const units = document.createElement("td")
+    const value = document.createElement("td")
+    units.id = "unitsAvailable"
+    value.id = "currentValue"
+    units.innerText = availableUnits
+    value.innerText = "$" + await getCurrentValue(cryptoChosen)
+    tr.append(units)
+    tr.append(value)
+    $(tr).append("<td><input id='unitsToSellToBank' type='number' max={availableUnits} min='0'></td>")
+    unitsToSellToBank = `${$(`#unitsToSellToBank`).text()}`; //TODO: geeft ingevuld int nog niet goed door help
+    $(table).append(tr)
+    $(contentFeature).append(header, table, footnote, sellBankbtn);
+    console.log(getCurrentValue(cryptoChosen))
+    //TODO: gaat nog niet helemaal goed. Doet het prima als je de pagina refresht, maar als je op kruisje drukt moettie nog refreshen oid
+}
+
+async function getCurrentValue(symbol) {
+    let value;
+    await fetch(`${url.origin}/latestPrice`, {
+        method: 'POST',
+        headers: {"Authorization": `${localStorage.getItem('token')}`},
+        body: symbol
+    }).then(res => res.json())
+        .then(data => value = data)
+    return value
+}
+
+async function sellToBank(){
+    let sellerId = await getIdCurrentUser();
+    let payload ={
+        buyer: 1, //dit werkt
+        seller: parseInt(sellerId), //dit werkt ook
+        crypto: {
+            symbol: "DOT" //TODO: moet cryptoChosen zijn maar dat doettie nog niet
+        },
+        units: parseInt(unitsToSellToBank) //TODO: werkt ook nog niet
+    }
+    console.log(payload);
+
+    await fetch(`${url.origin}/buy`, {
+        method: 'POST',
+        headers: {"Authorization": `${localStorage.getItem('token')}`},
+        body: JSON.stringify(payload)
+    }).then(res=> {
+        if(res.status === 200){
+            alert("Yesss sell us your assets, bitch")
+        } else {
+            return res.text().then(it => alert(it));
+        }
+    })
+}
+
+async function getIdCurrentUser() {
+    let userId;
+    await fetch(
+        `${url.origin}/getUserId`, {
+            method: 'POST',
+            headers: { "Authorization": `${localStorage.getItem('token')}`}
+        }).then(res => {
+        if (res.status === 200) {
+            return res.text().then(it => { userId = it;})
+        } else {
+            alert("Not a valid token anymore");
+        }
+    })
+    return userId;
 }

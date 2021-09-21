@@ -115,6 +115,16 @@ public class PortfolioController {
         return new ResponseEntity<>(statisticsService.getPortfolioStats(userId, 30), HttpStatus.OK);
     }
 
+    @PostMapping("/latestPrice")
+    public ResponseEntity<?> getLatestValueBySymbol(@RequestHeader("Authorization") String token,
+                                                    @RequestBody String symbol){
+
+        if (!TokenService.validateClient(token)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return new ResponseEntity<>(rootRepository.getLatestPriceBySymbol(symbol), HttpStatus.OK);
+    }
+
 
 
 
