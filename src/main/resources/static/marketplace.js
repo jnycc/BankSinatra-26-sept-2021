@@ -100,8 +100,12 @@ function setPriceDeltas(date) {
             const rows = cryptoTable.rows
             let i = 1 //start vanaf table row 1 (0 = table header)
             for (let key of Object.keys(json)) {
-                const cell = document.createElement('td')
-                cell.innerHTML = json[key].toFixed(2) + '%'
+                const cell = document.createElement('td');
+                let arrowSrc = json[key] >= 0 ? `images/arrow_up.png` : `images/arrow_down.png`;
+                let img = $('<img height="20px" width="10px" style="mix-blend-mode: multiply;">');
+                img.attr('src', arrowSrc);
+                cell.append(img[0]);
+                cell.append(`${json[key].toFixed(2) + '%'}`);
                 rows[i].appendChild(cell)
                 i++
             }
