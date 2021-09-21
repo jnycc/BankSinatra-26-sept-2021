@@ -211,4 +211,8 @@ public class RootRepository {
     public List<Crypto> getAllCryptos() {
         return jdbcCryptoDao.getAllCryptos();
     }
+
+    public LocalDateTime getLatestAPICallTime() {
+        return jdbcCryptoDao.getLatestAPICallTime();
+    }
 }

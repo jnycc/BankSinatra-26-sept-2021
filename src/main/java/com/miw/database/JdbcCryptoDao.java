@@ -56,7 +56,7 @@ public class JdbcCryptoDao {
 
     // Selecteert een crypto uit de db, neemt daarbij automatisch de meest recente opgeslagen prijs in het object op
     public Crypto getCryptoBySymbol(String symbol) {
-        String sql = "SELECT Crypto.*, CryptoPrice.cryptoPrice, cryptoPrice.dateRetrieved " +
+        String sql = "SELECT Crypto.*, CryptoPrice.cryptoPrice " +
                 "FROM Crypto LEFT JOIN CryptoPrice " +
                 "ON Crypto.symbol = CryptoPrice.symbol " +
                 "WHERE Crypto.symbol = ? " +
@@ -143,6 +143,16 @@ public class JdbcCryptoDao {
         }
     }
 
+    public LocalDateTime getLatestAPICallTime() {
+        String sql = "SELECT MAX(dateRetrieved) FROM CryptoPrice;";
+        try {
+            return jdbcTemplate.queryForObject(sql, LocalDateTime.class);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Failed to retrieve prices of each crypto per day");
+            return null;
+        }
+    }
+
 
     public Map<String, Double> getPriceDeltas(LocalDateTime dateTime) {
         String sql = "SELECT q1.symbol, ROUND(((q1.cryptoPrice - q2.cryptoPrice)/q2.cryptoPrice * 100), 2) AS priceDelta" +
@@ -218,8 +228,6 @@ public class JdbcCryptoDao {
         }
     }
 
-
-
     private static class CryptoRowMapper implements RowMapper<Crypto> {
 
         @Override
@@ -228,9 +236,7 @@ public class JdbcCryptoDao {
             String symbol = resultSet.getString("symbol");
             String description = resultSet.getString("description");
             Double price = resultSet.getDouble("cryptoPrice");
-            LocalDateTime dateRetrieved = resultSet.getObject("dateRetrieved", LocalDateTime.class);
             Crypto crypto = new Crypto(name, symbol, description, price);
-            crypto.setDateRetrieved(dateRetrieved);
             return crypto;
         }
     }
