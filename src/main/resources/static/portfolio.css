@@ -51,7 +51,7 @@ tr:hover{
     margin: auto;
     padding: 10px 15px 10px 0px;
     border: 1px solid #888;
-    width: 80%;
+    width: 50%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     text-align: center;
     -webkit-animation-name: animatetop;
@@ -102,7 +102,7 @@ tr:hover{
     color: white;
 }
 
-#buy, #sell{
+#buy, #sell, #market{
     height: 25px;
     width: 45px;
 }
