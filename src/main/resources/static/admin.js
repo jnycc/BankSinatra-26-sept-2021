@@ -21,7 +21,7 @@ function validateAdmin(){
 
 const logout = document.querySelector("#logout")
 
-const btnBankfee = document.querySelector("#bankfee")
+const btnBankFee = document.querySelector("#bankFee")
 const feeForm = document.querySelector("#feeForm")
 const btnCloseOverlay = document.querySelector("#close-overlay-btn")
 const overlay = document.querySelector("#overlay")
@@ -54,7 +54,7 @@ logout.addEventListener("click", function() {
 
 // CHANGE BANK FEE
 $(document).ready(function (){
-    $(btnBankfee).click(function (){
+    $(btnBankFee).click(function (){
         getCurrentFee()
         $(overlay).show()
     });
@@ -87,7 +87,7 @@ function updateFee(){
             if (res.status === 200) {
                 console.log("Bank costs updated.")
             } else {
-                window.alert(`Error: ${res.statusText}`)
+                console.log("An error was encountered while updating the bank fee.")
             }
         })
 }
@@ -98,11 +98,15 @@ function getCurrentFee(){
             method: 'GET',
             headers: {"Authorization": localStorage.getItem('token')}
         })
-        .then(res => res.json())
-        .then(it => {
-            console.log(it)
-            document.getElementById("fee-input").placeholder = `Current fee: ${it}`
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(it => {
+                    console.log(it)
+                    document.getElementById("fee-input").placeholder = `Current fee: ${it}`
+                })
+            }
         })
+
 }
 
 // LOAD USER
@@ -137,9 +141,7 @@ function loadUser(user){
                     }
                 })
             } else {
-                res.json().then(it => {
-                    alert(it.message);
-                })
+                console.log("An error was encountered while fetching user data.")
             }
         })
 }
@@ -176,7 +178,7 @@ function blockUser(user) {
             console.log("Block status changed.")
         } else {
             res.json().then(it => {
-                alert(it.message)
+                console.log(it.message)
             })
         }
     })
@@ -200,9 +202,9 @@ async function getAssets(user) {
         headers: {"Authorization": `${localStorage.getItem('token')}`},
     }).then(res => {
         if (res.status === 200) {
-            console.log("ok")
+            console.log("Assets fetched succesfully.")
         } else {
-            console.log("error")
+            console.log("An error was encountered while fetching assets.")
         }
         return res.json().then(it => {
             assets = it
@@ -251,7 +253,7 @@ async function applyAssetChanges() {
             if (res.status === 200) {
                 console.log("Assets updated.")
             } else {
-                window.alert(`Error: ${res.statusText}`) // TODO: werkt dit nou eigenlijk echt?
+                console.log("An error was encountered while updating assets.")
             }
         })
     loadUser(user) // reload user to reflect changes
