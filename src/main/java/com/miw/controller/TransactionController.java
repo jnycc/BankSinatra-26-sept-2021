@@ -103,8 +103,8 @@ public class TransactionController {
 
     private boolean checkSufficientCrypto(Transaction transaction){
         try{
-            return transactionService.checkSufficientCrypto(transaction.getSeller(), transaction.getCrypto(),
-                    transaction.getUnits());
+            return transactionService.checkSufficientCrypto(transaction.getBuyer(), transaction.getSeller(),
+                    transaction.getCrypto(), transaction.getUnits());
         } catch (Exception e){
             e.printStackTrace();
             return false;

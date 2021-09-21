@@ -57,7 +57,7 @@ class TransactionControllerTest {
 
     @Test
     void validTransactionTest(){
-        Mockito.when(transactionService.checkSufficientCrypto(testTransaction.getSeller(),
+        Mockito.when(transactionService.checkSufficientCrypto(testTransaction.getBuyer(), testTransaction.getSeller(),
                 testTransaction.getCrypto(), testTransaction.getUnits())).thenReturn(true);
         Mockito.when(transactionService.checkSufficientBalance(testTransaction.getSeller(),
                 testTransaction.getBuyer(), testTransaction.getTransactionPrice(), testTransaction.getBankCosts()))
@@ -92,7 +92,7 @@ class TransactionControllerTest {
 
     @Test
     void insufficientCryptoTest(){
-        Mockito.when(transactionService.checkSufficientCrypto(testTransaction.getSeller(),
+        Mockito.when(transactionService.checkSufficientCrypto(testTransaction.getBuyer(), testTransaction.getSeller(),
                 testTransaction.getCrypto(), testTransaction.getUnits())).thenReturn(false);
 
         try {
@@ -108,7 +108,7 @@ class TransactionControllerTest {
 
     @Test
     void insufficientBalanceTest(){
-        Mockito.when(transactionService.checkSufficientCrypto(testTransaction.getSeller(),
+        Mockito.when(transactionService.checkSufficientCrypto(testTransaction.getBuyer(), testTransaction.getSeller(),
                 testTransaction.getCrypto(), testTransaction.getUnits())).thenReturn(true);
         Mockito.when(transactionService.checkSufficientBalance(testTransaction.getSeller(),
                 testTransaction.getBuyer(), testTransaction.getTransactionPrice(),
