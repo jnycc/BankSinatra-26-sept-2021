@@ -31,8 +31,8 @@ const userTable = $("#userTable")
 const btnToggleBlock = document.querySelector("#toggleBlock")
 $(btnToggleBlock).hide()
 
-const portfolioData = document.querySelector("#portfolioData")
-const assetTable = document.querySelector("#assetTable")
+const portfolioData = $("#portfolioData")
+const assetTable = $("#assetTable")
 let assets = {}
 const btnSubmitChanges = document.querySelector("#submitChanges")
 
@@ -115,6 +115,9 @@ function loadUser(user){
     if ($('#userTable tr').length !== 0) {
         userTable.empty()
     }
+    if ($('#assetTable tr').length !== 0) {
+        assetTable.empty()
+    }
 
     fetch(`http://localhost:8080/admin/getUserData?email=${user}`,
         {
@@ -173,7 +176,7 @@ function blockUser(user) {
 // ADD OR REMOVE ASSETS
 btnSubmitChanges.addEventListener("click", function() {
     if (confirmationPrompt("modify this user's crypto and/or USD balance")) {
-        console.log("let's gooooooooooooooooo")
+        applyAssetChanges()
     }
 })
 
@@ -211,7 +214,32 @@ function fillTable() {
         td3.type = "number"
         td3.step = "0.01"
         td3.value = "0.00"
+        td3.id = `${key}input`
         tr.append(td1, td2, td3)
         assetTable.append(tr)
     }
+}
+
+async function applyAssetChanges() {
+    let changes = {}
+    for (const key in assets) {
+        changes[key] = document.querySelector(`#${key}input`).value
+    }
+
+    console.log(changes)
+    fetch(`http://localhost:8080/admin/updateAssets?email=${user}`,
+        {
+            method: 'PUT',
+            headers: {  "Content-Type": "application/json",
+                        "Authorization": `${localStorage.getItem('token')}`},
+            body: JSON.stringify(changes)
+        })
+        .then(res => {
+            if (res.status === 200) {
+                console.log("Assets updated.")
+            } else {
+                window.alert(`Error: ${res.statusText}`) // TODO: werkt dit nou eigenlijk echt?
+            }
+        })
+    await loadUser(user) // reload user to reflect changes
 }
