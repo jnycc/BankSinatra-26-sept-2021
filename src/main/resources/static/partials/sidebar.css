@@ -1,21 +1,12 @@
 .sidebar{
     height: 100%;
-    width: 150px;
+    width: 200px;
     position: fixed;
     left: 0;
     top: 0;
     padding-top: 40px;
-    background-color: #f5e8ccff;
-}
-
-#sidebar{
-    height: 100%;
-    width: 150px;
-    position: fixed;
-    left: 0;
-    top: 0;
-    padding-top: 40px;
-    background-color: #f5e8ccff;
+    background-image: url("../images/tall_buildings.png");
+    background-size: cover;
 }
 
 .sidebar div {
@@ -23,30 +14,33 @@
     display: block;
 }
 
+.logoContainer{
+    text-align: center;
+}
+
 #intro{
-    color: #012128ff;
+    color: #f5e8ccff;
     font-family: "Palatino Linotype", monospace;
     font-size: 24px;
-    padding-left: 10px;
+    margin-left: 15%;
     padding-bottom: 80px;
 }
 
 .navigation{
     list-style-type: none;
-    margin-left: 10%;
+    margin-left: 20%;
     padding: 0;
-    color: #012128ff;
+    color: #f5e8ccff;
     font-family: "Palatino Linotype", monospace;
     font-size: 20px;
     line-height: 2.5em;
 }
 
 #terms{
-    color: #012128ff;
+    color: #f5e8ccff;
     font-family: "Palatino Linotype", monospace;
     font-size: 12px;
-    padding-top: 100px;
-    margin-left: 5%;
+    margin-left: 15%;
 }
 
 a, a:hover, a:visited, a:active, a:link {
