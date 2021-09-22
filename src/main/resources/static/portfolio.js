@@ -44,6 +44,7 @@ window.onclick = function (event) {
 }
 const cryptoName = document.getElementById('cryptoName')
 let dataMap = null //globale placeholder voor de statistical data
+const overlayDetails = document.getElementById('overlayDetails')
 
 //Load total portfolio values
 window.addEventListener("DOMContentLoaded", () => {
@@ -81,12 +82,13 @@ function getAssets() {
     })
         .then(res => res.json())
         .then(json => {
+            console.log(json)
             let nrOfCells = assetTable.rows[0].cells.length - 1
             //For every asset, create a row
             for (let asset of json) {
                 const row = document.createElement('tr')
                 row.id = asset.crypto.symbol
-                row.addEventListener('click', () => openDetails(asset.crypto.symbol, asset.crypto.name, asset.units.toFixed(2)))
+                row.addEventListener('click', () => openDetails(asset))
                 assetTable.appendChild(row)
                 //Prepare the required data-cells
                 let cells = []
@@ -98,7 +100,6 @@ function getAssets() {
                 cells[2].innerHTML = asset.units.toLocaleString("en-US", {style: 'decimal', minimumFractionDigits: 2})
                 cells[3].innerText = asset.crypto.cryptoPrice.toLocaleString('en-US', currencyFormat)
                 cells[4].innerHTML = asset.currentValue.toLocaleString('en-US', currencyFormat)
-                // row.append(cells[0], cells[1], cells[2], cells[3], cells[4])
                 cells.forEach(cell => row.appendChild(cell))
             }
         })
@@ -129,33 +130,42 @@ function getCryptoLogo(symbol) {
     return logo
 }
 
-function openDetails(symbol, name, units) {
-    $(cryptoName).text(name + " (" + symbol + ")");
+function openDetails(asset) {
+    console.log(asset)
+    $(cryptoName).text(`${asset.crypto.name} (${asset.crypto.symbol})`);
+    $(cryptoName).prepend(getCryptoLogo(asset.crypto.symbol))
+    $(overlayDetails).empty()
+    $(overlayDetails).append(`<p>${asset.crypto.description}</p>`)
     $(cryptoOverlay).show();
-    $(contentFeature).css("height", "400px");
-    $(contentFeature).css("width", "80%");
-    createGraph(symbol, 7)
+    // $(contentFeature).css("height", "400px"); // dit in css-bestand regelen?
+    // $(contentFeature).css("width", "60%");
+    let daysBack = 100; //Vanaf 220 vult hij niet, data vanuit sql is dan null
+    createGraph(asset.crypto.symbol, asset.crypto.cryptoPrice, daysBack)
     featureContentIsFilled = true;
-    // TODO toon crypto grafiek in contentFeature div
-    cryptoChosen = symbol;
-    availableUnits = units;
+    cryptoChosen = asset.crypto.symbol;
+    availableUnits = asset.units.toFixed(2);
 }
-async function createGraph(symbol, daysBack) {
+
+async function createGraph(symbol, price, daysBack) {
     await getAssetStats(symbol, daysBack)
     var dataPoints1 = [], dataPoints2 = [];
     var stockChart = new CanvasJS.StockChart("contentFeature", {
         animationEnabled: true,
         theme: "light2",
         title: {
-            text: `${symbol} price chart`, //TODO: dit vullen met cryptonaam ipv symbol
-            fontFamily: "Calibri,Optima,Arial,sans-serif"
+            text: `Price chart`,
+            fontSize: 20,
+            fontFamily: "Palatino,Optima,Arial,sans-serif"
         },
+        subtitles: [{
+            text:`Current price: ${price.toLocaleString('en-US', currencyFormat)}`
+        }],
         charts: [{
             toolTip: {
                 shared: true
             },
             axisX: {
-                valueFormatString: "D MMM YYYY"
+                valueFormatString: "D MMM"
             },
             axisY: {
                 prefix: "USD "
@@ -196,9 +206,9 @@ async function createGraph(symbol, daysBack) {
                 range: 7,
                 rangeType: "day"
             }, {
-                label: "1Y",
+                label: "1M",
                 range: 1,
-                rangeType: "year"
+                rangeType: "month"
             }, {
                 label: "All",
                 range: null,
@@ -206,11 +216,9 @@ async function createGraph(symbol, daysBack) {
             }]
         }
     });
-    console.log("Pushmethode runt. 2. Data bestaat uit:")
-    console.log(dataMap)
-    for (let date of Object.keys(dataMap)) {
-        dataPoints1.push({x: new Date(date), y:[Number(dataMap[date].min), Number(dataMap[date].max)]});
-        dataPoints2.push({x: new Date(date), y:Number(dataMap[date].avg)});
+    for (let [key, value] of Object.entries(dataMap)) {
+        dataPoints1.push({x: new Date(key), y:[Number(value.min), Number(value.max)]});
+        dataPoints2.push({x: new Date(key), y:Number(value.avg)});
     }
     stockChart.render();
 }
@@ -223,8 +231,6 @@ async function getAssetStats(symbol, daysBack) {
         .then(res => res.json())
         .then(json => {
             dataMap = json
-            console.log("1. Data opgehaald: ")
-            console.log(dataMap)
         })
 }
 async function setUpMarketAsset() {

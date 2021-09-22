@@ -1,8 +1,15 @@
-body :not(#header):not(.cryptoOverlay){
-    margin-left: 20px;
+body:not(#sidebar):not(.cryptoOverlay){
+    margin-left: 200px; /*Sidebar takes 200px on the left*/
+    color: #f5e8cc; /*All text colour*/
+}
+
+#portfolio-info {
+    text-align: center;
 }
 
 table {
+    margin-left: auto;
+    margin-right: auto;
     width: 80%;
     border-collapse:collapse;
 }
@@ -12,7 +19,6 @@ table, th, td {
     text-align: left;
     vertical-align: text-bottom;
     padding-left: 5px;
-    /*background-color:bisque;*/
 }
 
 tr:hover{
@@ -113,4 +119,12 @@ tr:hover{
     text-align: left;
     background-color: #001d23;
     color: white;
+}
+#contentFeature {
+    height: 400px;
+    width: auto;
+}
+
+#overlayDetails {
+    text-align: left;
 }
