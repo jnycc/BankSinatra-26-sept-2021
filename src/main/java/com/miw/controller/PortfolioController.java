@@ -7,12 +7,10 @@ package com.miw.controller;
 
 import com.google.gson.*;
 import com.miw.database.JdbcCryptoDao;
-import com.miw.database.JdbcTransactionDao;
 import com.miw.database.RootRepository;
 import com.miw.model.Asset;
 import com.miw.service.PortfolioService;
 import com.miw.service.StatisticsService;
-import com.miw.service.TransactionService;
 import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -123,6 +120,20 @@ public class PortfolioController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return new ResponseEntity<>(rootRepository.getLatestPriceBySymbol(symbol), HttpStatus.OK);
+    }
+
+    @GetMapping("/getUnitsForSale")
+    public ResponseEntity<?> getUnitsForSale(@RequestHeader("Authorization") String token,
+                                             @RequestBody String symbol) {
+        int userId = TokenService.getValidUserID(token);
+        if (userId == 0) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        int accountId = portfolioService.getAccountIdByUserId(userId);
+
+        Map<Double, Double> unitsForSaleWithPrice;
+        unitsForSaleWithPrice = rootRepository.getUnitsForSaleWithPrice(symbol, accountId);
+        return new ResponseEntity<>(unitsForSaleWithPrice, HttpStatus.OK);
     }
 
 

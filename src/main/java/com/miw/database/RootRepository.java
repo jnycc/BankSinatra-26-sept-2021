@@ -215,4 +215,8 @@ public class RootRepository {
     public LocalDateTime getLatestAPICallTime() {
         return jdbcCryptoDao.getLatestAPICallTime();
     }
+
+    public Map<Double, Double> getUnitsForSaleWithPrice (String symbol, int accountId) {
+        return jdbcAssetDao.getUnitsForSaleAndPrice(symbol, accountId);
+    }
 }

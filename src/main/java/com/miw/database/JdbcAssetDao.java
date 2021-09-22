@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -154,6 +155,18 @@ public class JdbcAssetDao {
         }
     }
 
+    public Map<Double, Double> getUnitsForSaleAndPrice(String symbol, int accountId) {
+        String sql = "SELECT unitsForSale, salePrice FROM Asset WHERE symbol = ? AND accountID = ?;";
+        try {
+            Map<Double, Double> unitsForSaleWithPrice = new HashMap<>();
+            unitsForSaleWithPrice = jdbcTemplate.query(sql, new UnitsForSaleExtractor(), symbol, accountId);
+            return unitsForSaleWithPrice;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private static class AssetRowMapper implements RowMapper<Asset> {
 
         @Override
@@ -204,5 +217,17 @@ public class JdbcAssetDao {
         }
     }
 
+    private static class UnitsForSaleExtractor implements ResultSetExtractor<Map<Double, Double>>{
+        @Override
+        public Map<Double, Double> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+            Map<Double, Double> unitsForSaleWithPrice = new HashMap<>();
+            while (resultSet.next()) {
+                double unitsForSale = resultSet.getDouble("unitsForSale");
+                double salePrice = resultSet.getDouble("salePrice");
+                unitsForSaleWithPrice.put(unitsForSale, salePrice);
+            }
+            return unitsForSaleWithPrice;
+        }
+    }
 
 }

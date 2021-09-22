@@ -11,8 +11,12 @@ let confirmBtn;
 let unitsToSellToBank;
 let unitsToSellToBankInput = document.querySelector("#unitsToSellToBank");
 let url = new URL(window.location.href);
+let buyBtn = document.querySelector("#buy");
 marketBtn.addEventListener('click', setUpMarketAsset);
 sellBtn.addEventListener('click', setupSellAsset);
+buyBtn.addEventListener('click', ()=> {
+    window.location.replace(`${url.origin}/marketplace.html`);
+});
 
 
 //Total values
@@ -132,20 +136,22 @@ function openDetails(symbol, name, units) {
 }
 
 function setUpMarketAsset() {
-    if (!featureContentIsFilled) {
-        const table = $('<table class="marketTable" style="margin-left: auto; margin-right: auto"></table>');
-        $(table).append("<tr><th>Available Units</th><th>Units for sale</th><th>Price per unit</th></tr>");
-        const tr = document.createElement("tr");
-        const units = document.createElement("td");
-        units.id = "unitsAvailable";
-        units.innerText = `${availableUnits}`;
-        tr.append(units);
-        $(tr).append(`<td><input id='unitsToSell' type='number' min='0'></td>`);
-        $(tr).append("<td>$<input id='pricePerUnit' type='number' min='0'></td>");
-        $(table).append(tr);
-        $(contentFeature).append(table).append('<br>').append(`<button id="confirm" class="market" onclick="marketAsset()">Confirm</button>`);
-        featureContentIsFilled = true;
+    if (featureContentIsFilled) {
+        $(contentFeature).empty();
     }
+    const table = $('<table class="marketTable" style="margin-left: auto; margin-right: auto"></table>');
+    $(table).append("<tr><th>Available Units</th><th>Units for sale</th><th>Price per unit</th></tr>");
+    const tr = document.createElement("tr");
+    const units = document.createElement("td");
+    units.id = "unitsAvailable";
+    units.innerText = `${availableUnits}`;
+    tr.append(units);
+    $(tr).append(`<td><input id='unitsToSell' type='number' min='0'></td>`);
+    $(tr).append("<td>$<input id='pricePerUnit' type='number' min='0'></td>");
+    $(table).append(tr);
+    $(contentFeature).append(table).append('<br>').append(`<button id="confirm" class="market" onclick="marketAsset()">Confirm</button>`);
+    confirmBtn = $("#confirm");
+    featureContentIsFilled = true;
 }
 
 function marketAsset() {
@@ -190,6 +196,9 @@ function marketAsset() {
 }
 
 async function setupSellAsset() {
+    if (featureContentIsFilled) {
+        $(contentFeature).empty();
+    }
     const header = $('<h3>Sell your units to Bank Sinatra for their current market value*</h3>')
     const footnote = $('<p>*Bank fees apply, lolz</p>')
     const table = $('<table class="sellTable"></table>')
@@ -209,6 +218,7 @@ async function setupSellAsset() {
     $(table).append(tr)
     $(contentFeature).append(header, table, footnote, sellBankbtn);
     console.log(getCurrentValue(cryptoChosen))
+    featureContentIsFilled = true;
 }
 
 async function getCurrentValue(symbol) {
@@ -263,4 +273,13 @@ async function getIdCurrentUser() {
         }
     })
     return userId;
+}
+
+async function getUnitsForSaleWithPrice() {
+    let unitsForSale = await fetch(`${url.origin}/getUnitsForSale`, {
+        method: 'GET',
+        headers: {"Authorization": `${localStorage.getItem('token')}`},
+        body: cryptoChosen
+    }).then(res => {return res.text()})
+    return unitsForSale;
 }
