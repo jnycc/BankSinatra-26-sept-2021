@@ -1,3 +1,5 @@
+let url = new URL(window.location.href);
+
 // PAGE SETUP
 window.addEventListener("DOMContentLoaded", validateAdmin)
 
@@ -16,11 +18,10 @@ function validateAdmin(){
         })
 }
 
-let url = new URL(window.location.href);
 
 const logout = document.querySelector("#logout")
 
-const btnBankfee = document.querySelector("#bankfee")
+const btnBankFee = document.querySelector("#bankFee")
 const feeForm = document.querySelector("#feeForm")
 const btnCloseOverlay = document.querySelector("#close-overlay-btn")
 const overlay = document.querySelector("#overlay")
@@ -53,7 +54,7 @@ logout.addEventListener("click", function() {
 
 // CHANGE BANK FEE
 $(document).ready(function (){
-    $(btnBankfee).click(function (){
+    $(btnBankFee).click(function (){
         getCurrentFee()
         $(overlay).show()
     });
@@ -76,7 +77,7 @@ function updateFee(){
         {token: `${localStorage.getItem('token')}`,
             fee: `${document.querySelector("#fee-input").value}`}
     console.log(payload);
-    fetch(`http://localhost:8080/admin/updateFee`,
+    fetch(`${url.origin}/admin/updateFee`,
         {
             method: 'PUT',
             header: { "Content-Type": "application/json" },
@@ -86,22 +87,26 @@ function updateFee(){
             if (res.status === 200) {
                 console.log("Bank costs updated.")
             } else {
-                window.alert(`Error: ${res.statusText}`)
+                console.log("An error was encountered while updating the bank fee.")
             }
         })
 }
 
 function getCurrentFee(){
-    fetch(`http://localhost:8080/admin/getBankFee`,
+    fetch(`${url.origin}/admin/getBankFee`,
         {
             method: 'GET',
             headers: {"Authorization": localStorage.getItem('token')}
         })
-        .then(res => res.json())
-        .then(it => {
-            console.log(it)
-            document.getElementById("fee-input").placeholder = `Current fee: ${it}`
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(it => {
+                    console.log(it)
+                    document.getElementById("fee-input").placeholder = `Current fee: ${it}`
+                })
+            }
         })
+
 }
 
 // LOAD USER
@@ -119,36 +124,42 @@ function loadUser(user){
         assetTable.empty()
     }
 
-    fetch(`http://localhost:8080/admin/getUserData?email=${user}`,
+    fetch(`${url.origin}/admin/getUserData?email=${user}`,
         {
             method: 'GET',
             headers: { "Authorization": localStorage.getItem('token') }
         })
-        .then(res => res.json())
-        .then(it => {                        // TODO: dit moet mooier en met minder complexiteit kunnen + heeft nu geen error message
-            for (const key in it) {          // loop through all properties of the imported user json
-                if (it[key] !== null) {
-                    if (key === "address") { // "address" contains properties of its own, so needs to be looped through separately
-                        let obj = it["address"];
-                        for (const key in obj) {
-                            $(userTable).append("<tr><th>" + key + "</th><th>" + obj[key] + "</th></tr>")
-                        }
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(it => {
+                    fillUserTable(it)
+                    $(btnToggleBlock).show()
+                    if (it["dateOfBirth"] != null) { // only show assets when loading a client; admins don't have assets
+                        showPortfolio(user)
                     } else {
-                        $(userTable).append("<tr><th>" + key + "</th><th>" + it[key] + "</th></tr>")
+                        $(portfolioData).hide()
                     }
-                }
-            }
-            $("#userData").append(userTable)
-            $(btnToggleBlock).show()
-
-            if (it["dateOfBirth"] != null) { // only show assets when loading a client; admins don't have assets
-                showPortfolio(user)
+                })
             } else {
-                $(portfolioData).hide()
+                console.log("An error was encountered while fetching user data.")
             }
         })
 }
 
+function fillUserTable(it) {
+    for (const key in it) {          // loop through all properties of the imported user json
+        if (it[key] !== null && key !== "account") {
+            if (key === "address") { // "address" contains properties of its own, so needs to be looped through separately
+                let obj = it["address"];
+                for (const key in obj) {
+                    $(userTable).append(`<tr><td>${key}</td><td>${obj[key]}</td></tr>`)
+                }
+            } else {
+                $(userTable).append(`<tr><td>${key}</td><td>${it[key]}</td></tr>`)
+            }
+        }
+    }
+}
 // BLOCK/UNBLOCK USER
 btnToggleBlock.addEventListener("click", function() {
     if (confirmationPrompt("change this user's block status")) {
@@ -157,7 +168,7 @@ btnToggleBlock.addEventListener("click", function() {
 })
 
 function blockUser(user) {
-    fetch(`http://localhost:8080/admin/toggleBlock?email=${user}`,
+    fetch(`${url.origin}/admin/toggleBlock?email=${user}`,
         {
             method: 'POST',
             headers: { "Authorization": localStorage.getItem('token') }
@@ -167,7 +178,7 @@ function blockUser(user) {
             console.log("Block status changed.")
         } else {
             res.json().then(it => {
-                alert(it.message)
+                console.log(it.message)
             })
         }
     })
@@ -175,13 +186,12 @@ function blockUser(user) {
 
 // ADD OR REMOVE ASSETS
 btnSubmitChanges.addEventListener("click", function() {
-    if (confirmationPrompt("modify this user's crypto and/or USD balance")) {
+    if (confirmationPrompt("modify this user's assets")) {
         applyAssetChanges()
     }
 })
 
 async function showPortfolio(user) {
-    $(assetTable).append("<tr><th>Symbol</th> <th>Amount owned</th> <th>Add/subtract amount</th></tr>");
     await getAssets(user)
     $(portfolioData).show()
 }
@@ -192,18 +202,18 @@ async function getAssets(user) {
         headers: {"Authorization": `${localStorage.getItem('token')}`},
     }).then(res => {
         if (res.status === 200) {
-            console.log("ok")
+            console.log("Assets fetched succesfully.")
         } else {
-            console.log("error")
+            console.log("An error was encountered while fetching assets.")
         }
         return res.json().then(it => {
             assets = it
-            fillTable()
+            fillAssetTable()
         })
     })
 }
 
-function fillTable() {
+function fillAssetTable() {
     for (const key in assets) {
         const tr = document.createElement("tr")
         const td1 = document.createElement("td")
@@ -216,8 +226,13 @@ function fillTable() {
         td3.value = "0.00"
         td3.id = `${key}input`
         tr.append(td1, td2, td3)
-        assetTable.append(tr)
+        if (key === 'USD') { // move USD to top of table
+            $(assetTable).prepend(tr)
+        } else {
+            $(assetTable).append(tr)
+        }
     }
+    $(assetTable).prepend("<tr><th>Symbol</th> <th>Amount owned</th> <th>Add/subtract amount</th></tr>"); // place header
 }
 
 async function applyAssetChanges() {
@@ -227,7 +242,7 @@ async function applyAssetChanges() {
     }
 
     console.log(changes)
-    fetch(`http://localhost:8080/admin/updateAssets?email=${user}`,
+    fetch(`${url.origin}/admin/updateAssets?email=${user}`,
         {
             method: 'PUT',
             headers: {  "Content-Type": "application/json",
@@ -238,8 +253,8 @@ async function applyAssetChanges() {
             if (res.status === 200) {
                 console.log("Assets updated.")
             } else {
-                window.alert(`Error: ${res.statusText}`) // TODO: werkt dit nou eigenlijk echt?
+                console.log("An error was encountered while updating assets.")
             }
         })
-    await loadUser(user) // reload user to reflect changes
+    loadUser(user) // reload user to reflect changes
 }

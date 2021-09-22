@@ -1,3 +1,24 @@
+//Page elements
+const contentFeature = document.querySelector(".contentFeature");
+const marketBtn = document.querySelector("#market");
+const sellBtn = document.querySelector("#sell");
+let cryptoChosen;
+let availableUnits;
+let unitsForSale;
+let salePrice;
+let featureContentIsFilled = false;
+let confirmBtn;
+let unitsToSellToBank;
+let unitsToSellToBankInput = document.querySelector("#unitsToSellToBank");
+let url = new URL(window.location.href);
+let buyBtn = document.querySelector("#buy");
+marketBtn.addEventListener('click', setUpMarketAsset);
+sellBtn.addEventListener('click', setupSellAsset);
+buyBtn.addEventListener('click', ()=> {
+    window.location.replace(`${url.origin}/marketplace.html`);
+});
+
+
 //Total values
 const totalBalance = document.getElementById('totalBalance')
 const totalPortfolioValue = document.getElementById('totalPortfolioValue')
@@ -11,7 +32,9 @@ $(assetTable).append("<tr><th>Crypto</th> <th>Symbol</th> <th>Units</th> <th>Pri
 const cryptoOverlay = document.getElementById('cryptoOverlay')
 const closeCryptoOverlay = document.getElementsByClassName('closeCryptoOverlay')[0]
 closeCryptoOverlay.addEventListener('click', () => {
-    $(cryptoOverlay).hide()
+    $(cryptoOverlay).hide();
+    $(contentFeature).empty();
+    featureContentIsFilled = false;
 })
 window.onclick = function (event) {
     if (event.target === cryptoOverlay) {
@@ -61,7 +84,7 @@ function getAssets() {
             for (let asset of json) {
                 const row = document.createElement('tr')
                 row.id = asset.crypto.symbol
-                row.addEventListener('click', () => openDetails(asset.crypto.symbol, asset.crypto.name))
+                row.addEventListener('click', () => openDetails(asset.crypto.symbol, asset.crypto.name, asset.units.toFixed(2)))
                 assetTable.appendChild(row)
                 //Prepare the required data-cells
                 let cells = []
@@ -104,8 +127,159 @@ function getCryptoLogo(symbol) {
     return logo
 }
 
-function openDetails(symbol, name) {
+function openDetails(symbol, name, units) {
     $(cryptoName).text(name + " (" + symbol + ")")
     $(cryptoOverlay).show()
+    // TODO toon crypto grafiek in contentFeature div
+    cryptoChosen = symbol;
+    availableUnits = units;
 }
 
+function setUpMarketAsset() {
+    if (featureContentIsFilled) {
+        $(contentFeature).empty();
+    }
+    const table = $('<table class="marketTable" style="margin-left: auto; margin-right: auto"></table>');
+    $(table).append("<tr><th>Available Units</th><th>Units for sale</th><th>Price per unit</th></tr>");
+    const tr = document.createElement("tr");
+    const units = document.createElement("td");
+    units.id = "unitsAvailable";
+    units.innerText = `${availableUnits}`;
+    tr.append(units);
+    $(tr).append(`<td><input id='unitsToSell' type='number' min='0'></td>`);
+    $(tr).append("<td>$<input id='pricePerUnit' type='number' min='0'></td>");
+    $(table).append(tr);
+    $(contentFeature).append(table).append('<br>').append(`<button id="confirm" class="market" onclick="marketAsset()">Confirm</button>`);
+    confirmBtn = $("#confirm");
+    featureContentIsFilled = true;
+}
+
+function marketAsset() {
+    unitsForSale = $("#unitsToSell").val();
+    salePrice = $("#pricePerUnit").val();
+
+    if (!(unitsForSale > 0)) {
+        alert("Units for sale must be larger than 0");
+        return;
+    } else if (!(salePrice > 0)) {
+        alert("Price per unit must be larger than 0");
+        return;
+    }
+
+    let payload = {
+        crypto: {
+            symbol: cryptoChosen
+        },
+        units: parseFloat(availableUnits),
+        unitsForSale: parseFloat(unitsForSale),
+        salePrice: parseFloat(salePrice),
+        symbol: cryptoChosen
+    }
+    fetch(`${url.origin}/marketAsset`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    }).then(response => {
+        if (response.status === 200) {
+            return response.text().then( text => {
+                alert(text);
+                window.location.replace(`${url.origin}/portfolio.html`);
+            });
+        }
+        return response.text.then(text => {
+            alert(text);
+        })
+    })
+}
+
+async function setupSellAsset() {
+    if (featureContentIsFilled) {
+        $(contentFeature).empty();
+    }
+    const header = $('<h3>Sell your units to Bank Sinatra for their current market value*</h3>')
+    const footnote = $('<p>*Bank fees apply, lolz</p>')
+    const table = $('<table class="sellTable"></table>')
+    const sellBankbtn = $('<button class="sellToBankButton" onclick="sellToBank()">Sell</button>')
+    $(table).append("<tr><th>Total units</th><th>Current value</th><th>Units to sell</th></tr>")
+    const tr = document.createElement("tr")
+    const units = document.createElement("td")
+    const value = document.createElement("td")
+    units.id = "unitsAvailable"
+    value.id = "currentValue"
+    units.innerText = availableUnits
+    value.innerText = "$" + await getCurrentValue(cryptoChosen)
+    tr.append(units)
+    tr.append(value)
+    $(tr).append("<td><input id='unitsToSellToBank' type='number' max={availableUnits} min='0'></td>")
+    //unitsToSellToBank = $(`#unitsToSellToBank`).val(); //TODO: geeft ingevuld int nog niet goed door help
+    $(table).append(tr)
+    $(contentFeature).append(header, table, footnote, sellBankbtn);
+    console.log(getCurrentValue(cryptoChosen))
+    featureContentIsFilled = true;
+}
+
+async function getCurrentValue(symbol) {
+    let value;
+    await fetch(`${url.origin}/latestPrice`, {
+        method: 'POST',
+        headers: {"Authorization": `${localStorage.getItem('token')}`},
+        body: symbol
+    }).then(res => res.json())
+        .then(data => value = data)
+    return value
+}
+
+async function sellToBank(){
+    unitsToSellToBank = $(`#unitsToSellToBank`).val(); //TODO: geeft ingevuld int nog niet goed door help
+
+    let sellerId = await getIdCurrentUser();
+    let payload ={
+        buyer: 1, //dit werkt
+        seller: parseInt(sellerId), //dit werkt ook
+        crypto: {
+            symbol: cryptoChosen
+        },
+        units: parseInt(unitsToSellToBank) //TODO: werkt nog niet
+    }
+    console.log(payload);
+
+    await fetch(`${url.origin}/buy`, {
+        method: 'POST',
+        headers: {"Authorization": `${localStorage.getItem('token')}`},
+        body: JSON.stringify(payload)
+    }).then(res=> {
+        if(res.status === 200){
+            alert("Yesss sell us your assets, bitch")
+        } else {
+            return res.text().then(it => alert(it));
+        }
+    })
+}
+
+async function getIdCurrentUser() {
+    let userId;
+    await fetch(
+        `${url.origin}/getUserId`, {
+            method: 'POST',
+            headers: { "Authorization": `${localStorage.getItem('token')}`}
+        }).then(res => {
+        if (res.status === 200) {
+            return res.text().then(it => { userId = it;})
+        } else {
+            alert("Not a valid token anymore");
+        }
+    })
+    return userId;
+}
+
+async function getUnitsForSaleWithPrice() {
+    let unitsForSale = await fetch(`${url.origin}/getUnitsForSale`, {
+        method: 'GET',
+        headers: {"Authorization": `${localStorage.getItem('token')}`},
+        body: cryptoChosen
+    }).then(res => {return res.text()})
+    return unitsForSale;
+}

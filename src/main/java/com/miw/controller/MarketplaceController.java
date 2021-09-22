@@ -79,6 +79,11 @@ public class MarketplaceController {
         }
     }
 
+    @GetMapping("/getLatestApiCallTime")
+    public ResponseEntity<?> getLatestApiCallTime() {
+        return ResponseEntity.ok(rootRepository.getLatestAPICallTime());
+    }
+
     @GetMapping("/cryptoOverview")
     public ResponseEntity<?> getCryptoOverview(@RequestHeader("Authorization") String token) {
         if (!TokenService.validateJWT(token)) {

@@ -57,8 +57,12 @@ public class TransactionService {
         }
     }
 
-    public boolean checkSufficientCrypto(int seller, Crypto crypto, double units){
-        return rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnitsForSale() >= units;
+    public boolean checkSufficientCrypto(int buyer, int seller, Crypto crypto, double units){
+        if (buyer == accountBank){
+            return rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() >= units;
+        } else {
+            return rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnitsForSale() >= units;
+        }
     }
 
     public void transferBalance(int seller, int buyer, double transactionPrice){
@@ -67,7 +71,11 @@ public class TransactionService {
     }
 
     public void transferCrypto(int seller, int buyer, Crypto crypto, double units){
-       updateSellerUnits(seller, crypto, units);
+       if (buyer == accountBank){
+            updateSellerUnitsBankBuyer(seller, crypto, units);
+       } else {
+           updateSellerUnits(seller, crypto, units);
+       }
        updateBuyerUnits(buyer, crypto, units);
     }
 
@@ -77,6 +85,15 @@ public class TransactionService {
 
         rootRepository.updateAssetForSale(newSellerAssetsForSale, crypto.getSymbol(), seller);
 
+        if (!(newSellerTotalAssets == 0)){
+            rootRepository.updateAsset(newSellerTotalAssets, crypto.getSymbol(), seller);
+        } else {
+            rootRepository.deleteAsset(crypto.getSymbol(), seller);
+        }
+    }
+
+    private void updateSellerUnitsBankBuyer(int seller, Crypto crypto, double units){
+        double newSellerTotalAssets = rootRepository.getAssetBySymbol(seller, crypto.getSymbol()).getUnits() - units;
         if (!(newSellerTotalAssets == 0)){
             rootRepository.updateAsset(newSellerTotalAssets, crypto.getSymbol(), seller);
         } else {

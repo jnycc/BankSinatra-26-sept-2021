@@ -16,11 +16,13 @@ let unitsToBuy;
 let buyerId;
 let purchasePrice;
 let cryptoChosen;
+let date;
 let totalPrice = document.querySelector("#totalPrice");
 let unitsToBuyInput = document.querySelector("#unitsToBuy");
 let isOrderFormEmpty = true;
 $(cryptoTable).append("<tr><th>#</th><th>Cryptocurrency</th> <th>Symbol</th> <th>Price</th> <th>Last price update</th><th>24h %</th> <th>7d %</th></tr>");
 window.addEventListener("DOMContentLoaded", setupPageWithCryptos);
+window.addEventListener("DOMContentLoaded", getLatestApiCallTime);
 purchase.addEventListener('click', carryOutTransaction);
 buyBtn.addEventListener('click', () => {
     $(cryptoOverlay).hide();
@@ -48,13 +50,12 @@ function setupPageWithCryptos() {
                 row.addEventListener('click', () => openDetails(obj.symbol))
                 cryptoTable.appendChild(row)
                 $(row).append(`<td>${i++}</td>`)
+                console.log(date)
+                console.log(obj)
                 for (let key of Object.keys(obj)) {
                     const cell = document.createElement('td')
                     if (key === 'name') {
                         cell.append(getCryptoLogo(obj.symbol), obj[key])
-                    } else if (key === 'dateRetrieved'){
-                        let date = new Date(obj[key]);
-                        cell.innerHTML = date.toLocaleString();
                     } else if (key === 'cryptoPrice'){
                         cell.innerHTML = obj.cryptoPrice.toLocaleString("en-US", currencyFormat);
                     } else {
@@ -62,6 +63,9 @@ function setupPageWithCryptos() {
                     }
                     row.append(cell)
                 }
+                const dateCell = document.createElement('td')
+                dateCell.innerHTML = new Date(JSON.parse(date)).toLocaleString()
+                row.append(dateCell)
             }
             let yesterday = new Date()
             yesterday.setDate(yesterday.getDate() - 1)
@@ -69,6 +73,18 @@ function setupPageWithCryptos() {
             let oneWeekAgo = new Date()
             oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
             setPriceDeltas(oneWeekAgo)
+        })
+}
+
+async function getLatestApiCallTime(){
+    await fetch(`/getLatestApiCallTime`,
+        {
+            method: 'GET'
+        })
+        .then(res => {
+            return res.text();
+        }).then(it => {
+            date = it;
         })
 }
 
@@ -212,7 +228,7 @@ async function showOrder(accountId) {
 $(unitsToBuyInput).bind('keyup mouseup', updateTotalPrice);
 
 function updateTotalPrice() {
-    $(totalPrice).text(`${$(unitsToBuyInput).val() * $("#pricePerUnit").text()}`);
+    $(totalPrice).text(`$ ${($(unitsToBuyInput).val() * $("#pricePerUnit").text()).toFixed(2)}`);
 }
 
 async function carryOutTransaction() {
@@ -221,7 +237,7 @@ async function carryOutTransaction() {
         buyer: parseInt(buyerId),
         seller : parseInt($(purchase).attr('buyerId')),
         crypto: {
-        symbol: cryptoSymbol.textContent
+            symbol: cryptoSymbol.textContent
         },
         units: parseInt($(unitsToBuyInput).val())
     }
@@ -250,11 +266,11 @@ async function getIdCurrentUser() {
             method: 'POST',
             headers: { "Authorization": `${localStorage.getItem('token')}`}
         }).then(res => {
-            if (res.status === 200) {
-                return res.text().then(it => { userId = it;})
-            } else {
-                alert("Not a valid token anymore");
-            }
-        })
+        if (res.status === 200) {
+            return res.text().then(it => { userId = it;})
+        } else {
+            alert("Not a valid token anymore");
+        }
+    })
     return userId;
 }

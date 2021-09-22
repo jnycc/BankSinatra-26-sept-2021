@@ -15,31 +15,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @RestController
 public class AdminController {
 
     private final Logger logger = LoggerFactory.getLogger(LoginController.class);
-    private JdbcTransactionDao jdbcTransactionDao;
-    private JdbcUserDao jdbcUserDao;
-    private JdbcClientDao jdbcClientDao;
-    private JdbcAdminDao jdbcAdminDao;
-    private JdbcAccountDao jdbcAccountDao;
-    private JdbcAssetDao jdbcAssetDao;
-    private JdbcCryptoDao jdbcCryptoDao;
+    private RootRepository rootRepository;
 
     @Autowired
-    public AdminController(JdbcTransactionDao jdbcTransactionDao, JdbcUserDao jdbcUserDao, JdbcClientDao jdbcClientDao,
-                           JdbcAdminDao jdbcAdminDao, JdbcAccountDao jdbcAccountDao, JdbcAssetDao jdbcAssetDao, JdbcCryptoDao jdbcCryptoDao) {
+    public AdminController(RootRepository rootRepository) {
         super();
-        this.jdbcTransactionDao = jdbcTransactionDao;
-        this.jdbcUserDao = jdbcUserDao;
-        this.jdbcClientDao = jdbcClientDao;
-        this.jdbcAdminDao = jdbcAdminDao;
-        this.jdbcAccountDao = jdbcAccountDao;
-        this.jdbcAssetDao = jdbcAssetDao;
-        this.jdbcCryptoDao = jdbcCryptoDao;
-
+        this.rootRepository = rootRepository;
         logger.info("New AdminController created");
     }
 
@@ -49,7 +36,7 @@ public class AdminController {
         String token = convertedObject.get("token").getAsString();
         double fee = convertedObject.get("fee").getAsDouble();
         if (TokenService.validateAdmin(token)) {
-            jdbcTransactionDao.updateBankCosts(fee);
+            rootRepository.updateBankCosts(fee);
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // TODO: is dit de juiste http code?
@@ -58,19 +45,19 @@ public class AdminController {
     @GetMapping("/admin/getBankFee")
     public ResponseEntity<?> getBankFee(@RequestHeader("Authorization") String token) {
         if (TokenService.validateAdmin(token)) {
-            return ResponseEntity.ok(jdbcTransactionDao.getBankCosts());
+            return ResponseEntity.ok(rootRepository.getBankCosts());
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @GetMapping("/admin/getUserData")
     public ResponseEntity<?> getUserData(@RequestHeader("Authorization") String token, @RequestParam String email) {
-        User user = jdbcUserDao.getUserByEmail(email);
+        User user = rootRepository.getUserByEmail(email);
 
         if (user instanceof Client) {
-            user = jdbcClientDao.findByEmail(user.getEmail());
+            user = rootRepository.findClientByEmail(user.getEmail());
         } else if (user instanceof Administrator) {
-            user = jdbcAdminDao.findByEmail(user.getEmail());
+            user = rootRepository.findAdminByEmail(user.getEmail());
         }
 
         user.setSalt(null); user.setPassword(null); // remove data that don't need to be shown on the front-end
@@ -82,9 +69,9 @@ public class AdminController {
 
     @PostMapping("/admin/toggleBlock")
     public ResponseEntity<?> toggleBlock(@RequestHeader("Authorization") String token, @RequestParam String email) {
-        User user = jdbcUserDao.getUserByEmail(email);
+        User user = rootRepository.getUserByEmail(email);
         if (TokenService.validateAdmin(token)) {
-            jdbcUserDao.toggleBlock(!user.isBlocked(), user.getUserId()); // block toggle through inversion of initial block status
+            rootRepository.toggleBlock(!user.isBlocked(), user.getUserId()); // block toggle through inversion of initial block status
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -92,14 +79,14 @@ public class AdminController {
 
     @GetMapping("/admin/getAssets")
     public ResponseEntity<?> getAssets(@RequestHeader("Authorization") String token, @RequestParam String email) {
-        Account account = jdbcAccountDao.getAccountByEmail(email);
-        Map<String, Double> assets = new HashMap<>();
+        Account account = rootRepository.getAccountByEmail(email);
+        Map<String, Double> assets = new TreeMap<>();
 
         if (TokenService.validateAdmin(token)) {
-            assets.put("USD", jdbcAccountDao.getBalanceByEmail(email));
-            List<Crypto> allCryptos = jdbcCryptoDao.getAllCryptos(); // TODO: dit throwt momenteel een boel exceptions, kan misschien gracieuzer afgehandeld worden
+            assets.put("USD", rootRepository.getBalanceByEmail(email));
+            List<Crypto> allCryptos = rootRepository.getAllCryptos();
             for (Crypto crypto : allCryptos) {
-                Asset asset = jdbcAssetDao.getAssetBySymbol(account.getAccountId(), crypto.getSymbol());
+                Asset asset = rootRepository.getAssetBySymbol(account.getAccountId(), crypto.getSymbol());
                 if (asset != null) {
                     assets.put(crypto.getSymbol(), asset.getUnits());
                 } else {
@@ -116,11 +103,11 @@ public class AdminController {
         if (TokenService.validateAdmin(token)) {
             JsonObject changes = new Gson().fromJson(json, JsonObject.class);
 
-            Account account = jdbcAccountDao.getAccountByEmail(email);
-            jdbcAccountDao.updateBalance(account.getBalance() + changes.get("USD").getAsDouble(),
+            Account account = rootRepository.getAccountByEmail(email);
+            rootRepository.updateBalance(account.getBalance() + changes.get("USD").getAsDouble(),
                     account.getAccountId()); // update balance
 
-            List<Crypto> allCryptos = jdbcCryptoDao.getAllCryptos();
+            List<Crypto> allCryptos = rootRepository.getAllCryptos();
             for (Crypto crypto : allCryptos) {
                 double unitsChange = changes.get(crypto.getSymbol()).getAsDouble();
                 updateCrypto(crypto, unitsChange, account.getAccountId());
@@ -130,19 +117,20 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+    // Hulpmethoden:
     public void updateCrypto(Crypto crypto, double unitsChange, int accountId) {
         String symbol = crypto.getSymbol();
-        Asset asset = jdbcAssetDao.getAssetBySymbol(accountId, symbol);
+        Asset asset = rootRepository.getAssetBySymbol(accountId, symbol);
 
         if (asset != null && unitsChange != 0) {    // only call dao if there is an actual # change
             double newUnits = asset.getUnits() + unitsChange;
             if (newUnits > 0) {                     // if/else here prevents an extant asset units # going negative
-                jdbcAssetDao.updateAsset(newUnits, symbol, accountId);
+                rootRepository.updateAsset(newUnits, symbol, accountId);
             } else {                                // if new value would be negative, set to 0
-                jdbcAssetDao.updateAsset(0, symbol, accountId);
+                rootRepository.updateAsset(0, symbol, accountId);
             }
         } else if (unitsChange > 0) {               // if an asset !exist and new value != negative, save to db
-            jdbcAssetDao.saveAsset(accountId, symbol, unitsChange);
+            rootRepository.saveAsset(accountId, symbol, unitsChange);
         }
     }
 }
