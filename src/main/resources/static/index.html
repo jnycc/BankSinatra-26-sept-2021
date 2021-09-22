@@ -25,12 +25,12 @@
 <div id="overlay">
     <form id="registerFields">
         <h1 id="registerLabel">Register</h1>
-        <img id="close-overlay-btn" src="images/close_btn.png" alt="close-btn"><br>
+        <span id="close-overlay-btn">&times;</span>
         <p>Register as a new customer at Bank Sinatra</p><br>
         <input id="email-reg" type="email" name="email-reg" placeholder="Email" required>
         <input id="password-reg" type="password" name="password-reg" placeholder="Password" required minlength="8" maxlength="64" ><br><br>
         <input id="firstName" type="text" name="firstName-reg" placeholder="Firstname" required>
-        <input id="prefix" type="text" name="prefix-reg" placeholder="prefix">
+        <input id="prefix" type="text" name="prefix-reg" placeholder="Lastname prefix">
         <input id="lastName" type="text" name="lastName-reg" placeholder="Lastname" required ><br><br>
         <input id="dob" type="date" value="2000-01-01">
         <input min="10000000" minlength="8" maxlength="9" id="bsn" type="number" name="bsn-reg" placeholder="BSN" required oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('BSN should contain at least 8 digits')"><br><br>

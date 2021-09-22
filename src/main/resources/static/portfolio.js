@@ -5,6 +5,7 @@ const sellBtn = document.querySelector("#sell");
 let cryptoChosen;
 let availableUnits;
 let unitsForSale;
+let unitsForSaleWithPrice;
 let salePrice;
 let featureContentIsFilled = false;
 let confirmBtn;
@@ -135,23 +136,49 @@ function openDetails(symbol, name, units) {
     availableUnits = units;
 }
 
-function setUpMarketAsset() {
+async function setUpMarketAsset() {
     if (featureContentIsFilled) {
         $(contentFeature).empty();
     }
+    const tooltip = $('<span></span>');
+    tooltip.css({"visibility": "hidden",
+        "width": "165px",
+        "background-color": "#001d23",
+        "color": "#fff",
+        "text-align": "left",
+        "border-radius": "6px",
+        "padding": "5px 5px 5px 5px",
+        "position": "relative",
+        "right": "150px",
+        "display": "inline-block",
+        "height": "40px",
+        "z-index": "1"})
+
     const table = $('<table class="marketTable" style="margin-left: auto; margin-right: auto"></table>');
     $(table).append("<tr><th>Available Units</th><th>Units for sale</th><th>Price per unit</th></tr>");
     const tr = document.createElement("tr");
-    const units = document.createElement("td");
-    units.id = "unitsAvailable";
-    units.innerText = `${availableUnits}`;
-    tr.append(units);
-    $(tr).append(`<td><input id='unitsToSell' type='number' min='0'></td>`);
+    const units = $(`<td id="unitsAvailable">${availableUnits}</td>`)
+    $(tr).append(units).append(`<td><input id='unitsToSell' type='number' min='0'></td>`);
     $(tr).append("<td>$<input id='pricePerUnit' type='number' min='0'></td>");
     $(table).append(tr);
-    $(contentFeature).append(table).append('<br>').append(`<button id="confirm" class="market" onclick="marketAsset()">Confirm</button>`);
+    $(contentFeature).append(tooltip).append(table).append('<br>')
+        .append(`<button id="confirm" class="market" onclick="marketAsset()">Confirm</button>`);
     confirmBtn = $("#confirm");
     featureContentIsFilled = true;
+    await getUnitsForSaleWithPrice();
+
+    let unitsOnSale;
+    let unitSalePrice;
+    for (const key in unitsForSaleWithPrice) {
+        unitsOnSale = key;
+        unitSalePrice = unitsForSaleWithPrice[key];
+    }
+
+    $(units).hover(() => {
+        $(tooltip).html(`Units for sale: ${unitsOnSale} <br> Price per unit: $ ${unitSalePrice}`);
+        $(tooltip).css('visibility', 'visible');
+    }, () => {$(tooltip).css('visibility', 'hidden')});
+
 }
 
 function marketAsset() {
@@ -276,10 +303,10 @@ async function getIdCurrentUser() {
 }
 
 async function getUnitsForSaleWithPrice() {
-    let unitsForSale = await fetch(`${url.origin}/getUnitsForSale`, {
-        method: 'GET',
+    unitsForSaleWithPrice =
+        await fetch(`${url.origin}/getUnitsForSale`, {
+        method: 'POST',
         headers: {"Authorization": `${localStorage.getItem('token')}`},
         body: cryptoChosen
-    }).then(res => {return res.text()})
-    return unitsForSale;
+    }).then(res => {return res.json()})
 }
