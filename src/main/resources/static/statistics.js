@@ -1,47 +1,70 @@
-//JSON-object klaarzetten
-var assetStats = null
+//JSON-object met daarin een map in een map. "datum: klaarzetten
+let dataMap = null
+// window.onload = getAssetStats('BTC', 7)
+//TODO: eventlistener veranderen in: als overlay opent (functie openDetails) -> creëer graph
+window.addEventListener("DOMContentLoaded", async () => {
+    // await getAssetStats('BTC', 7)
+    await getAssetStats('BTC', 7)
+    createGraph('BTC')
+})
+// window.onload = async () => {
+//     await getAssetStats('BTC', 7)
+//     await createGraph()
+// }
 
-function getAssetStats() {
-    fetch('/', {//vullen met endpoint
+// async function setupStats() {
+//     await getAssetStats('BTC', 7)
+//     createGraph()
+// }
+
+async function getAssetStats(symbol, daysBack) {
+    await fetch(`/cryptoStats?symbol=${symbol}&daysBack=${daysBack}`, {//vullen met endpoint
         method: 'GET',
         headers: {'Authorization': localStorage.getItem('token')}
-    }).then(res => res.json())
+    })
+        .then(res => res.json())
         .then(json => {
-            assetStats = json
+            dataMap = json
+            console.log("1. Data opgehaald: ")
+            console.log(dataMap)
+            // createGraph(symbol)//TODO: dit apart zetten/aanroepen
         })
 }
 
 
-window.onload = function () {
+function createGraph(symbol) {
     var dataPoints1 = [], dataPoints2 = [];
     var stockChart = new CanvasJS.StockChart("stockChartContainer", {
         animationEnabled: true,
-        theme: "light1",
+        theme: "light2",
         title: {
-            text: "Crypto price chart", //dit vullen met cryptonaam
+            text: `${symbol} price chart`, //TODO: dit vullen met cryptonaam ipv symbol
             fontFamily: "Calibri,Optima,Arial,sans-serif"
         },
-        subtitles: [{
-            text: "Crypto price chart",//deze mogelijk weghalen
-            fontFamily: "Calibri,Optima,Arial,sans-serif"
-        }],
+        // subtitles: [{
+        //     text: "Crypto price chart",//TODO: deze mogelijk weghalen
+        //     fontFamily: "Calibri,Optima,Arial,sans-serif"
+        // }],
         charts: [{
             toolTip: {
                 shared: true
             },
+            axisX: {
+                valueFormatString: "D MMM YYYY"
+            },
             axisY: {
-                suffix: " USD"
+                prefix: "USD "
             },
             data: [{
                 name: "Min-Max",
                 type: "rangeArea",
-                xValueFormatString: "DD-MM-YYYY",
-                yValueFormatString: "USD#,###.##",
+                xValueFormatString: "DD-MM-YYY",
+                yValueFormatString: "$#,###.##",
                 dataPoints: dataPoints1
             }, {
                 name: "Average",
                 type: "line",
-                yValueFormatString: "USD#,###.##",
+                yValueFormatString: "$#,###.##",
                 dataPoints: dataPoints2
             }]
         }],
@@ -50,12 +73,12 @@ window.onload = function () {
                 dataPoints: dataPoints2
             }],
             axisX: {
-                labelFontColor: "white",
-                labelFontWeight: "bolder"
+                labelFontColor: "transparent",
+                labelFontWeight: "bolder",
             },
             slider: {
-                minimum: new Date(2021, 0o0),
-                maximum: new Date(2021, 10)
+                minimum: new Date(2020, 0o0),
+                maximum: new Date(2021, 12)
             }
         },
         rangeSelector: {
@@ -78,12 +101,21 @@ window.onload = function () {
             }]
         }
     });
+    console.log("Pushmethode runt. 2. Data bestaat uit:")
+    console.log(dataMap)
+    for (let date of Object.keys(dataMap)) {
+        dataPoints1.push({x: new Date(date), y:[Number(dataMap[date].min), Number(dataMap[date].max)]});
+        dataPoints2.push({x: new Date(date), y:Number(dataMap[date].avg)});
+    }
+    stockChart.render();
 
-    $.getJSON("https://canvasjs.com/data/gallery/stock-chart/weather-india.json", function (data) {
-        for (var i = 0; i < data.length; i++) {
-            dataPoints1.push({x: new Date(data[i].year, 0o0, 0o0), y: [Number(data[i].min), Number(data[i].max)]});
-            dataPoints2.push({x: new Date(data[i].year, 0o0, 0o0), y: Number(data[i].avg)});
-        }
-        stockChart.render();
-    });
+// $.getJSON("https://canvasjs.com/data/gallery/stock-chart/weather-india.json", function (dummyData) {
+//     console.log("pushmethode runt")
+//     for (var i = 0; i < dummyData.length; i++) {
+//         dataPoints1.push({x: new Date(dummyData[i].year, 0o0, 0o0), y: [Number(dummyData[i].min), Number(dummyData[i].max)]});
+//         dataPoints2.push({x: new Date(dummyData[i].year, 0o0, 0o0), y: Number(dummyData[i].avg)});
+//     }
+//     stockChart.render();
+// })
+
 }
