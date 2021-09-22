@@ -1,11 +1,16 @@
 package com.miw.controller;
 
+import com.google.gson.Gson;
 import com.miw.database.JdbcAccountDao;
 import com.miw.database.JdbcAssetDao;
+import com.miw.database.RootRepository;
+import com.miw.model.Client;
 import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -17,13 +22,15 @@ public class DashboardController {
     private TokenService tokenService;
     private JdbcAccountDao jdbcAccountDao;
     private JdbcAssetDao jdbcAssetDao;
+    private RootRepository rootRepository;
 
     @Autowired
-    public DashboardController(TokenService tokenService, JdbcAccountDao jdbcAccountDao, JdbcAssetDao jdbcAssetDao) {
+    public DashboardController(TokenService tokenService, JdbcAccountDao jdbcAccountDao, JdbcAssetDao jdbcAssetDao, RootRepository rootRepository) {
         super();
         this.tokenService = tokenService;
         this.jdbcAccountDao = jdbcAccountDao;
         this.jdbcAssetDao = jdbcAssetDao;
+        this.rootRepository = rootRepository;
         logger.info("New DashboardController created");
     }
 
@@ -56,7 +63,16 @@ public class DashboardController {
 //        return totalValue;
 //    }
 
-
+    @GetMapping("/getNameClient")
+    public ResponseEntity<?> getNameByUserId(@RequestHeader("Authorization") String token){
+        int userId = TokenService.getValidUserID(token);
+        if(userId == 0){
+            return new ResponseEntity<>("Not a valid Token", HttpStatus.UNAUTHORIZED);
+        } else {
+            String name = rootRepository.getFirstNameById(userId);
+            return new ResponseEntity<>(name, HttpStatus.OK);
+        }
+    }
 
 
 

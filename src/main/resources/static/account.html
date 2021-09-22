@@ -3,58 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <title>Account</title>
-    <link rel="stylesheet" href="partials/header.css">
-    <link rel="stylesheet" href="style.css">
-    <style src="//cdn.datatables.net/1.11.2/css/jquery.dataTables.min.css"></style>
+    <link rel="stylesheet" href="partials/sidebar.css">
+    <link rel="stylesheet" href="account.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="partials/validateClient.js"></script>
+    <script src="partials/sidebar.js" defer></script>
     <script src="account.js" defer></script>
     <script>
       $(function(){
-        $("#header").load("partials/header.html");
+        $("#sidebar").load("partials/sidebar.html");
       });
     </script>
 </head>
 
 <body>
-<div id="header"></div>
+<div id="sidebar"></div>
+<div class="account-body">
 
-<div id="accountOverview">
-    <h1 id="name"></h1>
-    <h1 id="iban">Account </h1>
-    <h1 id="balance">Current Balance: $ </h1>
+    <div class="account-info">
+        <h1 id="account">ACCOUNT</h1>
+        <h3 id="iban">IBAN: </h3>
+        <h3 id="balance">Current balance: $</h3>
+    </div>
+
+    <div id="tables" class="splitscreen">
+        <div class="left">
+            <h3>Assets you've bought:</h3>
+            <div id="buyerTable">
+            <table id="transactionTableBuyer">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Seller</th>
+                    <th>Purchase</th>
+                    <th>Price</th>
+                    <th>Bank fee</th>
+                </tr>
+                </thead>
+            </table>
+            </div>
+        </div>
+
+        <div class="right">
+            <h3>Assets you've sold:</h3>
+            <div id="sellerTable">
+                <table id="transactionTableSeller">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Buyer</th>
+                        <th>Purchase</th>
+                        <th>Price</th>
+                        <th>Bank fee</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
-
-<div id="transactionsAsBuyer" class="split left">
-    <h3>Transactions as buyer:</h3>
-    <table id="transactionTableBuyer" class="sortable">
-        <thead>
-        <tr>
-            <th>Date</th>
-            <th>Seller</th>
-            <th>Purchase</th>
-            <th>Price</th>
-            <th>Bank fee</th>
-        </tr>
-        </thead>
-    </table>
-</div>
-
-<div id="transactionsAsSeller" class="split right">
-    <h3>Transactions as seller:</h3>
-    <table id="transactionTableSeller" class="sortable">
-        <thead>
-        <tr>
-            <th>Date</th>
-            <th>Seller</th>
-            <th>Purchase</th>
-            <th>Price</th>
-            <th>Bank fee</th>
-        </tr>
-        </thead>
-    </table>
-</div>
-
-
 </body>
 </html>
