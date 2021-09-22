@@ -76,8 +76,8 @@ function createGraph(symbol) {
                 labelFontWeight: "bolder",
             },
             slider: {
-                minimum: new Date(2021, 0o0),
-                maximum: new Date(2021, 10)
+                minimum: new Date(2020, 0o0),
+                maximum: new Date(2021, 12)
             }
         },
         rangeSelector: {
@@ -106,7 +106,7 @@ function createGraph(symbol) {
         dataPoints1.push({x: new Date(date), y:[Number(dataMap[date].min), Number(dataMap[date].max)]});
         dataPoints2.push({x: new Date(date), y:Number(dataMap[date].avg)});
     }
-
+    stockChart.render();
 
 // $.getJSON("https://canvasjs.com/data/gallery/stock-chart/weather-india.json", function (dummyData) {
 //     console.log("pushmethode runt")
@@ -117,5 +117,4 @@ function createGraph(symbol) {
 //     stockChart.render();
 // })
 
-    stockChart.render();
 }
