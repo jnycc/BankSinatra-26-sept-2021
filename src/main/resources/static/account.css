@@ -1,0 +1,82 @@
+body{
+    background-color: #012128ff;
+}
+
+.account-body{
+    margin-left: 150px;
+}
+
+.account-info{
+    padding-top: 20px;
+    margin: auto;
+    width: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: center;
+    font-family: "Palatino Linotype", monospace;
+    color: #f5e8ccff;
+}
+
+.account-info h1{
+    font-size: 50px;
+}
+
+.account-info h3{
+    font-size: 20px;
+    text-align: center;
+}
+
+.splitscreen{
+    display: flex;
+    color: #012128ff;
+    font-family: "Palatino Linotype", monospace;
+}
+
+.splitscreen .left{
+    flex: 1;
+    margin: 10px;
+    background: #f5e8ccff;
+    text-align: center;
+}
+
+.splitscreen .right{
+    flex: 1;
+    margin: 10px;
+    background: #f5e8ccff;
+    text-align: center;
+}
+
+#buyerTable{
+    max-height: 300px;
+    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-base-color: #f5e8ccff;
+}
+
+#sellerTable{
+    max-height: 300px;
+    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-base-color: #f5e8ccff;
+}
+
+
+#transactionTableBuyer, #transactionTableSeller{
+    border-collapse: collapse;
+    margin: auto;
+}
+
+#transactionTableBuyer th, #transactionTableSeller th{
+    padding-top: 12px;
+    padding-bottom: 12px;
+    max-height: 150px;
+    background-color: #f5e8ccff;
+    position: sticky;
+    top: 0;
+    cursor: pointer;
+}
+
+#transactionTableSeller td, #transactionTableBuyer td{
+    padding: 15px;
+    max-height: 150px;
+}

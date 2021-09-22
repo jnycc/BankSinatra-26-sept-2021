@@ -48,6 +48,16 @@ public class JdbcUserDao {
         }
     }
 
+    public String getFirstNameById(int userId){
+        String sql = "SELECT firstName FROM User WHERE userID = ?;";
+        try {
+            return jdbcTemplate.queryForObject(sql, String.class, userId);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("User does not exist in the databse");
+            return null;
+        }
+    }
+
     public int getIDByEmail(String email) {
         String sql = "SELECT userID FROM User WHERE email= ?;";
         try {

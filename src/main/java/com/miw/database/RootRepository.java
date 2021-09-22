@@ -178,6 +178,8 @@ public class RootRepository {
         return jdbcUserDao.getRoleByEmail(email);
     }
 
+    public String getFirstNameById(int userId) { return jdbcUserDao.getFirstNameById(userId);}
+
     public User getUserByEmail(String email) {
         return jdbcUserDao.getUserByEmail(email);
     }

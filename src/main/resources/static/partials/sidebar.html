@@ -1,0 +1,30 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Sidebar</title>
+    <link rel="stylesheet" href="sidebar.css">
+    <script src="partials/sidebar.js"></script>
+</head>
+
+<div class="sidebar">
+    <div class="logoContainer">
+        <h1> <img width="120" height="100" style="object-position: center" alt="BSlogo" src="/images/logo-hat-golden.png" ></h1>
+    </div>
+    <div id="intro">Welcome, </div>
+    <ul class="navigation">
+        <a href="dashboard.html"><li>Home</li></a>
+        <a href="portfolio.html"><li>Portfolio</li></a>
+        <a href="account.html"><li>Account</li></a>
+        <a href="marketplace.html"><li>Marketplace</li></a>
+        <a id = logout href="index.html"><li>Log out</li></a>
+    </ul>
+    <div id="terms">
+        <a href="">terms & conditions</a>
+    </div>
+</div>
+
+<script>
+    const logout = document.querySelector("#logout")
+    logout.addEventListener("click", function() {
+        window.localStorage.clear();
+    })
+</script>
