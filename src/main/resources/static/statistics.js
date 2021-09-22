@@ -2,19 +2,20 @@
 let dataMap = null
 // window.onload = getAssetStats('BTC', 7)
 //TODO: eventlistener veranderen in: als overlay opent (functie openDetails) -> creëer graph
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
     // await getAssetStats('BTC', 7)
-    getAssetStats('BTC', 7)
+    await getAssetStats('BTC', 7)
+    createGraph('BTC')
 })
 // window.onload = async () => {
 //     await getAssetStats('BTC', 7)
 //     await createGraph()
 // }
 
-async function setupStats() {
-    await getAssetStats('BTC', 7)
-    createGraph()
-}
+// async function setupStats() {
+//     await getAssetStats('BTC', 7)
+//     createGraph()
+// }
 
 async function getAssetStats(symbol, daysBack) {
     await fetch(`/cryptoStats?symbol=${symbol}&daysBack=${daysBack}`, {//vullen met endpoint
@@ -26,7 +27,7 @@ async function getAssetStats(symbol, daysBack) {
             dataMap = json
             console.log("1. Data opgehaald: ")
             console.log(dataMap)
-            createGraph(symbol)//TODO: dit apart zetten/aanroepen
+            // createGraph(symbol)//TODO: dit apart zetten/aanroepen
         })
 }
 
