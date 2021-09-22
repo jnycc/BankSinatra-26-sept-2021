@@ -1,10 +1,11 @@
 //Page elements
-const contentFeature = document.querySelector(".contentFeature");
+const contentFeature = document.querySelector("#contentFeature");
 const marketBtn = document.querySelector("#market");
 const sellBtn = document.querySelector("#sell");
 let cryptoChosen;
 let availableUnits;
 let unitsForSale;
+let unitsForSaleWithPrice;
 let salePrice;
 let featureContentIsFilled = false;
 let confirmBtn;
@@ -129,18 +130,20 @@ function getCryptoLogo(symbol) {
 }
 
 function openDetails(symbol, name, units) {
-    $(cryptoName).text(name + " (" + symbol + ")")
-    $(cryptoOverlay).show()
+    $(cryptoName).text(name + " (" + symbol + ")");
+    $(cryptoOverlay).show();
+    $(contentFeature).css("height", "400px");
+    $(contentFeature).css("width", "80%");
     createGraph(symbol, 7)
+    featureContentIsFilled = true;
     // TODO toon crypto grafiek in contentFeature div
     cryptoChosen = symbol;
     availableUnits = units;
 }
-
 async function createGraph(symbol, daysBack) {
     await getAssetStats(symbol, daysBack)
     var dataPoints1 = [], dataPoints2 = [];
-    var stockChart = new CanvasJS.StockChart("stockChartContainer", {
+    var stockChart = new CanvasJS.StockChart("contentFeature", {
         animationEnabled: true,
         theme: "light2",
         title: {
@@ -224,24 +227,51 @@ async function getAssetStats(symbol, daysBack) {
             console.log(dataMap)
         })
 }
-
-function setUpMarketAsset() {
+async function setUpMarketAsset() {
     if (featureContentIsFilled) {
         $(contentFeature).empty();
+        $(contentFeature).css("height", "");
+        $(contentFeature).css("width", "");
     }
+    const tooltip = $('<span></span>');
+    tooltip.css({"visibility": "hidden",
+        "width": "165px",
+        "background-color": "#001d23",
+        "color": "#fff",
+        "text-align": "left",
+        "border-radius": "6px",
+        "padding": "5px 5px 5px 5px",
+        "position": "relative",
+        "right": "150px",
+        "display": "inline-block",
+        "height": "40px",
+        "z-index": "1"})
+
     const table = $('<table class="marketTable" style="margin-left: auto; margin-right: auto"></table>');
     $(table).append("<tr><th>Available Units</th><th>Units for sale</th><th>Price per unit</th></tr>");
     const tr = document.createElement("tr");
-    const units = document.createElement("td");
-    units.id = "unitsAvailable";
-    units.innerText = `${availableUnits}`;
-    tr.append(units);
-    $(tr).append(`<td><input id='unitsToSell' type='number' min='0'></td>`);
+    const units = $(`<td id="unitsAvailable">${availableUnits}</td>`)
+    $(tr).append(units).append(`<td><input id='unitsToSell' type='number' min='0'></td>`);
     $(tr).append("<td>$<input id='pricePerUnit' type='number' min='0'></td>");
     $(table).append(tr);
-    $(contentFeature).append(table).append('<br>').append(`<button id="confirm" class="market" onclick="marketAsset()">Confirm</button>`);
+    $(contentFeature).append(tooltip).append(table).append('<br>')
+        .append(`<button id="confirm" class="market" onclick="marketAsset()">Confirm</button>`);
     confirmBtn = $("#confirm");
     featureContentIsFilled = true;
+    await getUnitsForSaleWithPrice();
+
+    let unitsOnSale;
+    let unitSalePrice;
+    for (const key in unitsForSaleWithPrice) {
+        unitsOnSale = key;
+        unitSalePrice = unitsForSaleWithPrice[key];
+    }
+
+    $(units).hover(() => {
+        $(tooltip).html(`Units for sale: ${unitsOnSale} <br> Price per unit: $ ${unitSalePrice}`);
+        $(tooltip).css('visibility', 'visible');
+    }, () => {$(tooltip).css('visibility', 'hidden')});
+
 }
 
 function marketAsset() {
@@ -288,6 +318,8 @@ function marketAsset() {
 async function setupSellAsset() {
     if (featureContentIsFilled) {
         $(contentFeature).empty();
+        $(contentFeature).css("height", "");
+        $(contentFeature).css("width", "");
     }
     const header = $('<h3>Sell your units to Bank Sinatra for their current market value*</h3>')
     const footnote = $('<p>*Bank fees apply, lolz</p>')
@@ -332,7 +364,7 @@ async function sellToBank(){
         crypto: {
             symbol: cryptoChosen
         },
-        units: parseInt(unitsToSellToBank) //TODO: werkt nog niet
+        units: parseFloat(unitsToSellToBank) //TODO: werkt nog niet
     }
     console.log(payload);
 
@@ -366,10 +398,10 @@ async function getIdCurrentUser() {
 }
 
 async function getUnitsForSaleWithPrice() {
-    let unitsForSale = await fetch(`${url.origin}/getUnitsForSale`, {
-        method: 'GET',
+    unitsForSaleWithPrice =
+        await fetch(`${url.origin}/getUnitsForSale`, {
+        method: 'POST',
         headers: {"Authorization": `${localStorage.getItem('token')}`},
         body: cryptoChosen
-    }).then(res => {return res.text()})
-    return unitsForSale;
+    }).then(res => {return res.json()})
 }
