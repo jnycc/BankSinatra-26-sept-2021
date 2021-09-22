@@ -1,6 +1,5 @@
 package com.miw.model;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Crypto implements Comparable<Crypto>{
@@ -39,10 +38,6 @@ public class Crypto implements Comparable<Crypto>{
 
     public double getCryptoPrice() {
         return cryptoPrice;
-    }
-
-    public void setCryptoPrice(double cryptoPrice) {
-        this.cryptoPrice = cryptoPrice;
     }
 
     @Override
