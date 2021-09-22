@@ -1,4 +1,5 @@
 let url = new URL(window.location.href);
+const contentFeature = document.querySelector("#contentFeature");
 const assets = [];
 const cryptoTable = document.getElementById('cryptoTable');
 const currencyFormat = {style: "currency", currency: "USD", minimumFractionDigits: 2}
@@ -20,6 +21,7 @@ let date;
 let totalPrice = document.querySelector("#totalPrice");
 let unitsToBuyInput = document.querySelector("#unitsToBuy");
 let isOrderFormEmpty = true;
+let dataMap = null //globale placeholder voor de statistical data
 $(cryptoTable).append("<tr><th>#</th><th>Cryptocurrency</th> <th>Symbol</th> <th>Price</th> <th>Last price update</th><th>24h %</th> <th>7d %</th></tr>");
 window.addEventListener("DOMContentLoaded", setupPageWithCryptos);
 window.addEventListener("DOMContentLoaded", getLatestApiCallTime);
@@ -30,6 +32,7 @@ buyBtn.addEventListener('click', () => {
 })
 closeCryptoOverlayBtn.addEventListener('click', () => {
     $(cryptoOverlay).hide();
+    $(contentFeature).empty();
 })
 
 //Create table and add the crypto data
@@ -130,6 +133,7 @@ function openDetails(symbol) {
     cryptoChosen = symbol;
     $(cryptoName).text(cryptoChosen);
     $(cryptoOverlay).show();
+    createGraph(symbol, 7);
 }
 
 async function showCryptosForSale(symbol) {
@@ -243,7 +247,7 @@ async function carryOutTransaction() {
         crypto: {
             symbol: cryptoSymbol.textContent
         },
-        units: parseInt($(unitsToBuyInput).val())
+        units: parseFloat($(unitsToBuyInput).val())
     }
     console.log(payload);
 
@@ -277,4 +281,92 @@ async function getIdCurrentUser() {
         }
     })
     return userId;
+}
+
+async function createGraph(symbol, daysBack) {
+    await getAssetStats(symbol, daysBack)
+    var dataPoints1 = [], dataPoints2 = [];
+    var stockChart = new CanvasJS.StockChart("contentFeature", {
+        animationEnabled: true,
+        theme: "light2",
+        title: {
+            text: `${symbol} price chart`, //TODO: dit vullen met cryptonaam ipv symbol
+            fontFamily: "Calibri,Optima,Arial,sans-serif"
+        },
+        charts: [{
+            toolTip: {
+                shared: true
+            },
+            axisX: {
+                valueFormatString: "D MMM YYYY"
+            },
+            axisY: {
+                prefix: "USD "
+            },
+            data: [{
+                name: "Min-Max",
+                type: "rangeArea",
+                xValueFormatString: "DD-MM-YYY",
+                yValueFormatString: "$#,###.##",
+                dataPoints: dataPoints1
+            }, {
+                name: "Average",
+                type: "line",
+                yValueFormatString: "$#,###.##",
+                dataPoints: dataPoints2
+            }]
+        }],
+        navigator: {
+            data: [{
+                dataPoints: dataPoints2
+            }],
+            axisX: {
+                labelFontColor: "transparent",
+                labelFontWeight: "bolder",
+            },
+            slider: {
+                minimum: new Date(2020, 0o0),
+                maximum: new Date(2021, 12)
+            }
+        },
+        rangeSelector: {
+            buttons: [{
+                label: "1D",
+                range: 1,
+                rangeType: "day"
+            }, {
+                label: "7D",
+                range: 7,
+                rangeType: "day"
+            }, {
+                label: "1Y",
+                range: 1,
+                rangeType: "year"
+            }, {
+                label: "All",
+                range: null,
+                rangeType: "all"
+            }]
+        }
+    });
+    console.log("Pushmethode runt. 2. Data bestaat uit:")
+    console.log(dataMap)
+    for (let date of Object.keys(dataMap)) {
+        dataPoints1.push({x: new Date(date), y:[Number(dataMap[date].min), Number(dataMap[date].max)]});
+        dataPoints2.push({x: new Date(date), y:Number(dataMap[date].avg)});
+    }
+    stockChart.render();
+}
+
+async function getAssetStats(symbol, daysBack) {
+    await fetch(`/cryptoStats?symbol=${symbol}&daysBack=${daysBack}`, {
+        method: 'GET',
+        headers: {'Authorization': localStorage.getItem('token')}
+    })
+        .then(res => res.json())
+        .then(json => {
+            dataMap = json
+            console.log("1. Data opgehaald: ")
+            console.log(dataMap)
+        })
 }

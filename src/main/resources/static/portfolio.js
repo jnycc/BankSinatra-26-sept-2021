@@ -1,5 +1,5 @@
 //Page elements
-const contentFeature = document.querySelector(".contentFeature");
+const contentFeature = document.querySelector("#contentFeature");
 const marketBtn = document.querySelector("#market");
 const sellBtn = document.querySelector("#sell");
 let cryptoChosen;
@@ -130,9 +130,12 @@ function getCryptoLogo(symbol) {
 }
 
 function openDetails(symbol, name, units) {
-    $(cryptoName).text(name + " (" + symbol + ")")
-    $(cryptoOverlay).show()
+    $(cryptoName).text(name + " (" + symbol + ")");
+    $(cryptoOverlay).show();
+    $(contentFeature).css("height", "400px");
+    $(contentFeature).css("width", "80%");
     createGraph(symbol, 7)
+    featureContentIsFilled = true;
     // TODO toon crypto grafiek in contentFeature div
     cryptoChosen = symbol;
     availableUnits = units;
@@ -140,7 +143,7 @@ function openDetails(symbol, name, units) {
 async function createGraph(symbol, daysBack) {
     await getAssetStats(symbol, daysBack)
     var dataPoints1 = [], dataPoints2 = [];
-    var stockChart = new CanvasJS.StockChart("stockChartContainer", {
+    var stockChart = new CanvasJS.StockChart("contentFeature", {
         animationEnabled: true,
         theme: "light2",
         title: {
@@ -227,6 +230,8 @@ async function getAssetStats(symbol, daysBack) {
 async function setUpMarketAsset() {
     if (featureContentIsFilled) {
         $(contentFeature).empty();
+        $(contentFeature).css("height", "");
+        $(contentFeature).css("width", "");
     }
     const tooltip = $('<span></span>');
     tooltip.css({"visibility": "hidden",
@@ -313,6 +318,8 @@ function marketAsset() {
 async function setupSellAsset() {
     if (featureContentIsFilled) {
         $(contentFeature).empty();
+        $(contentFeature).css("height", "");
+        $(contentFeature).css("width", "");
     }
     const header = $('<h3>Sell your units to Bank Sinatra for their current market value*</h3>')
     const footnote = $('<p>*Bank fees apply, lolz</p>')
@@ -357,7 +364,7 @@ async function sellToBank(){
         crypto: {
             symbol: cryptoChosen
         },
-        units: parseInt(unitsToSellToBank) //TODO: werkt nog niet
+        units: parseFloat(unitsToSellToBank) //TODO: werkt nog niet
     }
     console.log(payload);
 
