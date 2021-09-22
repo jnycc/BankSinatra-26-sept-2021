@@ -50,8 +50,6 @@ function setupPageWithCryptos() {
                 row.addEventListener('click', () => openDetails(obj.symbol))
                 cryptoTable.appendChild(row)
                 $(row).append(`<td>${i++}</td>`)
-                console.log(date)
-                console.log(obj)
                 for (let key of Object.keys(obj)) {
                     const cell = document.createElement('td')
                     if (key === 'name') {
@@ -209,6 +207,12 @@ async function getName(accountId){
 }
 
 async function showOrder(accountId) {
+    $(cryptoBuy).css({
+        "box-sizing": "border-box",
+        "border-radius": "7px",
+        "border-color": "#002932",
+        "background-color": "#BABAD1"
+    })
     $(cryptoBuy).show();
 
     unitsToBuy = `${$(`#units${accountId}`).text()}`;

@@ -76,6 +76,7 @@ body {
 #registerFields{
     padding-left: 15px;
     padding-bottom: 10px;
+    padding-right: 10px;
     position: inherit;
     top: 50%;
     left: 50%;
@@ -97,13 +98,13 @@ body {
 }
 
 .split {
-    height: 100%;
-    width: 50%;
+    height: 60%;
+    width: 40%;
     position: fixed;
     z-index: 1;
     top: 0;
     overflow-x: hidden;
-    padding-top: 20px;
+    padding: 20px 20px 20px 20px;
 }
 
 .left {
@@ -112,7 +113,7 @@ body {
 }
 
 .right {
-    left: 60%;
+    left: 55%;
     top: 30%;
 }
 
@@ -120,11 +121,18 @@ body {
     display: inline;
 }
 
-#close-overlay-btn {
-    height: 6%;
-    width: 4%;
-    position: relative;
-    left: 450px;
+#close-overlay-btn  {
+    color: darkred;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#close-overlay-btn :hover,
+#close-overlay-btn :focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 #cryptoTable {

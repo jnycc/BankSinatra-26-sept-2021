@@ -122,7 +122,7 @@ public class PortfolioController {
         return new ResponseEntity<>(rootRepository.getLatestPriceBySymbol(symbol), HttpStatus.OK);
     }
 
-    @GetMapping("/getUnitsForSale")
+    @PostMapping("/getUnitsForSale")
     public ResponseEntity<?> getUnitsForSale(@RequestHeader("Authorization") String token,
                                              @RequestBody String symbol) {
         int userId = TokenService.getValidUserID(token);

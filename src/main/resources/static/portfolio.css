@@ -104,7 +104,7 @@ tr:hover{
 
 #buy, #sell, #market{
     height: 25px;
-    width: 45px;
+    width: fit-content;
 }
 
 .marketTable th{
