@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="portfolio.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.stock.min.js"></script>
     <script src="partials/validateClient.js"></script>
     <script src="portfolio.js" defer></script>
     <script>
@@ -24,7 +26,6 @@
     <section>
         <p>Total USD balance: <span id="totalBalance">USD&nbsp;</span></p>
         <p>Total portfolio value: <span id="totalPortfolioValue">USD&nbsp;</span></p>
-        <!--        <span data-id="totalPortfolioValue" data-field="total" class="_8Dp1KM5D " data-positive="true" title="10,000.00">€&nbsp;10,000.00</span>-->
     </section>
     <br><br>
     <table id="assetTable"></table>
@@ -37,7 +38,10 @@
             </div>
             <div class="cryptoOverlay-body">
                 <div class="contentFeature">
-
+                    <div id="stockChartContainer" style="height: 400px; width: 100%;"></div>
+                    <p>test</p>
+                    <p>test</p>
+                    <p>test</p>
                 </div>
             </div>
             <div class="cryptoOverlay-footer">
