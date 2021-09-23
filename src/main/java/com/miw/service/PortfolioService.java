@@ -39,7 +39,7 @@ public class PortfolioService {
         List<Asset> assetList = rootRepository.getAssets(accountId);
         double totalPortfolioValue = 0.0;
         for (Asset asset : assetList) {
-            totalPortfolioValue += (asset.getCurrentValue() * asset.getUnits());
+            totalPortfolioValue += asset.getCurrentValue();
         }
         return totalPortfolioValue;
     }

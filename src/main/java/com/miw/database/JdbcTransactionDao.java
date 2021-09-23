@@ -133,24 +133,24 @@ public class JdbcTransactionDao {
     // daysBack =
     // vandaag = 0, gisteren = 1, eergisteren = 2 etc.
     public double getPortfolioValueByDate(int userID, int daysBack) {
-        String sql = "SELECT coalesce(SUM(ROUND((cryptoPrice * tr.totalUnits), 2)),0) portfolioValue \n" +
-                "FROM \n" +
-                "(SELECT symbol, date(dateRetrieved), cryptoPrice \n" +
-                "FROM CryptoPrice WHERE dateRetrieved = \n" +
-                "(SELECT max(dateRetrieved) \n" +
-                "FROM CryptoPrice WHERE dateRetrieved \n" +
-                "BETWEEN timestamp(curdate() -?) AND timestamp(curdate() +(1-?)))) cr -- ? ? vandaag = 0, 1, gisteren = -1, 0, eergisteren = -2, -1 etc\n" +
-                "JOIN \n" +
-                "(SELECT bought.symbol, ifnull(bought.units-sold.units, bought.units) totalUnits\n" +
-                "FROM (SELECT SUM(units) units, accountID_buyer, symbol, date \n" +
-                "FROM Transaction\n" +
-                "WHERE accountID_buyer = ? -- ? = userID\n" +
-                "AND date < timestamp(curdate()+(1-?)) GROUP BY symbol) bought -- vandaag = 1, gisteren = 0, eergisteren = -1\n" +
+        String sql = "SELECT coalesce(SUM(ROUND((cryptoPrice * tr.totalUnits), 2)),0) portfolioValue " +
+                "FROM " +
+                "(SELECT symbol, date(dateRetrieved), cryptoPrice " +
+                "FROM CryptoPrice WHERE dateRetrieved = " +
+                "(SELECT max(dateRetrieved) " +
+                "FROM CryptoPrice WHERE dateRetrieved " +
+                "BETWEEN timestamp(curdate() -?) AND timestamp(curdate() +(1-?)))) cr " +
+                "JOIN " +
+                "(SELECT bought.symbol, ifnull(bought.units-sold.units, bought.units) totalUnits " +
+                "FROM (SELECT SUM(units) units, accountID_buyer, symbol " +
+                "FROM Transaction " +
+                "WHERE accountID_buyer = ? " +
+                "AND date < timestamp(curdate()+(1-?)) GROUP BY symbol) bought " +
                 "LEFT JOIN \n" +
-                "(SELECT SUM(units) units, accountID_seller, symbol, date FROM Transaction\n" +
-                "WHERE accountID_seller = ? -- ? = userID\n" +
-                "AND date < timestamp(curdate()+(1-?)) GROUP BY symbol) sold -- vandaag = 1, gisteren = 0, eergisteren = -1\n" +
-                "ON bought.symbol = sold.symbol) tr\n" +
+                "(SELECT SUM(units) units, accountID_seller, symbol FROM Transaction " +
+                "WHERE accountID_seller = ? " +
+                "AND date < timestamp(curdate()+(1-?)) GROUP BY symbol) sold " +
+                "ON bought.symbol = sold.symbol) tr " +
                 "ON cr.symbol = tr.symbol;";
         try {
             return jdbcTemplate.queryForObject(sql, Double.class, daysBack, daysBack, userID, daysBack, userID, daysBack);

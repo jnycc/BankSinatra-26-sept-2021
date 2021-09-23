@@ -27,7 +27,7 @@ const currencyFormat = {style: "currency", currency: "USD", minimumFractionDigit
 
 //Create table with header row
 const assetTable = document.getElementById('assetTable')
-$(assetTable).append("<tr><th>Crypto</th> <th>Symbol</th> <th>Units</th> <th>Price</th> <th>Value</th> <th>24h %</th></tr>")
+$(assetTable).append("<tr><th>Crypto</th> <th>Symbol</th> <th>Units</th> <th>Price</th> <th>Value</th></tr>")
 
 //Modal - overlay with crypto statistics
 const cryptoOverlay = document.getElementById('cryptoOverlay')
@@ -87,7 +87,7 @@ function getAssets() {
         .then(res => res.json())
         .then(json => {
             console.log(json)
-            let nrOfCells = assetTable.rows[0].cells.length - 1
+            let nrOfCells = assetTable.rows[0].cells.length
             //For every asset, create a row
             for (let asset of json) {
                 const row = document.createElement('tr')
