@@ -137,8 +137,8 @@ function openDetails(asset) {
     $(overlayDetails).empty()
     $(overlayDetails).append(`<p>${asset.crypto.description}</p>`)
     $(cryptoOverlay).show();
-    // $(contentFeature).css("height", "400px"); // dit in css-bestand regelen?
-    // $(contentFeature).css("width", "60%");
+    $(contentFeature).css("height", "400px"); // dit in css-bestand regelen?
+    $(contentFeature).css("width", "auto");
     let daysBack = 100; //Vanaf 220 vult hij niet, data vanuit sql is dan null
     createGraph(asset.crypto.symbol, asset.crypto.cryptoPrice, daysBack)
     featureContentIsFilled = true;

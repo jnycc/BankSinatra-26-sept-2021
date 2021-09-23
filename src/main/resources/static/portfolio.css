@@ -120,10 +120,6 @@ tr:hover{
     background-color: #001d23;
     color: white;
 }
-#contentFeature {
-    height: 400px;
-    width: auto;
-}
 
 #overlayDetails {
     text-align: left;
