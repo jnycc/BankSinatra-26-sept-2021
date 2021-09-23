@@ -19,13 +19,14 @@ let buyerId;
 let purchasePrice;
 let cryptoChosen;
 let date;
+let showOrderIsFilled;
 let totalPrice = document.querySelector("#totalPrice");
 let unitsToBuyInput = document.querySelector("#unitsToBuy");
 let isOrderFormEmpty = true;
 let dataMap = null //globale placeholder voor de statistical data
 $(cryptoTable).append("<tr><th>#</th><th>Cryptocurrency</th> <th>Symbol</th> <th>Price</th> <th>Last price update</th><th>24h %</th> <th>7d %</th></tr>");
-window.addEventListener("DOMContentLoaded", setupPageWithCryptos);
 window.addEventListener("DOMContentLoaded", getLatestApiCallTime);
+window.addEventListener("DOMContentLoaded", setupPageWithCryptos);
 purchase.addEventListener('click', carryOutTransaction);
 buyBtn.addEventListener('click', () => {
     $(cryptoOverlay).hide();
@@ -202,6 +203,17 @@ async function fillTable() {
             $(cryptosForSale).append(tr);
         }
     }
+    $("#cryptosForSale tr").click(async function () {
+        var seller = $(this).attr("id");
+        var accountId = seller.substring(6);
+        if (showOrderIsFilled) {
+            $(cryptoBuy).empty();
+            $(cryptoBuy).hide();
+            showOrderIsFilled = false;
+        }
+        await showOrder(accountId);
+        showOrderIsFilled = true;
+    })
 }
 
 async function getName(accountId){
@@ -216,25 +228,29 @@ async function getName(accountId){
 }
 
 async function showOrder(accountId) {
-    $(cryptoBuy).css({
-        "box-sizing": "border-box",
-        "border-radius": "7px",
-        "border-color": "#002932",
-        "background-color": "#BABAD1"
-    })
-    $(cryptoBuy).show();
+    if (!showOrderIsFilled) {
+        $(cryptoBuy).css({
+            "box-sizing": "border-box",
+            "border-radius": "7px",
+            "border-color": "#002932",
+            "background-color": "#BABAD1"
+        })
+        $(cryptoBuy).show();
 
-    unitsToBuy = `${$(`#units${accountId}`).text()}`;
-    purchasePrice = $(`#price${accountId}`).text();
+        unitsToBuy = `${$(`#units${accountId}`).text()}`;
+        purchasePrice = $(`#price${accountId}`).text();
 
-    if (isOrderFormEmpty) {
-        $("#cryptoCoinToBuy").text(cryptoSymbol.innerText);
-        $(unitsToBuyInput).attr('max', unitsToBuy);
-        $("#pricePerUnit").text(purchasePrice);
-        $(totalPrice).text(`0`);
-        $(purchase).attr('buyerId', accountId);
-        isOrderFormEmpty = false;
+        if (isOrderFormEmpty) {
+            $("#cryptoCoinToBuy").text(cryptoSymbol.innerText);
+            $(unitsToBuyInput).attr('max', unitsToBuy);
+            $("#pricePerUnit").text(purchasePrice);
+            $(totalPrice).text(`0`);
+            $(purchase).attr('buyerId', accountId);
+            isOrderFormEmpty = false;
+            showOrderIsFilled = true;
+        }
     }
+
 
 }
 

@@ -97,16 +97,6 @@ CREATE TABLE IF NOT EXISTS `banksinatra`.`CryptoPrice` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-
--- -----------------------------------------------------
--- Table `banksinatra`.`Token`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `banksinatra`.`Token` (
-  `token` VARCHAR(60) NOT NULL,
-  `dateTime` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`token`));
-
-
 -- -----------------------------------------------------
 -- Table `banksinatra`.`Transaction`
 -- -----------------------------------------------------
