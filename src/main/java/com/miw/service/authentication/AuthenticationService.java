@@ -1,4 +1,5 @@
 package com.miw.service.authentication;
+
 import com.miw.database.*;
 import com.miw.model.Administrator;
 import com.miw.model.Client;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 /**
  * @author  Nijad Nazarli
  * @apiNote This service class authenticates the user

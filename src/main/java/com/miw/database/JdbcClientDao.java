@@ -1,4 +1,5 @@
 package com.miw.database;
+
 import com.miw.model.Address;
 import com.miw.model.Client;
 import org.slf4j.Logger;
@@ -10,7 +11,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import java.sql.*;
 import java.time.LocalDate;
 

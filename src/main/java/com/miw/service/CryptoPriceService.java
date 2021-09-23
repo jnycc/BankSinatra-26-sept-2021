@@ -1,11 +1,9 @@
 package com.miw.service;
 
 import com.google.gson.*;
-import com.miw.database.JdbcCryptoDao;
 import com.miw.database.RootRepository;
 import com.miw.model.Asset;
 import com.miw.model.Bank;
-import com.miw.model.Crypto;
 import com.miw.service.authentication.RegistrationService;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;

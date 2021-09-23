@@ -1,6 +1,5 @@
 package com.miw.service.authentication;
-import com.miw.database.JdbcAdminDao;
-import com.miw.database.JdbcClientDao;
+
 import com.miw.database.JdbcTokenDao;
 import com.miw.database.JdbcUserDao;
 import io.jsonwebtoken.*;
@@ -15,7 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 
 @Service
 public class TokenService {
