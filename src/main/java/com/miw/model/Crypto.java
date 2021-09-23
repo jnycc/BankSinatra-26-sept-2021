@@ -18,11 +18,9 @@ public class Crypto implements Comparable<Crypto>{
 
     public Crypto(){}
 
-    private double retrieveValue() {
-        //TODO: get recent value of cryptocoin thru API?
-        return 0.0;
+    public String getDescription() {
+        return description;
     }
-
 
     public String getName() {
         return name;
