@@ -66,7 +66,6 @@ public class TokenService {
                 .parseClaimsJws(jwt).getBody();
     }
 
-    // TODO: check if blocked
     public static boolean validateJWT(String jwt) {
         int userID = Integer.valueOf(decodeJWT(jwt).getSubject());
         if (jdbcUserDao.checkIfBlockedByID(userID)){
@@ -126,14 +125,4 @@ public class TokenService {
             return false;
         }
     }
-
-    //TODO: implement refreshtoken?
-    public String generateRefreshToken() {
-        return UUID.randomUUID().toString();
-    }
-
-    public boolean validateRefreshToken(String token) {
-        return jdbcTokenDao.retrieveToken(token) != null;
-    }
-
 } // end of main

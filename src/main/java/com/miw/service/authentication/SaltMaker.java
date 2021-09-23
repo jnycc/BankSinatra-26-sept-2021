@@ -28,8 +28,4 @@ public class SaltMaker {
         String salt = ByteArrayToHexHelper.encodeHexString(arr);
         return saltLength % 2 == 0 ? salt : salt.substring(1); // als oneven is er 1 karakter teveel, haal deze weg
     }
-
-    public void setlength(int saltLength) {
-        this.saltLength = saltLength;
-    }
 }

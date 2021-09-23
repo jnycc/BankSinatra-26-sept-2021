@@ -1,4 +1,4 @@
-/**
+/*
  *  @Author: Johnny Chan, MIW student 500878034.
  *  Deze service class bevat de onderliggende business logic voor de RegisterController:
  *  -> check of user reeds geregistreerd is en registratie van nieuwe users.

@@ -18,6 +18,8 @@ import java.util.TreeMap;
 @RestController
 public class AdminController {
 
+    private final double MAX_FEE = 1;
+    private final double MIN_FEE = 0;
     private final Logger logger = LoggerFactory.getLogger(AdminController.class);
     private RootRepository rootRepository;
 
@@ -34,7 +36,7 @@ public class AdminController {
         String token = convertedObject.get("token").getAsString();
         double fee = convertedObject.get("fee").getAsDouble();
         if (TokenService.validateAdmin(token)) {
-            if (fee >= 0 && fee <= 1) { // also checked at frontend; here just in case
+            if (fee >= MIN_FEE && fee <= MAX_FEE) { // also checked at frontend; here just in case
                 rootRepository.updateBankCosts(fee);
                 return ResponseEntity.status(HttpStatus.OK).build();
             } else {
@@ -89,7 +91,7 @@ public class AdminController {
             List<Crypto> allCryptos = rootRepository.getAllCryptos();
             for (Crypto crypto : allCryptos) {
                 Asset asset = rootRepository.getAssetBySymbol(account.getAccountId(), crypto.getSymbol());
-                if (asset != null) {
+                if (asset != null) { // if the asset fetch from db returned anything, we can show its quantity, otherwise zero
                     assets.put(crypto.getSymbol(), asset.getUnits());
                 } else {
                     assets.put(crypto.getSymbol(), 0.0);

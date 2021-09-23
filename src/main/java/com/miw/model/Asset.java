@@ -66,48 +66,24 @@ public class Asset {
         return currentValue;
     }
 
-    public void setCurrentValue(double currentValue) {
-        this.currentValue = currentValue;
-    }
-
     public Map<String, Double> getHistoricalValues() {
         return historicalValues;
-    }
-
-    public void setHistoricalValues(Map<String, Double> historicalValues) {
-        this.historicalValues = historicalValues;
     }
 
     public Map<String, Double> getHistoricalNrOfUnits() {
         return historicalNrOfUnits;
     }
 
-    public void setHistoricalNrOfUnits(Map<String, Double> historicalNrOfUnits) {
-        this.historicalNrOfUnits = historicalNrOfUnits;
-    }
-
     public Map<String, Double> getDeltaValues() {
         return deltaValues;
-    }
-
-    public void setDeltaValues(Map<String, Double> deltaValues) {
-        this.deltaValues = deltaValues;
     }
 
     public double getUnitsForSale() {
         return unitsForSale;
     }
 
-    public void setUnitsForSale(double unitsForSale) {
-        this.unitsForSale = unitsForSale;
-    }
-
     public double getSalePrice() {
         return salePrice;
-    }
-
-    public void setSalePrice(double salePrice) {
-        this.salePrice = salePrice;
     }
 
     @Override
