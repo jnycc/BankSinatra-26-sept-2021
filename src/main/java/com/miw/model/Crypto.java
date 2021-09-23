@@ -45,6 +45,10 @@ public class Crypto implements Comparable<Crypto>{
         this.cryptoPrice = cryptoPrice;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

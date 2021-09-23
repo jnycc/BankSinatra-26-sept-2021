@@ -60,7 +60,9 @@ function getBalance() {
     })
         .then(res => res.text())
         .then(it => {
-            totalBalance.innerHTML += it
+            totalBalance.innerHTML += parseFloat(it).toLocaleString(
+                'en-US', {style: "currency", currency: "USD", currencyDisplay: 'code',
+                    minimumFractionDigits: 2, maximumFractionDigits: 2})
         })
 }
 
@@ -71,7 +73,9 @@ function getTotalPortfolioValue() {
     })
         .then(res => res.text())
         .then(value => {
-            totalPortfolioValue.innerHTML += value
+            totalPortfolioValue.innerHTML += parseFloat(value).toLocaleString(
+                'en-US', {style: "currency", currency: "USD", currencyDisplay: 'code',
+                    minimumFractionDigits: 2, maximumFractionDigits: 2})
         })
 }
 
@@ -98,7 +102,7 @@ function getAssets() {
                 cells[0].append(getCryptoLogo(asset.crypto.symbol), asset.crypto.name)
                 cells[1].innerHTML = asset.crypto.symbol
                 cells[2].innerHTML = asset.units.toLocaleString("en-US", {style: 'decimal', minimumFractionDigits: 2})
-                cells[3].innerText = asset.crypto.cryptoPrice.toLocaleString('en-US', currencyFormat)
+                cells[3].innerText = asset.crypto.cryptoPrice.toLocaleString('en-US',currencyFormat)
                 cells[4].innerHTML = asset.currentValue.toLocaleString('en-US', currencyFormat)
                 cells.forEach(cell => row.appendChild(cell))
             }
