@@ -1,17 +1,29 @@
+* {
+    background-color: lightyellow;
+    color: black;
+}
+
+/* header */
 .header {
-    padding-top: 40px;
+    height: 120px;
+    width: 100%;
+    display: block;
+    background: #002932;
+    color: lightyellow;
+    font-size: 30px;
+    text-align: center;
 }
 
 /* structural elements below header */
 .page {
     width: 100%;
-    margin-top: 40px;
+    margin: 40px;
     font-size: 16px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .top {
-    height: 100px;
+    height: 120px;
 }
 
 .left {
@@ -24,17 +36,17 @@
     width: 55%;
 }
 
-/* bank fee button + overlay */
-#bankFee {
+/* logout and bank fee buttons */
+.menu {
     float: right;
-    margin-right: 150px;
+    margin-right: 100px;
 }
 
 /* left hand side: table */
 #userTable {
     width: 40%;
     border-collapse: collapse;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: normal;
 }
 
@@ -68,12 +80,4 @@
 #assetTable, th, td {
     border: 1px solid #ddd;
     padding: 8px;
-}
-
-#assetTable tr:nth-child(even){background-color: lightcyan;}
-
-#assetTable tr:nth-child(even):hover{background-color: teal;}
-
-tr:hover{
-    background-color: teal;
 }

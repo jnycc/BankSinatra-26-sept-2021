@@ -10,9 +10,9 @@ function validateClient(){
     })
         .then(res => {
             if (res.status === 200) {
-                console.log("no problemo")
+                console.log("User validated.")
             } else {
-                console.log("your token is bad and you should feel bad")
+                console.log("Login validation failed, please login again.")
                 window.location.replace("/index.html");
             }
         })

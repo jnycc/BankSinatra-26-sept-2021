@@ -1,21 +1,5 @@
 // PAGE SETUP
 let url = new URL(window.location.href);
-window.addEventListener("DOMContentLoaded", validateAdmin)
-
-function validateAdmin(){
-    fetch(`http://localhost:8080/validateAdmin`, {
-        method: 'POST',
-        body: `${localStorage.getItem('token')}`
-    })
-        .then(res => {
-            if (res.status === 200) {
-                console.log("Admin validated")
-            } else {
-                console.log("Admin validation failed, redirecting to login page")
-                window.location.replace("/index.html")
-            }
-        })
-}
 
 // --------------------
 

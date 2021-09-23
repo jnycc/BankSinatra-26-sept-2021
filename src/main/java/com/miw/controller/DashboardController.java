@@ -66,17 +66,6 @@ public class DashboardController {
 //        return totalValue;
 //    }
 
-    @GetMapping("/getNameClient")
-    public ResponseEntity<?> getNameByUserId(@RequestHeader("Authorization") String token){
-        int userId = TokenService.getValidUserID(token);
-        if(userId == 0){
-            return new ResponseEntity<>("Not a valid Token", HttpStatus.UNAUTHORIZED);
-        } else {
-            String name = rootRepository.getFirstNameById(userId);
-            return new ResponseEntity<>(name, HttpStatus.OK);
-        }
-    }
-
     @GetMapping("/portfolio/PercentageIncrease")
     public double getPercentageIncrease(@RequestHeader("Authorization") String token){
         int ID = TokenService.getValidUserID(token);
