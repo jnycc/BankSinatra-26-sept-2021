@@ -1,43 +1,28 @@
+// PAGE SETUP
 let url = new URL(window.location.href);
 
-// PAGE SETUP
-window.addEventListener("DOMContentLoaded", validateAdmin)
+// --------------------
 
-function validateAdmin(){
-    fetch(`http://localhost:8080/validateAdmin`, {
-        method: 'POST',
-        body: `${localStorage.getItem('token')}`
-    })
-        .then(res => {
-            if (res.status === 200) {
-                console.log("Admin validated")
-            } else {
-                console.log("Admin validation failed, redirecting to login page")
-                window.location.replace("/index.html")
-            }
-        })
-}
-
-
+// LOGOUT
 const logout = document.querySelector("#logout")
-
+// CHANGING BANK FEE
 const btnBankFee = document.querySelector("#bankFee")
 const feeForm = document.querySelector("#feeForm")
 const btnCloseOverlay = document.querySelector("#close-overlay-btn")
 const overlay = document.querySelector("#overlay")
-
+// FETCHING USER
 let user = null
 const findUserForm = document.querySelector("#findUserForm")
 const userTable = $("#userTable")
 const btnToggleBlock = document.querySelector("#toggleBlock")
 $(btnToggleBlock).hide()
-
+// CLIENT PORTFOLIO & ACCOUNT BALANCE MANAGEMENT
 const portfolioData = $("#portfolioData")
 const assetTable = $("#assetTable")
 let assets = {}
 const btnSubmitChanges = document.querySelector("#submitChanges")
 
-
+// --------------------
 
 // CONFIRMATION PROMPT
 function confirmationPrompt(action) {
@@ -160,6 +145,7 @@ function fillUserTable(it) {
         }
     }
 }
+
 // BLOCK/UNBLOCK USER
 btnToggleBlock.addEventListener("click", function() {
     if (confirmationPrompt("change this user's block status")) {
@@ -191,7 +177,7 @@ btnSubmitChanges.addEventListener("click", function() {
     }
 })
 
-async function showPortfolio(user) {
+async function showPortfolio(user) { // this function is only called in loadUser above when user is a client (admin users have no portfolio)
     await getAssets(user)
     $(portfolioData).show()
 }
@@ -226,7 +212,7 @@ function fillAssetTable() {
         td3.value = "0.00"
         td3.id = `${key}input`
         tr.append(td1, td2, td3)
-        if (key === 'USD') { // move USD to top of table
+        if (key === 'USD') { // move USD to top of table for convenience, as it is somewhat distinct from other assets
             $(assetTable).prepend(tr)
         } else {
             $(assetTable).append(tr)
@@ -256,5 +242,5 @@ async function applyAssetChanges() {
                 console.log("An error was encountered while updating assets.")
             }
         })
-    loadUser(user) // reload user to reflect changes
+    loadUser(user) // Wrap up by reloading user to reflect changes made.
 }

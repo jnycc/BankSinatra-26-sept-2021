@@ -1,4 +1,4 @@
-
+let url = new URL(window.location.href)
 
 // checking valid token (with userrole) and loading data)
 window.addEventListener("DOMContentLoaded", validateClient)
@@ -24,7 +24,7 @@ nav1.addEventListener("click", function() {
 // FUNCTIONS:
 
 function getBalance(){
-    fetch(`http://localhost:8080/getBalance`, {
+    fetch(`${url.origin}/getBalance`, {
         method: 'POST',
         body: `${localStorage.getItem('token')}`
     })
@@ -37,7 +37,7 @@ function getBalance(){
 
 // // TODO: totaalwaarde uit Json string halen
 function getPortfolio(){
-    fetch(`http://localhost:8080/portfolio/totalValue`, {
+    fetch(`${url.origin}/portfolio/totalValue`, {
         method: 'GET',
         headers: { "Authorization": `${localStorage.getItem('token')}`}
     })

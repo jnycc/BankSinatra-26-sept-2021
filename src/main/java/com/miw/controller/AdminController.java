@@ -20,7 +20,7 @@ import java.util.TreeMap;
 @RestController
 public class AdminController {
 
-    private final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private final Logger logger = LoggerFactory.getLogger(AdminController.class);
     private RootRepository rootRepository;
 
     @Autowired
@@ -36,10 +36,14 @@ public class AdminController {
         String token = convertedObject.get("token").getAsString();
         double fee = convertedObject.get("fee").getAsDouble();
         if (TokenService.validateAdmin(token)) {
-            rootRepository.updateBankCosts(fee);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            if (fee >= 0 && fee <= 1) { // also checked at frontend; here just in case
+                rootRepository.updateBankCosts(fee);
+                return ResponseEntity.status(HttpStatus.OK).build();
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // TODO: is dit de juiste http code?
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @GetMapping("/admin/getBankFee")
@@ -80,10 +84,10 @@ public class AdminController {
     @GetMapping("/admin/getAssets")
     public ResponseEntity<?> getAssets(@RequestHeader("Authorization") String token, @RequestParam String email) {
         Account account = rootRepository.getAccountByEmail(email);
-        Map<String, Double> assets = new TreeMap<>();
+        Map<String, Double> assets = new TreeMap<>(); // TreeMap causes alphabetical ordering on front-end.
 
         if (TokenService.validateAdmin(token)) {
-            assets.put("USD", rootRepository.getBalanceByEmail(email));
+            assets.put("USD", rootRepository.getBalanceByEmail(email)); // USD balance is not stored with the crypto assets.
             List<Crypto> allCryptos = rootRepository.getAllCryptos();
             for (Crypto crypto : allCryptos) {
                 Asset asset = rootRepository.getAssetBySymbol(account.getAccountId(), crypto.getSymbol());
@@ -105,7 +109,7 @@ public class AdminController {
 
             Account account = rootRepository.getAccountByEmail(email);
             rootRepository.updateBalance(account.getBalance() + changes.get("USD").getAsDouble(),
-                    account.getAccountId()); // update balance
+                    account.getAccountId()); // update balance, which is not stored in the same db table as cryptos
 
             List<Crypto> allCryptos = rootRepository.getAllCryptos();
             for (Crypto crypto : allCryptos) {

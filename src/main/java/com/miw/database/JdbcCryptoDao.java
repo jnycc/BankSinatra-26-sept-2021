@@ -20,13 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-// TODO: id's uit crypto wegwerken, primary key -> symbol
 
 @Repository
 public class JdbcCryptoDao {
 
     private final Logger logger = LoggerFactory.getLogger(JdbcCryptoDao.class);
-
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -36,7 +34,6 @@ public class JdbcCryptoDao {
         logger.info("New JdbcCryptoDao");
     }
 
-    // insert met gebruik van symbol ipv id
     private PreparedStatement insertPriceStatement
     (String symbol, double price, LocalDateTime time, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
@@ -111,7 +108,6 @@ public class JdbcCryptoDao {
         }
     }
 
-
     public List<Crypto> getAllCryptos() {
         String sql = "SELECT c.symbol, description, name, cryptoPrice, dateRetrieved " +
                 "FROM Crypto c JOIN CryptoPrice p ON c.symbol = p.symbol " +
@@ -127,7 +123,7 @@ public class JdbcCryptoDao {
         try {
             return jdbcTemplate.query(sql, new CryptoRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            logger.info("Failed to get past crypto price by symbol");
+            logger.info("Failed to fetch list of all cryptos from database.");
             return null;
         }
     }
@@ -148,11 +144,10 @@ public class JdbcCryptoDao {
         try {
             return jdbcTemplate.queryForObject(sql, LocalDateTime.class);
         } catch (EmptyResultDataAccessException e) {
-            logger.info("Failed to retrieve prices of each crypto per day");
+            logger.info("Failed to find the latest API call time.");
             return null;
         }
     }
-
 
     public Map<String, Double> getPriceDeltas(LocalDateTime dateTime) {
         String sql = "SELECT q1.symbol, ROUND(((q1.cryptoPrice - q2.cryptoPrice)/q2.cryptoPrice * 100), 2) AS priceDelta" +
