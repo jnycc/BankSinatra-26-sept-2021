@@ -9,7 +9,6 @@ class JdbcAccountDaoTest {
     @Test
     void save() {
 
-
     }
 
     @Test
@@ -20,7 +19,6 @@ class JdbcAccountDaoTest {
 
     @Test
     void getAccountByEmail() {
-
 
     }
 }

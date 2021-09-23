@@ -20,6 +20,14 @@ const currencyFormat = {style: "currency", currency: "USD", minimumFractionDigit
 const percentageFormat = {style: "percentage", minimumFractionDigits: 2}
 
 nav1.addEventListener("click", function() {
+    document.location.href ="account.html";
+})
+
+nav2.addEventListener("click", function() {
+    document.location.href ="portfolio.html";
+})
+
+nav3.addEventListener("click", function() {
     document.location.href ="marketplace.html";
 })
 

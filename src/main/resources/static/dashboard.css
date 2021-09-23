@@ -37,7 +37,7 @@ header{
 }
 
 .dashboard-container div {
-    padding: 70px 20px 70px 20px;
+    padding: 50px 20px 50px 20px;
     border-radius: 10px;
     border-color: #181401FF;
     border-style: solid;
@@ -62,12 +62,14 @@ header{
     background-image: url("/images/FS4Big.jpg");
     background-size: cover;
     opacity: 0.9;
+    cursor: pointer;
 }
 
 #FS3{
     background-image: url("/images/FS3Big.jpg");
     background-size: cover;
     opacity: 0.9;
+    cursor: pointer;
 }
 
 .dashboard-body{
