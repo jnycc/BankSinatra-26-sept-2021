@@ -44,10 +44,14 @@ function doRegister(currentRegister) {
             body: jsonString
         })
         .then(res => {
-            if (res.status === 201) {
-                alert("Thank you. Your requested has been received. We will process it accordingly and come back to you as soon as possible.")
+            if (res.status === 200) {
+                return res.text().then(it => {
+                    alert(it);
+                    $(overlay).hide();
+                });
             } else {
-                return res.text().then(it => {alert(it)});
+                return res.text().then(it =>
+                { alert(it);})
             }
         })
 }
