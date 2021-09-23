@@ -361,7 +361,7 @@ async function setupSellAsset() {
         $(contentFeature).css("width", "");
     }
     const header = $('<h3>Sell your units to Bank Sinatra for their current market value*</h3>')
-    const footnote = $('<p>*Bank fees apply, lolz</p>')
+    const footnote = $('<p>*Bank fees apply</p>')
     const table = $('<table class="sellTable"></table>')
     const sellBankbtn = $('<button class="sellToBankButton" onclick="sellToBank()">Sell</button>')
     $(table).append("<tr><th>Total units</th><th>Current value</th><th>Units to sell</th></tr>")
@@ -375,7 +375,6 @@ async function setupSellAsset() {
     tr.append(units)
     tr.append(value)
     $(tr).append("<td><input id='unitsToSellToBank' type='number' max={availableUnits} min='0'></td>")
-    //unitsToSellToBank = $(`#unitsToSellToBank`).val(); //TODO: geeft ingevuld int nog niet goed door help
     $(table).append(tr)
     $(contentFeature).append(header, table, footnote, sellBankbtn);
     console.log(getCurrentValue(cryptoChosen))
@@ -394,16 +393,16 @@ async function getCurrentValue(symbol) {
 }
 
 async function sellToBank(){
-    unitsToSellToBank = $(`#unitsToSellToBank`).val(); //TODO: geeft ingevuld int nog niet goed door help
+    unitsToSellToBank = $(`#unitsToSellToBank`).val();
 
     let sellerId = await getIdCurrentUser();
     let payload ={
-        buyer: 1, //dit werkt
-        seller: parseInt(sellerId), //dit werkt ook
+        buyer: 1,
+        seller: parseInt(sellerId),
         crypto: {
             symbol: cryptoChosen
         },
-        units: parseFloat(unitsToSellToBank) //TODO: werkt nog niet
+        units: parseFloat(unitsToSellToBank)
     }
     console.log(payload);
 
@@ -413,7 +412,8 @@ async function sellToBank(){
         body: JSON.stringify(payload)
     }).then(res=> {
         if(res.status === 200){
-            alert("Yesss sell us your assets, bitch")
+            alert("Units successfully sold to Bank Sinatra. Thank you.")
+            window.location.replace(`${url.origin}/portfolio.html`);
         } else {
             return res.text().then(it => alert(it));
         }
