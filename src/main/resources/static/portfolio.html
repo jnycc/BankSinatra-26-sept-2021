@@ -5,25 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio</title>
-    <link rel="stylesheet" href="partials/header.css">
+    <script src="partials/validateClient.js"></script>
+    <link rel="stylesheet" href="partials/sidebar.css">
     <link rel="stylesheet" href="portfolio.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.stock.min.js"></script>
-    <script src="partials/validateClient.js"></script>
+    <script src="partials/sidebar.js" defer></script>
     <script src="portfolio.js" defer></script>
     <script>
         $(function () {
-            $("#header").load("partials/header.html");
+            $("#sidebar").load("partials/sidebar.html");
         });
     </script>
 </head>
 
 <body>
-    <nav id="header"></nav>
+<nav id="sidebar"></nav>
+<div id="portfolio-body">
+
     <br>
-    <section>
+    <section id="portfolio-info">
+        <h1>Portfolio</h1>
         <p>Total USD balance: <span id="totalBalance">USD&nbsp;</span></p>
         <p>Total portfolio value: <span id="totalPortfolioValue">USD&nbsp;</span></p>
     </section>
@@ -34,11 +38,17 @@
         <div class="cryptoOverlay-content">
             <div class="cryptoOverlay-header">
                 <span class="closeCryptoOverlay">&times;</span>
-                <h3 id="cryptoName">Overlay header</h3>
+                <h2 id="cryptoName">Overlay header</h2>
             </div>
             <div class="cryptoOverlay-body">
-                <div id="contentFeature" style="height: 400px; width: 80%;">
-                </div>
+                <div id="contentFeature"></div>
+                <section id="overlayDetails">
+                    <p id="description">Description</p>
+                    <p>Units owned: </p>
+                    <p>Value owned: </p>
+
+                </section>
+
             </div>
             <div class="cryptoOverlay-footer">
                 <button id="buy">Buy</button>
@@ -49,7 +59,7 @@
     </div>
 
 
-
+</div>
 </body>
 
 </html>

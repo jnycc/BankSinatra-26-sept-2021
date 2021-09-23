@@ -75,6 +75,7 @@ public class PortfolioController {
         }
         int accountId = portfolioService.getAccountIdByUserId(userId);
         List<Asset> assetList= portfolioService.getAssets(accountId);
+        System.out.println(assetList);
         return ResponseEntity.ok(assetList);
     }
 

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" class ="no-js">
+<html lang="en" class="no-js">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marketplace</title>
-    <link rel="stylesheet" href="partials/header.css">
+    <link rel="stylesheet" href="partials/sidebar.css">
     <link rel="stylesheet" href="marketplace.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -14,14 +14,14 @@
     <script src="partials/validateClient.js"></script>
     <script src="marketplace.js" defer></script>
     <script>
-        $(function(){
-            $("#header").load("partials/header.html");
+        $(function () {
+            $("#sidebar").load("partials/sidebar.html");
         });
     </script>
 </head>
 
 <body>
-<div id="header"></div>
+<div id="sidebar"></div>
 
 <table id="cryptoTable"></table>
 <br>
@@ -65,8 +65,13 @@
             <h2 id="cryptoName">Crypto</h2>
         </div>
         <div class="cryptoOverlay-body">
-            <div id="contentFeature" style="height: 400px; width: 80%;">
-            </div>
+            <div id="contentFeature"></div>
+            <section id="overlayDetails">
+                <p id="description">Description</p>
+                <p>Description</p>
+                <p>Units owned: </p>
+                <p>Value owned: </p>
+            </section>
         </div>
         <div class="cryptoOverlay-footer">
             <button id="buy">Buy</button>

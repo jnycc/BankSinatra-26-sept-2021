@@ -1,5 +1,5 @@
-body :not(#header){
-    margin-left: 20px;
+body:not(#sidebar){
+    margin-left: 200px;
 }
 
 #cryptosForSale {
@@ -16,7 +16,7 @@ body :not(#header){
     margin-right: 5px;
 }
 
-#cryptosForSale, #cryptoTable, #orderForm{
+#cryptosForSale a, #cryptoTable a, #orderForm a {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 70%;
@@ -125,4 +125,13 @@ tr:hover{
 #buy {
     height: 25px;
     width: 45px;
+}
+
+#contentFeature {
+    height: 400px;
+    width: auto;
+}
+
+#overlayDetails {
+    text-align: left;
 }

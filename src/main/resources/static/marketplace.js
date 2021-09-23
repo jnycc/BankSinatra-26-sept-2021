@@ -13,6 +13,7 @@ const cryptosForSale = $("#cryptosForSale");
 const purchase = document.querySelector("#purchase");
 const cryptoName = $("#cryptoName");
 const closeCryptoOverlayBtn = document.querySelector(".closeCryptoOverlay");
+const overlayDetails = document.getElementById('overlayDetails')
 let unitsToBuy;
 let buyerId;
 let purchasePrice;
@@ -50,7 +51,7 @@ function setupPageWithCryptos() {
             for (let obj of json) {
                 const row = document.createElement('tr')
                 row.id = obj.symbol
-                row.addEventListener('click', () => openDetails(obj.symbol))
+                row.addEventListener('click', () => openDetails(obj))
                 cryptoTable.appendChild(row)
                 $(row).append(`<td>${i++}</td>`)
                 for (let key of Object.keys(obj)) {
@@ -129,11 +130,15 @@ function setPriceDeltas(date) {
         })
 }
 
-function openDetails(symbol) {
-    cryptoChosen = symbol;
-    $(cryptoName).text(cryptoChosen);
+function openDetails(crypto) {
+    cryptoChosen = crypto.symbol;
+    $(cryptoName).text(`${crypto.name} (${crypto.symbol})`);
+    $(cryptoName).prepend(getCryptoLogo(crypto.symbol))
+    $(overlayDetails).empty()
+    $(overlayDetails).append(`<p>${crypto.description}</p>`)
     $(cryptoOverlay).show();
-    createGraph(symbol, 7);
+    let daysBack = 100; //Vanaf 220 vult hij niet, data vanuit sql is dan null
+    createGraph(crypto.symbol, crypto.cryptoPrice, daysBack);
 }
 
 async function showCryptosForSale(symbol) {
@@ -283,22 +288,26 @@ async function getIdCurrentUser() {
     return userId;
 }
 
-async function createGraph(symbol, daysBack) {
+async function createGraph(symbol, price, daysBack) {
     await getAssetStats(symbol, daysBack)
     var dataPoints1 = [], dataPoints2 = [];
     var stockChart = new CanvasJS.StockChart("contentFeature", {
         animationEnabled: true,
         theme: "light2",
         title: {
-            text: `${symbol} price chart`, //TODO: dit vullen met cryptonaam ipv symbol
-            fontFamily: "Calibri,Optima,Arial,sans-serif"
+            text: 'Price chart',
+            fontSize: 20,
+            fontFamily: "Palatino,Optima,Arial,sans-serif"
         },
+        subtitles: [{
+            text:`Current price: ${price.toLocaleString('en-US', currencyFormat)}`
+        }],
         charts: [{
             toolTip: {
                 shared: true
             },
             axisX: {
-                valueFormatString: "D MMM YYYY"
+                valueFormatString: "D MMM"
             },
             axisY: {
                 prefix: "USD "
@@ -339,9 +348,9 @@ async function createGraph(symbol, daysBack) {
                 range: 7,
                 rangeType: "day"
             }, {
-                label: "1Y",
+                label: "1M",
                 range: 1,
-                rangeType: "year"
+                rangeType: "month"
             }, {
                 label: "All",
                 range: null,
@@ -349,11 +358,9 @@ async function createGraph(symbol, daysBack) {
             }]
         }
     });
-    console.log("Pushmethode runt. 2. Data bestaat uit:")
-    console.log(dataMap)
-    for (let date of Object.keys(dataMap)) {
-        dataPoints1.push({x: new Date(date), y:[Number(dataMap[date].min), Number(dataMap[date].max)]});
-        dataPoints2.push({x: new Date(date), y:Number(dataMap[date].avg)});
+    for (let [key, value] of Object.entries(dataMap)) {
+        dataPoints1.push({x: new Date(key), y:[Number(value.min), Number(value.max)]});
+        dataPoints2.push({x: new Date(key), y:Number(value.avg)});
     }
     stockChart.render();
 }
@@ -366,7 +373,5 @@ async function getAssetStats(symbol, daysBack) {
         .then(res => res.json())
         .then(json => {
             dataMap = json
-            console.log("1. Data opgehaald: ")
-            console.log(dataMap)
         })
 }
