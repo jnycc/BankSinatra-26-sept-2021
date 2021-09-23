@@ -39,6 +39,9 @@ body{
     background: #f5e8ccff;
     text-align: center;
     max-height: 50vh;
+    border-radius: 10px;
+    border-color: #181401FF;
+    border-width: 2px;
 }
 
 .splitscreen .right{
@@ -47,6 +50,9 @@ body{
     background: #f5e8ccff;
     text-align: center;
     max-height: 50vh;
+    border-radius: 10px;
+    border-color: #181401FF;
+    border-width: 2px;
 }
 
 #buyerTable{
