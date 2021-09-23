@@ -139,7 +139,10 @@ function openDetails(asset) {
     $(cryptoName).text(`${asset.crypto.name} (${asset.crypto.symbol})`);
     $(cryptoName).prepend(getCryptoLogo(asset.crypto.symbol))
     $(overlayDetails).empty()
-    $(overlayDetails).append(`<p>${asset.crypto.description}</p>`)
+    $(overlayDetails).append(`<br><h3>What makes ${asset.crypto.name} unique?</h3>`)
+    $(overlayDetails).append(`<br><p>${asset.crypto.description}</p><br>`)
+    $(overlayDetails).append(`<p>Units owned: ${asset.units}</p>`)
+    $(overlayDetails).append(`<p>Value owned: ${asset.currentValue.toLocaleString("en-US", currencyFormat)}</p>`)
     $(cryptoOverlay).show();
     $(contentFeature).css("height", "400px"); // dit in css-bestand regelen?
     $(contentFeature).css("width", "auto");
@@ -155,41 +158,53 @@ async function createGraph(symbol, price, daysBack) {
     var dataPoints1 = [], dataPoints2 = [];
     var stockChart = new CanvasJS.StockChart("contentFeature", {
         animationEnabled: true,
-        theme: "light2",
+        // theme: "light2",
+        backgroundColor: "#022229",
+        // colorSet: "greenShades",
         title: {
             text: `Price chart`,
             fontSize: 20,
-            fontFamily: "Palatino,Optima,Arial,sans-serif"
+            fontFamily: "Palatino,Optima,Arial,sans-serif",
+            fontColor: "#f5e8cc"
         },
         subtitles: [{
-            text:`Current price: ${price.toLocaleString('en-US', currencyFormat)}`
+            text:`Current price: ${price.toLocaleString('en-US', currencyFormat)}`,
+            fontFamily: "Palatino,Optima,Arial,sans-serif",
+            fontColor: "#f5e8cc"
         }],
         charts: [{
             toolTip: {
                 shared: true
             },
             axisX: {
-                valueFormatString: "D MMM"
+                valueFormatString: "D MMM",
+                labelFontColor: "#f5e8cc"
             },
             axisY: {
-                prefix: "USD "
+                prefix: "USD ",
+                labelFontColor: "#f5e8cc"
             },
             data: [{
                 name: "Min-Max",
                 type: "rangeArea",
+                color: "rgb(255,237,203)",
+                markerSize: 0,
                 xValueFormatString: "DD-MM-YYY",
                 yValueFormatString: "$#,###.##",
                 dataPoints: dataPoints1
             }, {
                 name: "Average",
                 type: "line",
+                color: "rgb(189,139,16)",
+                markerSize: 0,
                 yValueFormatString: "$#,###.##",
                 dataPoints: dataPoints2
             }]
         }],
         navigator: {
             data: [{
-                dataPoints: dataPoints2
+                dataPoints: dataPoints2,
+                color: "#61BAADFF"
             }],
             axisX: {
                 labelFontColor: "transparent",
@@ -197,10 +212,24 @@ async function createGraph(symbol, price, daysBack) {
             },
             slider: {
                 minimum: new Date(2020, 0o0),
-                maximum: new Date(2021, 12)
+                maximum: new Date(2021, 12),
+                // backgroundColor: "#f5e8cc"
             }
         },
         rangeSelector: {
+            // backgroundColor: "#f5e8cc",
+            // fontColor: "#f5e8cc",
+            inputFields: {
+                style: {
+                    backgroundColor: "#f5e8cc",
+                    fontColor: "#004C4D"
+                }
+            },
+            buttonStyle: {
+                backgroundColor: "#f5e8cc",
+                labelFontColor: "#004C4D",
+                backgroundColorOnHover: "#004C4D"
+            },
             buttons: [{
                 label: "1D",
                 range: 1,

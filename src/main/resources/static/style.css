@@ -135,11 +135,11 @@ body {
     cursor: pointer;
 }
 
-#cryptoTable {
-    font-family: Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-}
+/*#cryptoTable {*/
+/*    font-family: Arial, Helvetica, sans-serif;*/
+/*    border-collapse: collapse;*/
+/*    width: 100%;*/
+/*}*/
 
 #cryptosForSale td, #cryptosForSale th {
     border: 1px solid #ddd;

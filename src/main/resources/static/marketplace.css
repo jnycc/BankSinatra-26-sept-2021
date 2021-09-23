@@ -16,15 +16,17 @@ body:not(#sidebar){
     margin-right: 5px;
 }
 
-#cryptosForSale a, #cryptoTable a, #orderForm a {
+#cryptosForSale, #cryptoTable, #orderForm {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
-    width: 70%;
+    width: 80%;
 }
 
 #cryptosForSale td, #cryptosForSale th, #cryptoTable, th, td, #orderForm tbody{
     border: 1px solid #ddd;
     padding: 8px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #cryptosForSale tr:nth-child(even){background-color: lightcyan;}
