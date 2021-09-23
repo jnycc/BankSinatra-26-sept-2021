@@ -37,6 +37,7 @@ body{
     margin: 10px;
     background: #f5e8ccff;
     text-align: center;
+    max-height: 50vh;
 }
 
 .splitscreen .right{
@@ -44,16 +45,17 @@ body{
     margin: 10px;
     background: #f5e8ccff;
     text-align: center;
+    max-height: 50vh;
 }
 
 #buyerTable{
-    max-height: 75%;
+    max-height: 100%;
     overflow: hidden;
     overflow-y: scroll;
 }
 
 #sellerTable{
-    max-height: 75%;
+    max-height: 100%;
     overflow: hidden;
     overflow-y: scroll;
 }
