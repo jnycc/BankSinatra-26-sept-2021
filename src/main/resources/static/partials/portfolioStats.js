@@ -1,4 +1,3 @@
-let url = new URL(window.location.href)
 var portMap = null
 var assets = null
 
