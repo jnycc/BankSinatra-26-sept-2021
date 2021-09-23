@@ -1,13 +1,15 @@
 @font-face {font-family: "Paradise";
     src: url("/fonts/Paradise.woff") format('woff');
-    font-weight: normal;
-    font-style: oblique;
+    font-weight: normal;;
 }
 
 @font-face {font-family: "Paradise bold";
     src: url("/fonts/Paradise Bold.woff") format('woff');
     font-weight: normal;
-    font-style: oblique;
+}
+@font-face {font-family: "Sinatra";
+    src: url("/fonts/Sinatra.woff") format('woff');
+    font-weight: normal;
 }
 
 body{
@@ -19,7 +21,7 @@ header{
     padding: 10px;
     color: #f5e8ccff;
     font-size: 50px;
-    font-family: "Palatino Linotype", monospace;
+    font-family: Paradise,"Palatino Linotype", monospace;
     /*align-content: center;*/
     /*align-items: center;*/
     /*align-self: center;*/
@@ -101,10 +103,9 @@ header{
 .dashboard-info .left{
     font-size: 22px;
     text-align-all: left;
-    left: 70px;
     right: 70px;
-    flex: 35%;
-    padding: 0px 0px 0px 30%;
+    flex: 25%;
+    padding: 0px 0px 0px 25%;
 }
 
 .dashboard-info .middle{

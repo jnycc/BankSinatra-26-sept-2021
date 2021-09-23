@@ -66,7 +66,7 @@ public class DashboardController {
 //        return totalValue;
 //    }
 
-    @GetMapping("/portfolio/PercentageIncrease")
+    @GetMapping("/portfolio/percentageIncrease")
     public Double getPercentageIncrease(@RequestHeader("Authorization") String token){
         int ID = TokenService.getValidUserID(token);
         try {
