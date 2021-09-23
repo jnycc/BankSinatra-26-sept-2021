@@ -56,15 +56,18 @@ function setupPageWithCryptos() {
                 cryptoTable.appendChild(row)
                 $(row).append(`<td>${i++}</td>`)
                 for (let key of Object.keys(obj)) {
-                    const cell = document.createElement('td')
-                    if (key === 'name') {
-                        cell.append(getCryptoLogo(obj.symbol), obj[key])
-                    } else if (key === 'cryptoPrice'){
-                        cell.innerHTML = obj.cryptoPrice.toLocaleString("en-US", currencyFormat);
+                    if (key === 'description'){
                     } else {
-                        cell.innerHTML = obj[key]
+                        const cell = document.createElement('td')
+                        if (key === 'name') {
+                            cell.append(getCryptoLogo(obj.symbol), obj[key])
+                        } else if (key === 'cryptoPrice'){
+                            cell.innerHTML = obj.cryptoPrice.toLocaleString("en-US", currencyFormat);
+                        }  else {
+                            cell.innerHTML = obj[key]
+                        }
+                        row.append(cell)
                     }
-                    row.append(cell)
                 }
                 const dateCell = document.createElement('td')
                 dateCell.innerHTML = new Date(JSON.parse(date)).toLocaleString()
