@@ -25,8 +25,7 @@ table, th, td {
 }
 
 tr:hover{
-    /*background-color: rgba(245, 232, 204, 0.6);*/
-    background-color: teal;
+    background-color: rgba(245, 232, 204, 0.6);
 }
 
 .cryptoLogo {
