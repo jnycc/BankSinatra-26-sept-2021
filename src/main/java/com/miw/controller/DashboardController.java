@@ -5,6 +5,7 @@ import com.miw.database.JdbcAccountDao;
 import com.miw.database.JdbcAssetDao;
 import com.miw.database.RootRepository;
 import com.miw.model.Client;
+import com.miw.service.StatisticsService;
 import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,14 +24,16 @@ public class DashboardController {
     private JdbcAccountDao jdbcAccountDao;
     private JdbcAssetDao jdbcAssetDao;
     private RootRepository rootRepository;
+    private StatisticsService statisticsService;
 
     @Autowired
-    public DashboardController(TokenService tokenService, JdbcAccountDao jdbcAccountDao, JdbcAssetDao jdbcAssetDao, RootRepository rootRepository) {
+    public DashboardController(StatisticsService statisticsService, TokenService tokenService, JdbcAccountDao jdbcAccountDao, JdbcAssetDao jdbcAssetDao, RootRepository rootRepository) {
         super();
         this.tokenService = tokenService;
         this.jdbcAccountDao = jdbcAccountDao;
         this.jdbcAssetDao = jdbcAssetDao;
         this.rootRepository = rootRepository;
+        this.statisticsService = statisticsService;
         logger.info("New DashboardController created");
     }
 
@@ -71,6 +74,16 @@ public class DashboardController {
         } else {
             String name = rootRepository.getFirstNameById(userId);
             return new ResponseEntity<>(name, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/portfolio/PercentageIncrease")
+    public double getPercentageIncrease(@RequestHeader("Authorization") String token){
+        int ID = TokenService.getValidUserID(token);
+        try {
+            return statisticsService.getPercentageIncrease(ID,1); //TODO: Magic number!
+        } catch (NullPointerException fault) {
+            return 0.00;
         }
     }
 
