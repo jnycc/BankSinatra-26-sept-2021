@@ -3,6 +3,7 @@ package com.miw.controller;
  * @Author: Nijad Nazarli
  * @Description: This controller enables users to Login to their account
  */
+
 import com.google.gson.Gson;
 import com.miw.model.Credentials;
 import com.miw.service.authentication.AuthenticationService;
@@ -13,10 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 @RestController
 public class LoginController {

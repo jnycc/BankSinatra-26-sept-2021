@@ -2,7 +2,6 @@ package com.miw.model;
 
 import org.iban4j.CountryCode;
 import org.iban4j.Iban;
-
 import java.util.Objects;
 
 public class Account {

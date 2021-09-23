@@ -1,6 +1,5 @@
 package com.miw.service.authentication;
-import com.miw.database.JdbcAdminDao;
-import com.miw.database.JdbcClientDao;
+
 import com.miw.database.JdbcTokenDao;
 import com.miw.database.JdbcUserDao;
 import io.jsonwebtoken.*;
@@ -15,7 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 
 @Service
 public class TokenService {
@@ -68,7 +66,6 @@ public class TokenService {
                 .parseClaimsJws(jwt).getBody();
     }
 
-    // TODO: check if blocked
     public static boolean validateJWT(String jwt) {
         int userID = Integer.valueOf(decodeJWT(jwt).getSubject());
         if (jdbcUserDao.checkIfBlockedByID(userID)){
@@ -128,14 +125,4 @@ public class TokenService {
             return false;
         }
     }
-
-    //TODO: implement refreshtoken?
-    public String generateRefreshToken() {
-        return UUID.randomUUID().toString();
-    }
-
-    public boolean validateRefreshToken(String token) {
-        return jdbcTokenDao.retrieveToken(token) != null;
-    }
-
 } // end of main

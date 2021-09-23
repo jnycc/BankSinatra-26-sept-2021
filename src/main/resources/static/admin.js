@@ -1,3 +1,9 @@
+/*
+ *  @Author elbertvw
+ *  This file contains various JS functions necessary for the functioning of the admin dashboard (/admin.html).
+ *  Validation is handled by /partials/validateAdmin.js !
+ */
+
 // PAGE SETUP
 let url = new URL(window.location.href);
 
