@@ -27,7 +27,7 @@ async function getAccount(){
                     let iban = it[key]
                     $("#iban").append(iban);
                 } else if (key === "balance") {
-                    $("#balance").append(it[key])
+                    $("#balance").append(it[key].toFixed(2))
                 }
             }
         })
