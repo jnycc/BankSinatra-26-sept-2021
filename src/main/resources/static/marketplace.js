@@ -207,12 +207,11 @@ async function fillTable() {
         var seller = $(this).attr("id");
         var accountId = seller.substring(6);
         if (showOrderIsFilled) {
-            $(cryptoBuy).empty();
             $(cryptoBuy).hide();
+            isOrderFormEmpty = true;
             showOrderIsFilled = false;
         }
         await showOrder(accountId);
-        showOrderIsFilled = true;
     })
 }
 
