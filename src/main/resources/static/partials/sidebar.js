@@ -1,10 +1,11 @@
-let firstName
+let firstName;
 window.addEventListener("DOMContentLoaded", setupSidebar)
 
 async function setupSidebar(){
     await getFirstName()
     let boldName = firstName.bold()
     $("#intro").append(boldName);
+    console.log(firstName)
 }
 
 async function getFirstName(){

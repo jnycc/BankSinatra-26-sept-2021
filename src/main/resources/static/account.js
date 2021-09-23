@@ -26,8 +26,6 @@ async function getAccount(){
                 if (key === "iban") {
                     let iban = it[key]
                     $("#iban").append(iban);
-                } else if (key === "accountId") {
-                    $("#name").append(await getName(it[key]))
                 } else if (key === "balance") {
                     $("#balance").append(it[key])
                 }
