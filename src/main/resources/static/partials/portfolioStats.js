@@ -1,3 +1,4 @@
+let url = new URL(window.location.href)
 var portMap = null
 var assets = null
 
@@ -9,7 +10,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 })
 
 async function getPortfolioStats(){
-    await fetch(`http://localhost:8080/portfolioStats`, {
+    await fetch(`${url.origin}/portfolioStats`, {
         method: 'GET',
         headers: { "Authorization": `${localStorage.getItem('token')}`}
     })
@@ -87,7 +88,7 @@ function createPortGraph() {
 }// end
 
 async function getAssetData(){
-    await fetch(`http://localhost:8080//portfolio/assets`, {
+    await fetch(`${url.origin}/portfolio/assets`, {
         method: 'GET',
         headers: { "Authorization": `${localStorage.getItem('token')}`}
     })
