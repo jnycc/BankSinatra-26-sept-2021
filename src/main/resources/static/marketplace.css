@@ -20,18 +20,24 @@ body:not(#sidebar){
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 80%;
+    background-color: #f5e8ccff;
+    border-radius: 10px;
 }
 
 #cryptosForSale td, #cryptosForSale th, #cryptoTable, th, td, #orderForm tbody{
-    border: 1px solid #ddd;
+    /*border: 1px solid #ddd;*/
     padding: 8px;
     margin-left: auto;
     margin-right: auto;
 }
 
+#cryptoSymbol {
+    color: #f5e8ccff;
+}
+
 #cryptosForSale tr:nth-child(even){background-color: lightcyan;}
 
-#cryptoTable tr:nth-child(even){background-color: lightcyan;}
+/*#cryptoTable tr:nth-child(even){background-color: lightcyan;}*/
 
 #orderForm tr:nth-child(even){background-color: lightcyan;}
 
@@ -39,7 +45,7 @@ body:not(#sidebar){
 
 #orderForm tr:nth-child(even):hover{background-color: teal;}
 
-#cryptoTable tr:nth-child(even):hover{background-color: teal;}
+#cryptoTable tr:hover{background-color: teal;}
 
 #cryptosForSale tr:hover {background-color: #ddd;}
 
@@ -47,7 +53,7 @@ body:not(#sidebar){
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
-    background-color: #001d23;
+    background-color: teal;
     color: white;
 }
 
