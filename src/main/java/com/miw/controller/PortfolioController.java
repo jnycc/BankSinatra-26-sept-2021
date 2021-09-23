@@ -56,7 +56,7 @@ public class PortfolioController {
         return ResponseEntity.ok(portfolio);
     }
 
-    @GetMapping("/portfolio/totalValue")
+    @GetMapping("/portfolio/totalPortfolioValue")
     public ResponseEntity<?> getCurrentPortfolioValue(@RequestHeader("Authorization") String token) {
         int userId = TokenService.getValidUserID(token);
         if (userId == 0) {
@@ -64,6 +64,7 @@ public class PortfolioController {
         }
         int accountId = portfolioService.getAccountIdByUserId(userId);
         double totalPortfolioValue = portfolioService.getTotalPortfolioValue(accountId);
+        System.out.println(totalPortfolioValue);
         return ResponseEntity.ok(totalPortfolioValue);
     }
 

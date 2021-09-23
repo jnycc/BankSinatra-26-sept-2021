@@ -55,8 +55,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function getBalance() {
     fetch(`/getBalance`, {
-        method: 'POST',
-        body: localStorage.getItem('token')
+        method: 'GET',
+        headers: {'Authorization': localStorage.getItem('token')}
     })
         .then(res => res.text())
         .then(it => {

@@ -26,7 +26,7 @@
 
     <div class="dashboard-container">
         <div id="FS1"> Buy Buy Buy! </div>
-        <div id="FS2"> News </div>
+        <div id="FS2"> Fake news! </div>
         <div id="FS3"> Why we are a great bank! </div>
     </div>
 
@@ -35,22 +35,31 @@
     </header>
 
     <div class="dashboard-body">
+        <div class="dashboard-info">
+            <div class="left">
+                <div id="current portfolioValue"> Current portfolio value: </div>
+                <div id="current balance"> Current balance: </div>
+            </div>
+
+
+            <div class="middle">
+                <div id="portfolioValue"> no portfolio data available.</div>
+                <div id="balanceValue"> no balance available. </div>
+            </div>
+
+            <div class="right">
+                <div id="percentage"></div>
+            </div>
+
+        </div>
+
+
         <div id="tables" class="splitscreen">
             <div class="left">
-                <div class="dashboard-info">
-                    <h3 id="current balance"> Current balance: $ </h3>
-                    <br>
-                    <h3 id="balanceValue"> $0.0 </h3>
-                </div>
                 <div id="chartContainer"></div>
             </div>
             <div class="right">
                 <div>
-                    <div class="dashboard-info">
-                        <h3 id="current portfolioValue"> Current portfolio value: $ </h3>
-                        <br>
-                        <h3 id="portfolioValue"> no portfolio data available.</h3>
-                    </div>
                     <div id="piechartContainer" style="left: 50px; top: 50px; height: 350px; width: 450px; alignment: left"></div>
                 </div>
             </div>

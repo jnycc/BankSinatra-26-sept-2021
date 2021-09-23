@@ -44,7 +44,7 @@ header{
     border-width: 2px;
     align-items: center;
     margin: 10px;
-    width: 28%;
+    width: 25%;
     color: #fff3e2;
     font-size: 60px;
     font-family:"Palatino Linotype", monospace;
@@ -72,16 +72,18 @@ header{
 
 .dashboard-body{
     margin-left: 200px;
+    font-size: 22px;
 }
 
 .dashboard-info{
     display: flex;
-    margin: 20px 20px 20px 20px;
+    margin: 20px 40px 20px 40px;
     width: 90%;
     align-content: center;
     justify-content: center;
     color: #f5e8ccff;
-    text-align-all: left;
+    text-align-all: center;
+    font-size: 22px;
 
 
     /*padding-top: 20px;*/
@@ -94,15 +96,41 @@ header{
     /*color: #f5e8ccff;*/
 }
 
-.dashboard-info h1{
-    font-size: 50px;
+.dashboard-info .left{
+    font-size: 22px;
+    text-align-all: left;
+    left: 70px;
+    right: 70px;
+    flex: 35%;
+    padding: 0px 0px 0px 30%;
 }
+
+.dashboard-info .middle{
+    font-size: 22px;
+    text-align-all: left;
+    left: 70px;
+    right: 0px;
+    flex: 35px;
+}
+
+.dashboard-info .right{
+    font-size: 22px;
+    text-align-all: left;
+    left: 0px;
+    right: 0px;
+    flex: 1px;
+    width: 1px;
+    color: #517b75;
+}
+
 
 .dashboard-info h3{
     font-size: 20px;
     text-align-all: left;
 
 }
+
+
 
 .splitscreen{
     display: flex;

@@ -30,6 +30,7 @@ body{
     display: flex;
     color: #012128ff;
     font-family: "Palatino Linotype", monospace;
+    border-radius: 10px;
 }
 
 .splitscreen .left{
@@ -37,6 +38,7 @@ body{
     margin: 10px;
     background: #f5e8ccff;
     text-align: center;
+
 }
 
 .splitscreen .right{
@@ -44,6 +46,7 @@ body{
     margin: 10px;
     background: #f5e8ccff;
     text-align: center;
+
 }
 
 #buyerTable{

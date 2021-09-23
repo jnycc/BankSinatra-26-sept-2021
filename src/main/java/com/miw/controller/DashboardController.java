@@ -39,8 +39,8 @@ public class DashboardController {
 
     //TODO: waarom komt token niet binnen???
     //TODO: dit moet een GetMapping worden. Data wordt ge-get, resource op server wordt niet aangepast.
-    @PostMapping("/getBalance")
-    public double getBalance(@RequestBody String token) {
+    @GetMapping("/getBalance")
+    public double getBalance(@RequestHeader("Authorization") String token) {
         int ID = TokenService.getValidUserID(token);
         try {
             //double balance = jdbcAccountDao.getAccountByUserID(ID).getBalance() +9.78204;
@@ -77,13 +77,13 @@ public class DashboardController {
         }
     }
 
-    @GetMapping("/portfolio/PercentageIncrease")
-    public double getPercentageIncrease(@RequestHeader("Authorization") String token){
+    @GetMapping("/portfolio/percentageIncrease")
+    public Double getPercentageIncrease(@RequestHeader("Authorization") String token){
         int ID = TokenService.getValidUserID(token);
         try {
             return statisticsService.getPercentageIncrease(ID,1); //TODO: Magic number!
-        } catch (NullPointerException fault) {
-            return 0.00;
+        } catch (NullPointerException empty) {
+            return null;
         }
     }
 

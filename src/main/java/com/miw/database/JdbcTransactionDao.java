@@ -137,20 +137,20 @@ public class JdbcTransactionDao {
     // daysBack =
     // vandaag = 0, gisteren = 1, eergisteren = 2 etc.
     public double getPortfolioValueByDate(int userID, int daysBack) {
-        String sql = "SELECT coalesce(SUM(ROUND((cryptoprice * tr.totalUnits), 2)),0) portfolioValue \n" +
+        String sql = "SELECT SUM(ROUND((cryptoPrice * tr.totalUnits), 2)) portfolioValue \n" +
                 "FROM \n" +
-                "(SELECT symbol, date(dateRetrieved), cryptoprice \n" +
-                "FROM cryptoprice WHERE dateRetrieved = \n" +
+                "(SELECT symbol, date(dateRetrieved), cryptoPrice \n" +
+                "FROM CryptoPrice WHERE dateRetrieved = \n" +
                 "(SELECT max(dateRetrieved) \n" +
-                "FROM cryptoprice WHERE dateRetrieved \n" +
-                "BETWEEN timestamp(curdate() -?) AND timestamp(curdate() +(1-?)))) cr -- ? ? vandaag = -0, +1, gisteren = -1, +0, eergisteren = -2, +-1 etc\n" +
+                "FROM CryptoPrice WHERE dateRetrieved \n" +
+                "BETWEEN timestamp(curdate() -?) AND timestamp(curdate() +(1-?)))) cr -- ? ? vandaag = 0, 1, gisteren = -1, 0, eergisteren = -2, -1 etc\n" +
                 "JOIN \n" +
-                "(SELECT sold.symbol, bought.units-sold.units totalUnits \n" +
+                "(SELECT bought.symbol, ifnull(bought.units-sold.units, bought.units) totalUnits\n" +
                 "FROM (SELECT SUM(units) units, accountID_buyer, symbol, date \n" +
                 "FROM transaction\n" +
                 "WHERE accountID_buyer = ? -- ? = userID\n" +
                 "AND date < timestamp(curdate()+(1-?)) GROUP BY symbol) bought -- vandaag = 1, gisteren = 0, eergisteren = -1\n" +
-                "JOIN \n" +
+                "LEFT JOIN \n" +
                 "(SELECT SUM(units) units, accountID_seller, symbol, date FROM transaction\n" +
                 "WHERE accountID_seller = ? -- ? = userID\n" +
                 "AND date < timestamp(curdate()+(1-?)) GROUP BY symbol) sold -- vandaag = 1, gisteren = 0, eergisteren = -1\n" +
