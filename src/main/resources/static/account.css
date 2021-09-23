@@ -30,6 +30,7 @@ body{
     display: flex;
     color: #012128ff;
     font-family: "Palatino Linotype", monospace;
+    border-radius: 10px;
 }
 
 .splitscreen .left{

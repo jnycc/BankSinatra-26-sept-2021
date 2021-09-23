@@ -40,7 +40,7 @@ public class StatisticsService {
     public double getPercentageIncrease(int userID, int daysBack){
         double pastVal = jdbcTransactionDao.getPortfolioValueByDate(userID, daysBack);
         double currentVal = portfolioService.getTotalPortfolioValue(userID);
-        return Math.round((pastVal/currentVal)*10000)/100;
+        return ((currentVal/pastVal)*100)-100;
     }
 
     //TODO: portfolio waarde tenopzichte van vorige dag/week/maand

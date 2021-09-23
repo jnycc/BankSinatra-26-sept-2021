@@ -46,7 +46,7 @@ function createPortGraph() {
             valueFormatString: "#,###.##",
             // suffix: ".-",
             prefix: "$",
-            labelFontColor: "rgb(24,20,1)",
+            labelFontColor: "rgb(171,160,132)",
             labelFontFamily: "tahoma",
             labelFontSize: 12,
             gridColor: "rgb(24,20,1)",
@@ -58,7 +58,7 @@ function createPortGraph() {
             labelAngle: -60,
             interval: 1,
             intervalType: "week",
-            labelFontColor: "rgb(24,20,1)",
+            labelFontColor: "rgb(171,160,132)",
             labelFontFamily: "tahoma",
             labelFontSize: 12,
             tickLength: 0,
@@ -108,8 +108,11 @@ function createPieChart(){
             "#FFA50099",
             "#517b75",
             "#f5e8cc",
+            "#654d19",
             "#f5b512",
+            "#92bbb7",
             "#181401",
+
 
         ]);
     var chart = new CanvasJS.Chart("piechartContainer", {
@@ -125,7 +128,7 @@ function createPieChart(){
         // },
         toolTip: {
             fontFamily: "tahoma",
-            fontColor: "rgb(24,20,1)",
+            fontColor: "rgb(0,0,0)",
             cornerRadius: 30,
             borderColor: "rgb(81,123,117)",
             backgroundColor: "rgb(81,123,117, .6)",
@@ -148,7 +151,7 @@ function createPieChart(){
             itemclick: explodePie,
             // showInLegend: true,
             indexLabelFontSize: 14,
-            indexLabelFontColor: "rgb(24,20,1)",
+            indexLabelFontColor: "rgb(171,160,132)",
             indexLabelFontFamily: "tahoma",
             startAngle: 240,
             yValueFormatString: "##0.00\"%\"",
@@ -161,7 +164,7 @@ function createPieChart(){
     for (let i = 0; i < assets.length; i++) {
         assetDataPoints.push({
             name: assets[i].crypto.name,
-            y: Number(assets[i].crypto.cryptoPrice)
+            y: Number(assets[i].currentValue).toFixed(2)
         })
     }
 

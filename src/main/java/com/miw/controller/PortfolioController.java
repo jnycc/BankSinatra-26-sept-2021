@@ -64,6 +64,7 @@ public class PortfolioController {
         }
         int accountId = portfolioService.getAccountIdByUserId(userId);
         double totalPortfolioValue = portfolioService.getTotalPortfolioValue(accountId);
+        System.out.println(totalPortfolioValue);
         return ResponseEntity.ok(totalPortfolioValue);
     }
 

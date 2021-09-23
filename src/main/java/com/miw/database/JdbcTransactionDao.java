@@ -143,14 +143,14 @@ public class JdbcTransactionDao {
                 "FROM CryptoPrice WHERE dateRetrieved = \n" +
                 "(SELECT max(dateRetrieved) \n" +
                 "FROM CryptoPrice WHERE dateRetrieved \n" +
-                "BETWEEN timestamp(curdate() -?) AND timestamp(curdate() +(1-?)))) cr -- ? ? vandaag = -0, +1, gisteren = -1, +0, eergisteren = -2, +-1 etc\n" +
+                "BETWEEN timestamp(curdate() -?) AND timestamp(curdate() +(1-?)))) cr -- ? ? vandaag = 0, 1, gisteren = -1, 0, eergisteren = -2, -1 etc\n" +
                 "JOIN \n" +
-                "(SELECT sold.symbol, bought.units-sold.units totalUnits \n" +
+                "(SELECT bought.symbol, ifnull(bought.units-sold.units, bought.units) totalUnits\n" +
                 "FROM (SELECT SUM(units) units, accountID_buyer, symbol, date \n" +
                 "FROM Transaction\n" +
                 "WHERE accountID_buyer = ? -- ? = userID\n" +
                 "AND date < timestamp(curdate()+(1-?)) GROUP BY symbol) bought -- vandaag = 1, gisteren = 0, eergisteren = -1\n" +
-                "JOIN \n" +
+                "LEFT JOIN \n" +
                 "(SELECT SUM(units) units, accountID_seller, symbol, date FROM Transaction\n" +
                 "WHERE accountID_seller = ? -- ? = userID\n" +
                 "AND date < timestamp(curdate()+(1-?)) GROUP BY symbol) sold -- vandaag = 1, gisteren = 0, eergisteren = -1\n" +
