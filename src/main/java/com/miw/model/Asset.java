@@ -1,5 +1,6 @@
 package com.miw.model;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -97,4 +98,14 @@ public class Asset {
                 ", salePrice=" + salePrice +
                 '}';
     }
+
+
+    public static class CurrentValueComparator implements Comparator<Asset> {
+        //Sorteren op assetwaarde van groot naar klein
+        @Override
+        public int compare(Asset o1, Asset o2) {
+            return (int) (o2.getCurrentValue() - o1.getCurrentValue());
+        }
+    }
+
 }
