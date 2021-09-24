@@ -34,7 +34,7 @@ INSERT INTO User (email, password, salt, userRole, isBlocked, firstName, prefix,
 VALUES ('klant5@klant.nl', 'db0e29a20d16e4f6394fa7eb5dffdb5e29facb23a99b68597486d422d0bc823c', '61de76563dbdac64215a932e2ecef23c', 'client', '0', 'Mieke', '', 'Heemskerk', 'Nijenheim', '97', '', '3704TH', 'Hilversum', '218217754', '1986-12-02');
 INSERT INTO Account (accountID, IBAN, balance, userID) VALUES ('5', 'NL65BSIN5827895780', '10000.00', '5');
 INSERT INTO User (email, password, salt, userRole, isBlocked, firstName, prefix, lastName, street, houseNumber, houseNumberExtension, zipCode, city, bsn, dateOfBirth)
-VALUES ('admin@banksinatra.nl', 'e43534598dbe58ccb1fff0ded11be408690876526a3e42dfa973fed07aee3863', 'fa32ca55a9e8e1d893457e58db12cf42', 'admin', '0', 'Frank', '', 'Sinatra', '', 0, '', '', '', 0, 0);
+VALUES ('admin@banksinatra.nl', 'e43534598dbe58ccb1fff0ded11be408690876526a3e42dfa973fed07aee3863', 'fa32ca55a9e8e1d893457e58db12cf42', 'admin', '0', 'Frank', '', 'Sinatra', '', 0, '', '', '', 0, null);
 
 
 INSERT INTO `Asset` VALUES (1,'ADA',3617.10729350, 3617.10729350, 0),(1,'BCH',3237.97825746, 3237.97825746, 0),(1,'BNB',4446.80050983, 4446.80050983, 0),

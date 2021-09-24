@@ -45,7 +45,9 @@ public class PortfolioService {
     }
 
     public List<Asset> getAssets(int accountId) {
-        return rootRepository.getAssets(accountId);
+        List<Asset> assetList = rootRepository.getAssets(accountId);
+        assetList.sort(new Asset.CurrentValueComparator()); //Sorteer assets van groot naar klein o.b.v. asset's currentValue
+        return assetList;
     }
 
     /**
@@ -155,5 +157,9 @@ public class PortfolioService {
         } else {
             return deltaValuePct;
         }
+    }
+
+    public double getAssetDeltaPct(int accountId, String symbol, LocalDateTime dateTime) {
+        return rootRepository.getAssetDeltaPct(accountId, symbol, dateTime);
     }
 }

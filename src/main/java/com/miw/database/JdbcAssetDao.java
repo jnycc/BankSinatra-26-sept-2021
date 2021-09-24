@@ -166,6 +166,22 @@ public class JdbcAssetDao {
         }
     }
 
+    public double getAssetDeltaPct(int accountId, String symbol, LocalDateTime dateTime) {
+        String sql = "SELECT ROUND(((q1.currentValue - q2.pastValue)/q2.pastValue * 100), 2) AS deltaPct " +
+                "FROM " +
+                "(SELECT c.symbol, (a.units * c.cryptoPrice) currentValue " +
+                "FROM CryptoPrice c JOIN Asset a ON c.symbol = a.symbol " +
+                "WHERE c.symbol = ? AND accountID = ? " +
+                "ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, CURRENT_TIMESTAMP)) LIMIT 1) AS q1 " +
+                "JOIN " +
+                "(SELECT c.symbol, (a.units * c.cryptoPrice) pastValue " +
+                "FROM CryptoPrice c JOIN Asset a ON c.symbol = a.symbol " +
+                "WHERE c.symbol = ? AND accountID = ? " +
+                "ORDER BY ABS(TIMESTAMPDIFF(second, dateRetrieved, ?)) LIMIT 1) AS q2 " +
+                "ON q1.symbol = q2.symbol;";
+        return jdbcTemplate.queryForObject(sql, Double.class, symbol, accountId, symbol, accountId, dateTime);
+    }
+
     private static class AssetRowMapper implements RowMapper<Asset> {
 
         @Override

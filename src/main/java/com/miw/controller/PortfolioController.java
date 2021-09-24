@@ -15,6 +15,7 @@ import com.miw.service.authentication.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,7 +65,6 @@ public class PortfolioController {
         }
         int accountId = portfolioService.getAccountIdByUserId(userId);
         double totalPortfolioValue = portfolioService.getTotalPortfolioValue(accountId);
-        System.out.println(totalPortfolioValue);
         return ResponseEntity.ok(totalPortfolioValue);
     }
 
@@ -77,6 +77,20 @@ public class PortfolioController {
         int accountId = portfolioService.getAccountIdByUserId(userId);
         List<Asset> assetList= portfolioService.getAssets(accountId);
         return ResponseEntity.ok(assetList);
+    }
+
+    @GetMapping("/portfolio/assetDeltaPct")
+    public ResponseEntity<?> getAssetDeltaPct(@RequestHeader("Authorization") String token,
+                                                @RequestHeader("Symbol") String symbol,
+                                                @RequestHeader("DateTime")
+                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime) {
+        int userId = TokenService.getValidUserID(token);
+        if (userId == 0) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        int accountId = portfolioService.getAccountIdByUserId(userId);
+        double assetDeltaPct = portfolioService.getAssetDeltaPct(accountId, symbol, dateTime);
+        return ResponseEntity.ok(assetDeltaPct);
     }
 
     @PutMapping("/marketAsset")

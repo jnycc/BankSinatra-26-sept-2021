@@ -219,4 +219,8 @@ public class RootRepository {
     public Map<Double, Double> getUnitsForSaleWithPrice (String symbol, int accountId) {
         return jdbcAssetDao.getUnitsForSaleAndPrice(symbol, accountId);
     }
+
+    public double getAssetDeltaPct(int accountId, String symbol, LocalDateTime dateTime) {
+        return jdbcAssetDao.getAssetDeltaPct(accountId, symbol, dateTime);
+    }
 }
