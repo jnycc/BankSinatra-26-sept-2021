@@ -27,7 +27,7 @@ const currencyFormat = {style: "currency", currency: "USD", minimumFractionDigit
 
 //Create table with header row
 const assetTable = document.getElementById('assetTable')
-$(assetTable).append("<tr><th>Crypto</th> <th>Symbol</th> <th>Units</th> <th>Price</th> <th>Value</th></tr>")
+$(assetTable).append("<tr><th>Crypto</th> <th>Symbol</th> <th>Units</th> <th>Price</th> <th>Value</th> <th>24h %</th></tr>")
 
 //Modal - overlay with crypto statistics
 const cryptoOverlay = document.getElementById('cryptoOverlay')
@@ -85,7 +85,7 @@ function getAssets() {
         headers: {'Authorization': localStorage.getItem('token')}
     })
         .then(res => res.json())
-        .then(json => {
+        .then(async json => {
             console.log(json)
             let nrOfCells = assetTable.rows[0].cells.length
             //For every asset, create a row
@@ -102,29 +102,28 @@ function getAssets() {
                 cells[0].append(getCryptoLogo(asset.crypto.symbol), asset.crypto.name)
                 cells[1].innerHTML = asset.crypto.symbol
                 cells[2].innerHTML = asset.units.toLocaleString("en-US", {style: 'decimal', minimumFractionDigits: 2})
-                cells[3].innerText = asset.crypto.cryptoPrice.toLocaleString('en-US',currencyFormat)
+                cells[3].innerText = asset.crypto.cryptoPrice.toLocaleString('en-US', currencyFormat)
                 cells[4].innerHTML = asset.currentValue.toLocaleString('en-US', currencyFormat)
+                let yesterday = new Date()
+                yesterday.setDate(yesterday.getDate() - 1)
+                let delta = await getAssetValueDeltas(asset.crypto.symbol, yesterday).then(value => value.text()) + "%"
+                console.log(delta)
+                cells[5].innerHTML = delta
                 cells.forEach(cell => row.appendChild(cell))
             }
         })
 }
 
-function setAssetValueDeltas() {
-    fetch('/assetValueDeltas', {
+function getAssetValueDeltas(symbol, pastDateTime) {
+    return fetch('/portfolio/assetDeltaPct', {
         method: 'GET',
         headers: {
             'Authorization': localStorage.getItem('token'),
-            'dateTime': date.toISOString(),
+            'Symbol': symbol,
+            'DateTime': pastDateTime.toISOString(),
             'Content-Type': 'application/json'
         }
     })
-        .then(res => res.json())
-        .then(json => {
-            //TODO:
-            // uit sql map van "symbol: delta" krijgen.
-            // historische units x historische prijs voor een bepaalde dateTime, voor alle cryptos
-        })
-
 }
 
 function getCryptoLogo(symbol) {
