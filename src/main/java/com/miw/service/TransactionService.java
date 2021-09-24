@@ -139,4 +139,8 @@ public class TransactionService {
     public List<Transaction> getTransactionsSeller(int userId){
         return rootRepository.getTransactionsByUserIdSeller(userId);
     }
+
+    public Account getAccountByUserId (int userId) {
+        return rootRepository.getAccountByUserId(userId);
+    }
 }

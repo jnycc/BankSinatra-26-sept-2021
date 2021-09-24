@@ -15,7 +15,7 @@ const cryptoName = $("#cryptoName");
 const closeCryptoOverlayBtn = document.querySelector(".closeCryptoOverlay");
 const overlayDetails = document.getElementById('overlayDetails')
 let unitsToBuy;
-let buyerId;
+let buyerAccountId;
 let purchasePrice;
 let cryptoChosen;
 let date;
@@ -263,9 +263,9 @@ function updateTotalPrice() {
 }
 
 async function carryOutTransaction() {
-    buyerId = await getIdCurrentUser();
+    buyerAccountId = await getAccountIdCurrentUser();
     let payload = {
-        buyer: parseInt(buyerId),
+        buyer: parseInt(buyerAccountId),
         seller : parseInt($(purchase).attr('buyerId')),
         crypto: {
             symbol: cryptoSymbol.textContent
@@ -290,20 +290,21 @@ async function carryOutTransaction() {
     })
 }
 
-async function getIdCurrentUser() {
-    let userId;
+async function getAccountIdCurrentUser() {
+    let accountId;
     await fetch(
-        `${url.origin}/getUserId`, {
-            method: 'POST',
+        `${url.origin}/getAccount`, {
+            method: 'GET',
             headers: { "Authorization": `${localStorage.getItem('token')}`}
         }).then(res => {
         if (res.status === 200) {
-            return res.text().then(it => { userId = it;})
+            return res.json().then(it => { accountId = it["accountId"];})
         } else {
             alert("Not a valid token anymore");
         }
     })
-    return userId;
+    return accountId;
+
 }
 
 async function createGraph(symbol, price, daysBack) {

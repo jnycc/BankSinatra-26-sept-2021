@@ -42,8 +42,9 @@ public class TransactionController {
 
         Transaction transaction = gson.fromJson(transactionAsJson, Transaction.class);
         int userId = TokenService.getValidUserID(token);
+        int accountId = transactionService.getAccountByUserId(userId).getAccountId();
 
-        if(!authorizedTransaction(userId, transaction)){
+        if(!authorizedTransaction(accountId, transaction)){
             return new ResponseEntity<>("You are not authorized to purchase assets for another client," +
                     " stop it", HttpStatus.UNAUTHORIZED);
         }
