@@ -132,7 +132,7 @@ public class JdbcTransactionDao {
     // Returns total portfolio value of 1 day,
     // daysBack =
     // vandaag = 0, gisteren = 1, eergisteren = 2 etc.
-    public double getPortfolioValueByDate(int userID, int daysBack) {
+    public double getPortfolioValueByDate(int accountID, int daysBack) {
         String sql = "SELECT coalesce(SUM(ROUND((cryptoPrice * tr.totalUnits), 2)),0) portfolioValue " +
                 "FROM " +
                 "(SELECT symbol, date(dateRetrieved), cryptoPrice " +
@@ -146,14 +146,14 @@ public class JdbcTransactionDao {
                 "FROM Transaction " +
                 "WHERE accountID_buyer = ? " +
                 "AND date < timestamp(curdate()+(1-?)) GROUP BY symbol) bought " +
-                "LEFT JOIN \n" +
+                "LEFT JOIN " +
                 "(SELECT SUM(units) units, accountID_seller, symbol FROM Transaction " +
                 "WHERE accountID_seller = ? " +
                 "AND date < timestamp(curdate()+(1-?)) GROUP BY symbol) sold " +
                 "ON bought.symbol = sold.symbol) tr " +
                 "ON cr.symbol = tr.symbol;";
         try {
-            return jdbcTemplate.queryForObject(sql, Double.class, daysBack, daysBack, userID, daysBack, userID, daysBack);
+            return jdbcTemplate.queryForObject(sql, Double.class, daysBack, daysBack, accountID, daysBack, accountID, daysBack);
         } catch (NullPointerException e) {
             return 0.0;
         }
