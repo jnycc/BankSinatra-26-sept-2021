@@ -36,6 +36,8 @@ class LoginControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private AuthenticationService authenticationService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     public LoginControllerTest(MockMvc mockMvc) {
@@ -45,7 +47,7 @@ class LoginControllerTest {
     }
 
     @Test
-    void loginUser() {
+    void loginUser() throws Exception{
         Credentials validCredentials = new Credentials("test1@test.com", "zeerveiligwachtwoord2");
 
         Date futureDate = new Date(2025, Calendar.JANUARY, 1, 0, 10, 10);
@@ -59,7 +61,7 @@ class LoginControllerTest {
 
         Mockito.when(authenticationService.authenticate(validCredentials)).thenReturn(token);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/login");
-        request.contentType(MediaType.APPLICATION_JSON).content(asJsonString(validCredentials));
+        request.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(validCredentials));
         try {
 
             ResultActions actions = mockMvc.perform(request);
@@ -67,19 +69,11 @@ class LoginControllerTest {
 
             assertThat(response.getContentAsString()).isNotEmpty();
             assertThat(response.getContentType()).isEqualTo("application/json");
-            assertThat(response.getContentAsString()).isEqualTo(asJsonString(loginResponse));
+            assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(loginResponse));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-    }
-
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        }catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }
