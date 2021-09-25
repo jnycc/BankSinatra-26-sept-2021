@@ -49,8 +49,8 @@ public class TransactionController {
                     " stop it", HttpStatus.UNAUTHORIZED);
         }
 
-        if(transaction.getUnits() < 0){
-            return new ResponseEntity<>("Buyer cannot purchase negative asssets. " +
+        if(transaction.getUnits() <= 0){
+            return new ResponseEntity<>("Buyer cannot purchase 0 or negative asssets. " +
                     "Transaction cannot be completed.", HttpStatus.CONFLICT);
         }
 
