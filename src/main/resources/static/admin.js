@@ -97,7 +97,6 @@ function getCurrentFee(){
                 })
             }
         })
-
 }
 
 // LOAD USER
@@ -108,13 +107,7 @@ findUserForm.addEventListener('submit', function (e) {
 })
 
 function loadUser(user){
-    if ($('#userTable tr').length !== 0) {
-        userTable.empty()
-    }
-    if ($('#assetTable tr').length !== 0) {
-        assetTable.empty()
-    }
-
+    emptyTablesIfNecessary();
     fetch(`${url.origin}/admin/getUserData?email=${user}`,
         {
             method: 'GET',
@@ -182,8 +175,8 @@ btnSubmitChanges.addEventListener("click", function() {
         applyAssetChanges()
     }
 })
-
-async function showPortfolio(user) { // this function is only called in loadUser above when user is a client (admin users have no portfolio)
+// the following function is only called in loadUser above when user is a client (admin users have no portfolio)
+async function showPortfolio(user) {
     await getAssets(user)
     $(portfolioData).show()
 }
@@ -207,17 +200,7 @@ async function getAssets(user) {
 
 function fillAssetTable() {
     for (const key in assets) {
-        const tr = document.createElement("tr")
-        const td1 = document.createElement("td")
-        td1.innerText = key;
-        const td2 = document.createElement("td")
-        td2.innerText = parseFloat(assets[key]).toFixed(2)
-        const td3 = document.createElement("input")
-        td3.type = "number"
-        td3.step = "0.01"
-        td3.value = "0.00"
-        td3.id = `${key}input`
-        tr.append(td1, td2, td3)
+        let tr = generateAssetRow(key)
         if (key === 'USD') { // move USD to top of table for convenience, as it is somewhat distinct from other assets
             $(assetTable).prepend(tr)
         } else {
@@ -249,4 +232,28 @@ async function applyAssetChanges() {
             }
         })
     loadUser(user) // Wrap up by reloading user to reflect changes made.
+}
+
+function generateAssetRow(key) {
+    const tr = document.createElement("tr")
+    const td1 = document.createElement("td")
+    td1.innerText = key;
+    const td2 = document.createElement("td")
+    td2.innerText = parseFloat(assets[key]).toFixed(2)
+    const td3 = document.createElement("input")
+    td3.type = "number"
+    td3.step = "0.01"
+    td3.value = "0.00"
+    td3.id = `${key}input`
+    tr.append(td1, td2, td3)
+    return tr;
+}
+
+function emptyTablesIfNecessary() {
+    if ($('#userTable tr').length !== 0) {  // if a user is already loaded, empty the user table when loading new user
+        userTable.empty()
+    }
+    if ($('#assetTable tr').length !== 0) { // if a client is loaded, empty asset table too when loading new user
+        assetTable.empty()
+    }
 }
