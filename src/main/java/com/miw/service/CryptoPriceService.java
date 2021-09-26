@@ -72,8 +72,7 @@ public class CryptoPriceService {
 
         try {
             parseAndSave(makeAPICall(uri, params));
-            List<Asset> assets = rootRepository.getAssets(Bank.BANK_ID);  // TODO: kijken of dit beter in de klasse verwerkt kan worden
-            assets.forEach(asset -> rootRepository.marketAsset(asset.getUnits(), asset.getCrypto().getCryptoPrice(),asset.getCrypto().getSymbol(),Bank.BANK_ID));
+            updateBankAssetPrices();
             logger.info("Crypto prices updated successfully!");
         } catch (IOException e) {
             logger.info("Error: cannot access content - " + e.toString());
@@ -84,25 +83,12 @@ public class CryptoPriceService {
 
     private void parseAndSave(String responseContent) throws IOException {
         JsonObject convertedObject = new Gson().fromJson(responseContent, JsonObject.class);
-        JsonArray cryptos = new JsonArray();
-
-        // Generate list of CoinMarketCap crypto-IDs to select from the JSON, and fill the JsonArray cryptos with
-        // JsonObjects corresponding to those IDs:
-        List<String> CMCCryptoIds = Arrays.asList(CMC_CRYPTO_IDS.split(","));
-        for (String cmcCryptoId : CMCCryptoIds) { // ... en elk element uit die list ophalen als jsonobject.
-            cryptos.add(convertedObject.get("data").getAsJsonObject().get(cmcCryptoId).getAsJsonObject());
-        }
+        JsonArray cryptos = fillCryptoArray(convertedObject);
         LocalDateTime timestamp = correctTimestampFormatting(convertedObject.get("status").getAsJsonObject().get("timestamp").toString());
 
         // Parsing every crypto-JsonObject in the JsonArray generated above, and saving the data to the database:
         for (JsonElement crypto : cryptos) {
-            String symbolRaw = crypto.getAsJsonObject().get("symbol").toString();
-            String symbol = symbolRaw.substring(1, (symbolRaw.length() - 1)); // cleanup quotation marks from JSON crypto symbol
-            double price =  crypto.getAsJsonObject()
-                    .get("quote").getAsJsonObject()
-                    .get("USD").getAsJsonObject()
-                    .get("price").getAsDouble(); // key-value pair price is nested deep in the JSON object provided by the API.
-            rootRepository.saveCryptoPriceBySymbol(symbol, price, timestamp);
+            saveCryptoToDatabase(crypto, timestamp);
         }
     }
 
@@ -129,10 +115,40 @@ public class CryptoPriceService {
         return responseContent;
     }
 
-    // Auxiliary method to convert the API-provided timestamp to a format compatable with the SQL DateTime format.
+    // AUXILIARY METHODS
+    // Convert the API-provided timestamp to a format compatable with the SQL DateTime format.
     private LocalDateTime correctTimestampFormatting (String timestampRaw) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String timestamp = (timestampRaw.substring(1, 11) + " " + timestampRaw.substring(12, 20));
         return LocalDateTime.parse(timestamp, formatter).plusHours(TIMEZONE_OFFSET); // + timezone adjustment to NL time
     }
+
+    // Sell to/buy from bank for a given asset is automatically set at current market price:
+    private void updateBankAssetPrices() {
+        List<Asset> assets = rootRepository.getAssets(Bank.BANK_ID);
+        assets.forEach(asset -> rootRepository.marketAsset
+                (asset.getUnits(), asset.getCrypto().getCryptoPrice(),asset.getCrypto().getSymbol(),Bank.BANK_ID));
+    }
+
+    /*  Generate list of CoinMarketCap crypto-IDs to select from the JSON, and fill the JsonArray cryptos with
+        JsonObjects corresponding to those IDs: */
+    private JsonArray fillCryptoArray(JsonObject convertedObject) {
+        JsonArray cryptos = new JsonArray();
+        List<String> CMCCryptoIds = Arrays.asList(CMC_CRYPTO_IDS.split(","));
+        for (String cmcCryptoId : CMCCryptoIds) {
+            cryptos.add(convertedObject.get("data").getAsJsonObject().get(cmcCryptoId).getAsJsonObject());
+        }
+        return cryptos;
+    }
+
+    private void saveCryptoToDatabase(JsonElement crypto, LocalDateTime timestamp) {
+        String symbolRaw = crypto.getAsJsonObject().get("symbol").toString();
+        String symbol = symbolRaw.substring(1, (symbolRaw.length() - 1)); // cleanup quotation marks from JSON crypto symbol
+        double price =  crypto.getAsJsonObject()
+                .get("quote").getAsJsonObject()
+                .get("USD").getAsJsonObject()
+                .get("price").getAsDouble(); // key-value pair price is nested deep in the JSON object provided by the API.
+        rootRepository.saveCryptoPriceBySymbol(symbol, price, timestamp);
+    }
 }
+
