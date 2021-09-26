@@ -70,11 +70,11 @@ public class TransactionController {
         return new ResponseEntity<>("Joepie de poepie, transactie gedaan", HttpStatus.OK);
     }
 
-    private boolean authorizedTransaction (int userId, Transaction transaction){
-        if (userId == transaction.getBuyer()) {
+    private boolean authorizedTransaction (int accountId, Transaction transaction){
+        if (accountId == transaction.getBuyer()) {
             return true;
         }
-        return userId == transaction.getSeller() && transaction.getBuyer() == ACCOUNTBANK;
+        return accountId == transaction.getSeller() && transaction.getBuyer() == ACCOUNTBANK;
     }
 
     private Transaction calculateCosts(Transaction transaction){
