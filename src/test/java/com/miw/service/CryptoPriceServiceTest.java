@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class CryptoPriceServiceTest {
@@ -24,7 +24,8 @@ class CryptoPriceServiceTest {
 
     @Test
     void integrationTest() {
-        assertThat(cryptoPriceService.getRootRepository()).isNotNull();
+        assertNotNull(cryptoPriceService);
+        assertNotNull(cryptoPriceService.getRootRepository());
     }
 
     @Test
