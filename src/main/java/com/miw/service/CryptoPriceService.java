@@ -50,12 +50,13 @@ public class CryptoPriceService {
     private final String apiKey = "89b44b8d-1f46-4e3c-9b3b-d4c9a84d80d6"; // dit is ook top secret! :)
     private final String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest";
     private final String CMC_CRYPTO_IDS = "1,1027,2010,1839,825,52,5426,74,6636,3408,7083,1975,2,1831,4172,4687,8916,3077,3890,3717";
-    // Coinmarketcap ids of: btc,eth,ada,bnb,usdt,xrp,sol,doge,dot,usdc,uni,link,ltc,bch,luna,busd,icp,vet,matic,wbtc
-    // CoinMarketCap unfortunately does not allow API calls by symbol, so using their internal crypto ID's is necessary.
+    /* Coinmarketcap ids of: btc,eth,ada,bnb,usdt,xrp,sol,doge,dot,usdc,uni,link,ltc,bch,luna,busd,icp,vet,matic,wbtc
+    CoinMarketCap unfortunately does not allow API calls by symbol, so using their internal crypto ID's is necessary. */
 
-    private final int TIMEZONE_OFFSET   = 2;
-    private final int CALL_FREQUENCY    = 30 * 60 * 1000; // in milliseconds, i.e. 30 minutes
+                                       // min  sec  millisec
+    private final int CALL_FREQUENCY    = 30 * 60 * 1000; // i.e. 30 minutes
     private final int INITIAL_DELAY     = 10 * 60 * 1000; // i.e. 10 minutes
+    private final int TIMEZONE_OFFSET   = 2;
 
     private RootRepository rootRepository;
 
@@ -67,7 +68,7 @@ public class CryptoPriceService {
     @Scheduled(fixedRate = CALL_FREQUENCY, initialDelay = INITIAL_DELAY)
     private void updatePrices() {
 
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("id", CMC_CRYPTO_IDS)); // string contains specific crypto-ids (CMC-ids != our ids!!)
 
         try {
@@ -117,7 +118,7 @@ public class CryptoPriceService {
 
     // AUXILIARY METHODS
     // Convert the API-provided timestamp to a format compatable with the SQL DateTime format.
-    private LocalDateTime correctTimestampFormatting (String timestampRaw) {
+    public LocalDateTime correctTimestampFormatting (String timestampRaw) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String timestamp = (timestampRaw.substring(1, 11) + " " + timestampRaw.substring(12, 20));
         return LocalDateTime.parse(timestamp, formatter).plusHours(TIMEZONE_OFFSET); // + timezone adjustment to NL time
@@ -149,6 +150,11 @@ public class CryptoPriceService {
                 .get("USD").getAsJsonObject()
                 .get("price").getAsDouble(); // key-value pair price is nested deep in the JSON object provided by the API.
         rootRepository.saveCryptoPriceBySymbol(symbol, price, timestamp);
+    }
+
+    // Getters
+    public RootRepository getRootRepository() {
+        return rootRepository;
     }
 }
 
